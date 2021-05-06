@@ -10,7 +10,7 @@ using UnityEditor; // Handles
  */
 
 // Esta componente establece el campo sensorial del personaje, que depende de sus cualidades físicas.
-public class Agent : Bodi
+public abstract class Agent : Bodi
 {
     /*
         █▀█ █▀█ █▀█ █▀█ █▀▀ █▀█ ▀█▀ █ █▀▀ █▀

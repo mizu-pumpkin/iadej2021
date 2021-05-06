@@ -17,8 +17,8 @@ public class SeekVelocity : SteeringBehaviour
         Steering steer = new Steering();
 
         // Calcula la distancia que hay entre el target y el agente
-        float x = target.transform.position.x - agent.transform.position.x;
-        float z = target.transform.position.z - agent.transform.position.z;
+        float x = this.target.position.x - agent.position.x;
+        float z = this.target.position.z - agent.position.z;
         float distance = Mathf.Sqrt(x * x + z * z);
 
         // Si la distancia es mayor que el radio interior del target estable la

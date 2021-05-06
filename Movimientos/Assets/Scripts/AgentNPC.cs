@@ -35,7 +35,7 @@ public class AgentNPC : Agent
     // SteeringBehavior que tenga el personaje
     void Awake()
     {
-        listSteerings = this.GetComponents<SteeringBehaviour>();
+        this.listSteerings = this.GetComponents<SteeringBehaviour>();
     }
 
     // Recorre la lista construida en Awake() y calcula cada uno
@@ -43,12 +43,18 @@ public class AgentNPC : Agent
     // En este punto puedes aplicar un árbitro o dejarlo para el método Update()
     void LateUpdate()
     {
+        this.kinetic = new List<Steering>();
+
         foreach (var str in this.listSteerings)
-            kinetic.Add(str.GetSteering(this));
+        {
+            this.kinetic.Add(str.GetSteering(this));
+            // TODO: esto funciona si solo hay uno, pero hay
+            // que cambiarlo para que funcione con cada uno
+            this.steer = str.GetSteering(this);
+        }
     }
 
     // En el método Update() se invocará, al menos, al método ApplySteering()
-    // Update is called once per frame
     void Update()
     {
         // TODO

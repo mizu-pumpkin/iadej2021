@@ -28,12 +28,6 @@ public abstract class SteeringBehaviour : MonoBehaviour
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        target = GetComponent<Agent>(); // FIXME
-    }
-
     // Calcular el Steering para el agente dado en función del comportamiento deseado
     // Supongamos que el agente A se mueve en la dirección del agente B.
     // Entonces el SteeringBehaviour tendrá como target al agente B y el método

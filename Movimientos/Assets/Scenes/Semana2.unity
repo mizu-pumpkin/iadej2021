@@ -322,6 +322,7 @@ GameObject:
   m_Component:
   - component: {fileID: 271762363}
   - component: {fileID: 271762364}
+  - component: {fileID: 271762365}
   m_Layer: 0
   m_Name: NPC
   m_TagString: Untagged
@@ -369,6 +370,19 @@ MonoBehaviour:
   interiorAngle: 0
   exteriorAngle: 0
   debug: 0
+--- !u!114 &271762365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 271762362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd1e9fba4e6a6a643a807bff38ec7f60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 1357520494}
 --- !u!1 &306194417
 GameObject:
   m_ObjectHideFlags: 0
@@ -558,9 +572,37 @@ MonoBehaviour:
   m_GameObject: {fileID: 495212962}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Script: {fileID: 11500000, guid: be76e5f14cfee674cb30b491fb72b09b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  boost: 3.5
+  positionLerpTime: 0.2
+  mouseSensitivityCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.5
+      inSlope: 0
+      outSlope: 5
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 2.5
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  rotationLerpTime: 0.01
+  invertY: 0
 --- !u!1 &1357520492
 GameObject:
   m_ObjectHideFlags: 0
@@ -574,7 +616,7 @@ GameObject:
   - component: {fileID: 1357520496}
   - component: {fileID: 1357520494}
   m_Layer: 0
-  m_Name: AgentPlayer
+  m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -588,7 +630,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1357520492}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.87, y: 1.0847735, z: 1.44}
+  m_LocalPosition: {x: 1.87, y: 1.0847735, z: 2.41}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 306194418}
@@ -620,8 +662,6 @@ MonoBehaviour:
   interiorAngle: 0
   exteriorAngle: 0
   debug: 0
-  movimientoLado: 0
-  movimientoDelante: 0
 --- !u!143 &1357520495
 CharacterController:
   m_ObjectHideFlags: 0

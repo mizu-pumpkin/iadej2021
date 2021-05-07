@@ -29,12 +29,17 @@ public abstract class Agent : Bodi
 
     // Construye las Propiedades para que los valores interiores siempre sean
     // inferiores a los exteriores
-    void Start()
+    public void BuildProperties()
     {
-        // TODO: esto es temporaneo
-        this.maxSpeed = 8;
-        this.interiorRadius = 0.5f; // transform.localScale.x;
-        this.exteriorRadius = 1;
+        float [] localScale = new float[]{
+            transform.localScale.x,
+            transform.localScale.y,
+            transform.localScale.z
+        };
+        
+        this.interiorRadius = Mathf.Min(localScale);
+        // TODO:???: preguntar qué se supone que deberían representar estos valores
+        this.exteriorRadius = Mathf.Max(localScale);
         this.interiorAngle = 0;
         this.exteriorAngle = 0;
     }
@@ -46,7 +51,7 @@ public abstract class Agent : Bodi
 
     // Para la depuración. Dispón de un variable booleana para que,
     // según su valor, muestre como Gizmos los 4 valores anteriores.
-    public bool debug = false;
+    public bool debug = true;
 
     void OnDrawGizmos()
     {

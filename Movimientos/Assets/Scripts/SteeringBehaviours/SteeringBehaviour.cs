@@ -19,8 +19,6 @@ public abstract class SteeringBehaviour : MonoBehaviour
 
     // Representa a cualquier target sobre el que se calculará el comportamiento
     public Agent target;
-    // El movimiento que deberá de realizar el personaje según el comportamiento que se desee
-    Steering steer;
     // ???: weight/priority
 
     /*
@@ -34,4 +32,19 @@ public abstract class SteeringBehaviour : MonoBehaviour
     // GetSteering serán invocado desde el agente A como:
     // Steering steer = steeringConcreto.GetSteering(this)
     public abstract /*virtual*/ Steering GetSteering(AgentNPC agent);
+
+    //public AgentNPC agent;
+    //
+    //private void OnDrawGizmos()
+    //{
+    //    // Gizmo: una línea en la dirección del objetivo
+    //    Vector3 from = agent.position; // Origen de la línea
+    //    Vector3 to = agent.transform.localPosition + // Destino de la línea
+    //    (target.position - agent.position) * 2;//velocity;
+    //    Vector3 elevation = new Vector3 (0, 1, 0); // No tocar el suelo
+    //    from = from + elevation;
+    //    to = to + elevation;
+    //    Gizmos.DrawLine(from, to); // Dibujar el gizmo
+    //}
+    
 }

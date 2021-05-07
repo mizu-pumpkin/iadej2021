@@ -9,23 +9,23 @@ using UnityEngine;
  */
 
 // Esta componente representa la física de cualquier personaje móvil.
-public class Bodi : MonoBehaviour
+public abstract class Bodi : MonoBehaviour
 {
     /*
         █▀█ █▀█ █▀█ █▀█ █▀▀ █▀█ ▀█▀ █ █▀▀ █▀
         █▀▀ █▀▄ █▄█ █▀▀ ██▄ █▀▄ ░█░ █ ██▄ ▄█
      */
 
-    //bool canMove = true; // FIXME: me sirve para algo?
+    // ???: public bool canMove = true;
 
     // Escalares
-    public float mass;
+    public float mass = 60;
     public float orientation;
     public float rotation;
-    public float maxSpeed;
-    public float maxAcceleration;
+    public float maxSpeed = 8;
+    public float maxAcceleration = 8;
     public float maxRotation;
-    //public float maxAngular; // FIXME: me sirve para algo?
+    // ???: public float maxAngular;
 
     // Vectores
     public Vector3 velocity;
@@ -58,7 +58,6 @@ public class Bodi : MonoBehaviour
     // el ángulo más pequeño para que el personaje se rote hacia él
     public float Heading(Vector3 positionNPC)
     {
-        // TODO: controlar que esté bien
         float hipotenusa = Mathf.Sqrt(Mathf.Pow(positionNPC.x, 2) + Mathf.Pow(positionNPC.z, 2));
         float anguloRotacion = Mathf.Asin(positionNPC.z / hipotenusa);
 
@@ -84,13 +83,4 @@ public class Bodi : MonoBehaviour
     // con las características físicas, conforme vayas añadiendo
     // comportamiento a los NPC.
     // TODO
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        // TODO: esto es temporaneo
-        mass = 60;
-        maxSpeed = 8;
-        orientation = PositionToAngle();
-    }
 }

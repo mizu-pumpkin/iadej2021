@@ -17,18 +17,17 @@ public class SeekVelocity : SteeringBehaviour
         Steering steer = new Steering();
 
         // Calcula la distancia que hay entre el target y el agente
-        float x = this.target.position.x - agent.position.x;
-        float z = this.target.position.z - agent.position.z;
-        float distance = Mathf.Sqrt(x * x + z * z);
+        Vector3 direction = this.target.position - agent.position;
+        float distance = direction.magnitude;
 
-        // Si la distancia es mayor que el radio interior del target estable la
+        // Si la distancia es mayor que el radio interior del target establece la
         // magnitud vectorial del steering como el vector cuya magnitud es la
-        // velocidad máxima del agente y cuya dirección va del agente hacia el
-        // target
-        if (distance > target.interiorRadius)
+        // velocidad máxima del agente y cuya dirección va del agente hacia el target
+        if (distance > this.target.interiorRadius)
         {
-            steer.linear = target.position - agent.position;
-            steer.angular = agent.Heading(target.position);
+            steer.linear = direction;
+            steer.linear = steer.linear.normalized * agent.maxSpeed;
+            steer.angular = agent.Heading(this.target.position);
         }
 
         return steer;

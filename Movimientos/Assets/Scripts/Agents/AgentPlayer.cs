@@ -12,6 +12,8 @@ public class AgentPlayer : Agent
 
     void Update()
     {
+        // ???: tiene sentido actualizarlo en cada frame?
+        BuildProperties();
         ApplySteering();
     }
 
@@ -25,4 +27,5 @@ public class AgentPlayer : Agent
         transform.LookAt(position + velocity); // solo para este agente podemos usar LookAt()
         orientation = transform.rotation.eulerAngles.y;
     }
+    
 }

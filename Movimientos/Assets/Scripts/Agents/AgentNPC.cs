@@ -21,9 +21,7 @@ public class AgentNPC : Agent
 
     // Dispone de una lista de referencias a todas las componentes SteeringBehavior que tiene el personaje
     SteeringBehaviour[] listSteerings;
-    // El movimiento final que tendrá que realizar en el correspondiente frame
-    public Steering steer;
-    List<Steering> kinetic;
+    List<Steering> kinetics = new List<Steering>();
     // ???: blendWeight/blendPriority
 
     /*
@@ -40,33 +38,30 @@ public class AgentNPC : Agent
 
     // Recorre la lista construida en Awake() y calcula cada uno
     // de los Steering que calcula cada SteeringBehaviour
-    // En este punto puedes aplicar un árbitro o dejarlo para el método Update()
+    // TODO: En este punto puedes aplicar un árbitro o dejarlo para el método Update()
     void LateUpdate()
     {
-        this.kinetic = new List<Steering>();
-
-        foreach (var str in this.listSteerings)
-        {
-            this.kinetic.Add(str.GetSteering(this));
-            // TODO: esto funciona si solo hay uno, pero hay
-            // que cambiarlo para que funcione con cada uno
-            this.steer = str.GetSteering(this);
-        }
+        kinetics = new List<Steering>();
+        foreach (SteeringBehaviour str in this.listSteerings)
+            kinetics.Add(str.GetSteering(this));
+            //ApplySteering(str.GetSteering(this));
     }
 
     // En el método Update() se invocará, al menos, al método ApplySteering()
     void Update()
     {
-        // TODO
-        ApplySteering();
+        BuildProperties();
+        // ???: preguntar por qué se recorre dos veces
+        // y no se hace directamente en LateUpdate()
+        foreach (Steering kinetic in this.kinetics)
+            ApplySteering(kinetic);
     }
 
-    void ApplySteering() // applySteering(kinetic*)
-    { // Newton > Arbitro > Actuador  
-        // TODO
+    void ApplySteering(Steering steer) // applySteering(kinetic*)
+    { // Newton > Arbitro > Actuador
         this.acceleration = Vector3.zero;
-        this.velocity = this.steer.linear;
-        this.rotation = this.steer.angular;
+        this.velocity = steer.linear;
+        this.rotation = steer.angular;
 
         this.position += this.velocity * Time.deltaTime; // Fórmulas de Newton
         this.orientation += this.rotation * Time.deltaTime;

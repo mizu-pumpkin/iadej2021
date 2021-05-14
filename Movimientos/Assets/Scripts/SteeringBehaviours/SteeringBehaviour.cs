@@ -31,7 +31,9 @@ public abstract class SteeringBehaviour : MonoBehaviour
     // Entonces el SteeringBehaviour tendrá como target al agente B y el método
     // GetSteering serán invocado desde el agente A como:
     // Steering steer = steeringConcreto.GetSteering(this)
-    public abstract /*virtual*/ Steering GetSteering(AgentNPC agent);
+    public virtual Steering GetSteering(AgentNPC agent) {
+        return new Steering();
+    }
 
     //public AgentNPC agent;
     //

@@ -16,19 +16,19 @@ public class Seek : SteeringBehaviour
         // Create the structure to hold our output
         Steering steer = new Steering();
 
-        Vector3 direction = this.target.position - agent.position;
+        Vector3 direction = target.position - agent.position;
         float distance = direction.magnitude;
 
-        if (distance > this.target.interiorRadius)
+        if (distance > target.interiorRadius)
         {
             // Get the direction to the target
             steer.linear = direction;
 
             // Give full acceleration along this direction
-            steer.linear = steer.linear.normalized;
+            steer.linear.Normalize();
             steer.linear *= agent.maxAcceleration;
 
-            steer.angular = agent.Heading(target.position); // 0;
+            // steer.angular = agent.Heading(target.position);
         }
         // Output the steering
         return steer;

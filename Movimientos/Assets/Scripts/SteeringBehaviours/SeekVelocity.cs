@@ -26,8 +26,9 @@ public class SeekVelocity : SteeringBehaviour
         if (distance > this.target.interiorRadius)
         {
             steer.linear = direction;
-            steer.linear = steer.linear.normalized * agent.maxSpeed;
-            steer.angular = agent.Heading(this.target.position);
+            steer.linear.Normalize();
+            steer.linear *= agent.maxSpeed;
+            //steer.angular = agent.Heading(this.target.position);
         }
 
         return steer;

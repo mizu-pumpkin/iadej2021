@@ -20,11 +20,11 @@ public class Flee : SteeringBehaviour
         steer.linear = agent.position - target.position;
 
         // Give full acceleration along this direction
-        steer.linear = steer.linear.normalized;
+        steer.linear.Normalize();
         steer.linear *= agent.maxAcceleration;
 
         // Output the steering
-        steer.angular = agent.Heading(target.position); // 0;
+        //steer.angular = agent.Heading(target.position);
         return steer;
     }
 

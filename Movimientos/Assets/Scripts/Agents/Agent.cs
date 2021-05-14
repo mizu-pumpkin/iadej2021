@@ -31,7 +31,7 @@ public abstract class Agent : Bodi
     // inferiores a los exteriores
     public void BuildProperties()
     {
-        float [] localScale = new float[]{
+        float [] localScale = new float[] {
             transform.localScale.x,
             transform.localScale.y,
             transform.localScale.z
@@ -51,7 +51,7 @@ public abstract class Agent : Bodi
 
     // Para la depuración. Dispón de un variable booleana para que,
     // según su valor, muestre como Gizmos los 4 valores anteriores.
-    public bool debug = true;
+    public bool debug = false;
 
     void OnDrawGizmos()
     {

@@ -3,7 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Arrive : SteeringBehaviour
-{
+{    // Holds the radius for arriving at the target
+    public float targetRadius;
+    // Holds the radius for beginning to slow down
+    public float slowRadius;
+    // Holds the time over which to achieve target speed
+    public float timeToTarget = 0.1f;
+
     /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
@@ -13,28 +19,12 @@ public class Arrive : SteeringBehaviour
     // está cerca, entonces irá al objetivo a máxima velocidad
     override public Steering GetSteering(AgentNPC agent)
     {
-        // Holds the max acceleration and speed of the character
-        float maxAcceleration = agent.maxAcceleration;
-        float maxSpeed = agent.maxSpeed;
-
-        // Holds the radius for arriving at the target
-        float targetRadius = target.exteriorRadius;
-
-        // Holds the radius for beginning to slow down
-        float slowRadius = targetRadius * 8;
-
-        // Holds the time over which to achieve target speed
-        float timeToTarget = 0.1f;
-
         // Create the structure to hold our output
         Steering steer = new Steering();
 
         // Get the direction to the target
         Vector3 direction = target.position - agent.position;
         float distance = direction.magnitude;
-        //float x = this.target.position.x - agent.position.x;
-        //float z = this.target.position.z - agent.position.z;
-        //float distance = Mathf.Sqrt(x * x + z * z);
 
         // Check if we are there, return no steering
         if (distance < targetRadius)
@@ -43,27 +33,29 @@ public class Arrive : SteeringBehaviour
         float targetSpeed;
         // If we are outside the slowRadius, then go max speed
         if (distance > slowRadius)
-            targetSpeed = maxSpeed;
+            targetSpeed = agent.maxSpeed;
         // Otherwise calculate a scaled speed
         else
-            targetSpeed = maxSpeed * distance / slowRadius;
+            targetSpeed = agent.maxSpeed * distance / slowRadius;
         
         // The target velocity combines speed and direction
         Vector3 targetVelocity = direction;
-        targetVelocity = targetVelocity.normalized * targetSpeed;
+        targetVelocity.Normalize();
+        targetVelocity *= targetSpeed;
 
         // Acceleration tries to get to the target velocity
         steer.linear = targetVelocity - agent.velocity;
         steer.linear /= timeToTarget;
 
         // Check if the acceleration is too fast
-        if (steer.linear.magnitude > maxAcceleration)
-            steer.linear = steer.linear.normalized * maxAcceleration;
+        if (steer.linear.magnitude > agent.maxAcceleration) {
+            steer.linear.Normalize();
+            steer.linear *= agent.maxAcceleration;
+        }
 
         // Output the steering
-        steer.angular = agent.Heading(target.position);
+        //steer.angular = agent.Heading(target.position);
         return steer;
-        
     }
 
 }

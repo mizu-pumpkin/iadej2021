@@ -42,62 +42,52 @@ public abstract class Bodi : MonoBehaviour
      */
 
     // Convertir la posición del personaje en un angulo
-    public float PositionToAngle()
+    float PositionToAngle()
     {
-        return Mathf.Atan2(this.position.x, this.position.z) * Mathf.Rad2Deg; // ???: (z,x) o (x,z)
+        return Mathf.Atan2(this.position.x, this.position.z) * Mathf.Rad2Deg; //(x,z)
     }
     
-    float PositionToAngle(Vector3 position)
+    public float PositionToAngle(Vector3 position)
     {
-        return Mathf.Atan2(position.x, position.z) * Mathf.Rad2Deg; // ???: (z,x) o (x,z)
+        return Mathf.Atan2(position.x, position.z) * Mathf.Rad2Deg; //(x,z)
     }
 
     // Convertir la orientación del personaje en un vector
-    Vector3 OrientationToVector()
+    public Vector3 OrientationToVector()
     {
-        float rad = this.orientation * Mathf.Deg2Rad;
-        return new Vector3(Mathf.Cos(rad), 0, Mathf.Sin(rad));
+        float rad = this.orientation * Mathf.Deg2Rad * 1.0f;
+        return new Vector3(Mathf.Sin(rad), 0, Mathf.Cos(rad)).normalized;
     }
     
-    Vector3 OrientationToVector(float orientation)
+    public Vector3 OrientationToVector(float orientation)
     {
-        float rad = orientation * Mathf.Deg2Rad;
-        return new Vector3(Mathf.Cos(rad), 0, Mathf.Sin(rad));
+        float rad = orientation * Mathf.Deg2Rad * 1.0f;
+        return new Vector3(Mathf.Sin(rad), 0, Mathf.Cos(rad)).normalized;
     }
 
     // Dada la posición de otro personaje (un Vector3) determinar cuál es
     // el ángulo más pequeño para que el personaje se rote hacia él
-    public float Heading2(Vector3 targetPosition)
+    public float Heading(Vector3 targetPosition)
     {
         Vector3 direction = targetPosition - position;
-        return PositionToAngle(direction);
-    }
-
-    public float Heading(Vector3 positionNPC) // FIXME: no funciona como debería
-    {
-        float hipotenusa = Mathf.Sqrt(Mathf.Pow(positionNPC.x, 2) + Mathf.Pow(positionNPC.z, 2));
-        float anguloRotacion = Mathf.Asin(positionNPC.z / hipotenusa);
-
-        if (positionNPC.z < 0 && this.position.x < 0)
-            anguloRotacion = anguloRotacion + 180;
-
-        if (positionNPC.z > 0 && this.position.x < 0)
-            anguloRotacion = anguloRotacion + 90;
-
-        if (positionNPC.z < 0 && this.position.x > 0)
-            anguloRotacion = anguloRotacion + 270;
-
-        float rotacion1 = anguloRotacion * (180 / Mathf.PI);
-        float rotacion2 = (360 - anguloRotacion) * (180 / Mathf.PI);
-
-        if (rotacion1 > rotacion2)
-            return rotacion1;
-
-        return rotacion2;
+        float angle = Vector3.SignedAngle(forward(), direction, Vector3.up);
+        return angle;
     }
 
     // Añade cuantos métodos te sean necesarios, y relacionado solo
     // con las características físicas, conforme vayas añadiendo
     // comportamiento a los NPC.
     // TODO
+    public Vector3 forward()
+    {
+        // !!!: no se puede usar transform.forward
+        return transform.rotation * Vector3.forward;
+    }
+
+    public float LookAt(Vector3 targetPosition)
+    {
+        Vector3 direction = targetPosition - position;
+        return PositionToAngle(direction);
+    }
+
 }

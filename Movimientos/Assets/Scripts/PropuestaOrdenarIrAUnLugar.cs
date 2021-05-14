@@ -17,9 +17,33 @@ using UnityEngine;
 public class PropuestaOrdenarIrAUnLugar : MonoBehaviour
 {
 
+    public GameObject[] listNPC;
+    private int elementosArray = 0;
+    void chapuza(GameObject npc, Vector3 pos) { // HACK
+        Agent target = gameObject.AddComponent<Agent>();
+        target.position = pos;
+        target.velocity = new Vector3();
+
+        Arrive steer = gameObject.AddComponent<Arrive>();
+        steer.slowRadius = 8;
+        steer.targetRadius = 1;
+        steer.setTarget(target);
+
+        npc.SendMessage("resetAndAddSteering", steer);
+    }
+
+    void InsertarElemento(GameObject obj){
+        listNPC[elementosArray] = obj;
+        elementosArray++;
+    }
+
+    void EliminarElementos(){
+        elementosArray = 0;
+    }
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown("space")) EliminarElementos();
 
         // Damos una orden cuando levantemos el botón del ratón.
         if (Input.GetMouseButtonUp(0))
@@ -31,10 +55,11 @@ public class PropuestaOrdenarIrAUnLugar : MonoBehaviour
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo))
             {
-
+                
                 // Si lo que golpea es un punto del terreno entonces da la orden a todas las unidades NPC
                 if (hitInfo.collider != null && hitInfo.collider.CompareTag("Terrain"))
                 {
+                    
                     Vector3 newTarget = hitInfo.point;
 
                     GameObject[] listNPC = GameObject.FindGameObjectsWithTag("NPC");
@@ -52,10 +77,12 @@ public class PropuestaOrdenarIrAUnLugar : MonoBehaviour
                      * lo que facilita y agiliza algunas tareas. P.e. para realizar formaciones.
                      */
 
-                    foreach (var npc in listNPC)
+                    for (int i = 0; i < elementosArray; i++)
                     {
                         // Llama al método denominado "NewTarget" en TODOS y cada uno de los MonoBehaviour de este game object (npc)
-                        npc.SendMessage("NewTarget", newTarget);
+                        //npc.SendMessage("NewTarget", newTarget);
+
+                        chapuza(listNPC[i], newTarget);
 
                         // Se asume que cada NPC tiene varias componentes scripts (es decir, varios MonoBehaviour).
                         // En algunos de esos scripts está la función "NewTarget(Vector3 target)"
@@ -72,6 +99,12 @@ public class PropuestaOrdenarIrAUnLugar : MonoBehaviour
                         //                  npc.GetComponent<ComponenteScriptConteniendoLaFuncion>().NewTarget(newTarget);
                         // que obtiene la componente del NPC que yo sé que contiene a la función NewTarget(, y la invoca.
                     }
+                }
+
+
+                if (hitInfo.collider != null && hitInfo.collider.CompareTag("NPC"))
+                {
+                    InsertarElemento(Debug.Log( hitInfo.transform.gameObject));
                 }
             }
         }

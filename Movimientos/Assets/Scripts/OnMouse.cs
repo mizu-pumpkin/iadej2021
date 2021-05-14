@@ -6,49 +6,38 @@ public class OnMouse : MonoBehaviour
 {
     // https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnMouseEnter.html
 
-    public Renderer rend;
-    public bool seleccionado = false;
-
-    void Start()
-    {
-        Cursor.visible = true;
-        rend = GetComponent<Renderer>();
-    }
-
-    // The mesh goes red when the mouse is over it...
-    void OnMouseEnter()
-    {
-        if(seleccionado==false)
-           rend.material.color = new Color(1, 0, 0);  //Color.red;
-    }
-
-    // ...and the mesh finally turns white when the mouse moves away.
-    void OnMouseExit()
-    {
-        if (seleccionado==false)
-            rend.material.color = Color.white;
-    }
-
-    void OnMouseDown()
-    {
-        if (seleccionado == false)
-        {
-            seleccionado = true;
-            rend.material.color = new Color(0, 1, 0);
-        } else
-        {
-            seleccionado = false;
-            rend.material.color = new Color(1, 0, 0);
-        }
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown("space"))
-        {
-            seleccionado = false;
-            rend.material.color = Color.white;
-        }
-    }
+    //public Renderer rend;
+    //public bool seleccionado = false;
+    //public Color originalColor;
+//
+    //public GameObject NPCseleccionado;
+    //public Color selectedColor = new Color(0, 1, 0);
+//
+    //void Start()
+    //{
+    //    Cursor.visible = true;
+    //    rend = GetComponent<Renderer>();
+    //    originalColor = rend.material.color;
+    //}
+//
+    //void Update()
+    //{
+    //    if (Input.GetKeyDown("space")) deselect();
+    //}
+//
+    //void OnMouseDown()
+    //{
+    //    if (hitInfo.collider.CompareTag("NPC")) {
+    //        select();
+    //    } else deselect();
+    //}
+//
+    //void select(GameObject gameObject) {
+    //    PropuestaOrdenarIrAUnLugar.InsertarElemento(gameObject);
+    //}
+//
+    //void deselect() {
+    //    PropuestaOrdenarIrAUnLugar.EliminarElementos();
+    //}
 
 }

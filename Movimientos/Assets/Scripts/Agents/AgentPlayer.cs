@@ -12,8 +12,6 @@ public class AgentPlayer : Agent
 
     void Update()
     {
-        // ???: tiene sentido actualizarlo en cada frame?
-        BuildProperties();
         ApplySteering();
     }
 

@@ -10,7 +10,7 @@ using UnityEditor; // Handles
  */
 
 // Esta componente establece el campo sensorial del personaje, que depende de sus cualidades físicas.
-public abstract class Agent : Bodi
+public class Agent : Bodi
 {
     /*
         █▀█ █▀█ █▀█ █▀█ █▀▀ █▀█ ▀█▀ █ █▀▀ █▀
@@ -29,7 +29,7 @@ public abstract class Agent : Bodi
 
     // Construye las Propiedades para que los valores interiores siempre sean
     // inferiores a los exteriores
-    public void BuildProperties()
+    public virtual void Awake()
     {
         float [] localScale = new float[] {
             transform.localScale.x,

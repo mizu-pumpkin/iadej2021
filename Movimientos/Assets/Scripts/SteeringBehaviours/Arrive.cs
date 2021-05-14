@@ -54,7 +54,7 @@ public class Arrive : SteeringBehaviour
         }
 
         // Output the steering
-        //steer.angular = agent.Heading(target.position);
+        steer.angular = agent.Heading(target.position); // steer.angular = 0;
         return steer;
     }
 

@@ -28,11 +28,17 @@ public class AgentNPC : Agent
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
+    
+    public void resetAndAddSteering(SteeringBehaviour sb) { // HACK
+        //this.steeringBehaviours = new SteeringBehaviour[1];
+        this.steeringBehaviours[0] = sb;
+    }
 
     // Usa GetComponents<>() para cargar todas las componentes
     // SteeringBehavior que tenga el personaje
-    void Awake()
+    public override void Awake()
     {
+        base.Awake();
         this.steeringBehaviours = this.GetComponents<SteeringBehaviour>();
     }
 
@@ -49,17 +55,20 @@ public class AgentNPC : Agent
     // En el método Update() se invocará, al menos, al método ApplySteering()
     void Update()
     {
-        BuildProperties(); // HACK
         foreach (Steering kinetic in this.steerings) {
             ApplySteering(kinetic);
             Move();
         }
     }
 
+    // TODO: Modifica el método para que la aceleración lineal del Steering se
+    // interprete como una fuerza. En esta caso la aceleración vendrá dada por
+    // a = F/masa. Ejecuta el programa cambiando en tiempo de ejecución la masa.
     void ApplySteering(Steering steer)
     {
         //this.acceleration = Vector3.zero;
         this.velocity += steer.linear * Time.deltaTime;
+        //this.velocity = steer.linear;
         //this.rotation += steer.angular * Time.deltaTime;
         this.rotation = steer.angular;
 
@@ -69,8 +78,8 @@ public class AgentNPC : Agent
             this.velocity = this.velocity * this.maxSpeed;
         }
 
-        if (steer.angular == 0.0f)
-            this.rotation = 0.0f;
+        //if (steer.angular == 0.0f)
+        //    this.rotation = 0.0f;
         
         if (steer.linear.sqrMagnitude == 0.0f)
             this.velocity = Vector3.zero;
@@ -89,7 +98,7 @@ public class AgentNPC : Agent
 
         // Pasar los valores position y orientation a Unity. Por ejemplo
         transform.rotation = new Quaternion(); // Quaternion.identity;
-        transform.Rotate(Vector3.up, this.orientation);
+        transform.Rotate(Vector3.up, this.orientation);//transform.Rotate(0, this.orientation, 0);
     }
 
 }

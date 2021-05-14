@@ -60,7 +60,7 @@ public class Leave : SteeringBehaviour
         }
 
         // Output the steering
-        //steer.angular = agent.Heading(target.position);
+        //steer.angular = agent.Heading(target.position) + 180; // steer.angular = 0;
         return steer;
     }
 

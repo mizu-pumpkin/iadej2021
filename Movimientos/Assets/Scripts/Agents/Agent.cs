@@ -51,7 +51,7 @@ public class Agent : Bodi
 
     // Para la depuración. Dispón de un variable booleana para que,
     // según su valor, muestre como Gizmos los 4 valores anteriores.
-    public bool debug = false;
+    public bool debug = true;
 
     void OnDrawGizmos()
     {

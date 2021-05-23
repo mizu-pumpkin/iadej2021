@@ -28,7 +28,7 @@ public class VelocityMatching : SteeringBehaviour
         }
 
         // Output the steering
-        //steering.angular = 0;
+        steer.angular = agent.Heading(target.position); // steer.angular = 0;
         return steer;
     }
 }

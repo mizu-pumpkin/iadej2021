@@ -2,47 +2,74 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Path Following sin pathOffset (seek a waypoints)
-public class PathFollowing : SteeringBehaviour
+public class PathFollowing : Seek
 {
+    /*
+        █▀█ █▀█ █▀█ █▀█ █▀▀ █▀█ ▀█▀ █ █▀▀ █▀
+        █▀▀ █▀▄ █▄█ █▀▀ ██▄ █▀▄ ░█░ █ ██▄ ▄█
+     */
+    
+    // Holds the path to follow
+    public Path path = new Path();
 
+    // Holds the current position on the path
+    public int currentNode = 0;
 
-    public Vector3 currentParam; 
-    public Path path;
-    public float predictTime = 0.1;
-    public float currentPos = 0.0f;
+    int pathDir = 1;
+
     /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
+    
+    void Awake() {
+        target = new GameObject().AddComponent<Agent>();
+    }
 
-     /*
-    public override Steering GetSteering(AgentNPC agent)
+    void OnDestroy ()
     {
-
-        futurePos = agent.position + agent.velocity + predictTime;
-        currentParam = path.GetParam(futurePos, currentPos);
-        //float targetParam = currentParam + pathOffset; NO HAY QUE USAR OFFSET
-        target.position = path.GetPosition(targetParam);
-        return base.GetSteering();
+        Destroy(target);
     }
-*/
 
-    Agent target = nodes[currentNode];
-    pathDir = 1;
-    // Si he “llegado” al target, pasar al siguiente target
-    if (distance(position, target) <= radius)
-        currentNode += pathDir;
-    // Opción 1. Me quedo en el final.
-    if (currentNode >= nodes.magnitude)
-        currentNode = nodes.magnitude - 1;
-    // Opción 2. Hago vigilancia (Vuelvo atrás)
-    if (currentNode >= nodes.length || currentNode < 0) {
-        pathDir = - pathDir;
-        currentNode += pathDir;
+    public float Distance(Vector3 a, Vector3 b)
+    {
+        return Mathf.Sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
     }
-    // Opción 3. Nuevo estado (steering)
-    if (currentNode >= nodes.length || currentNode < 0)
-        new Steering();
+
+    override public Steering GetSteering(AgentNPC agent)
+    {
+        if (path != null) { // Comprueba si el personaje sigue algún camino
+            List<Vector3> nodes = path.GetNodes();
+
+            // Buscar objetivo actual
+            target.position = nodes[currentNode];
+
+            // Si he “llegado” al target, pasar al siguiente target
+            if (Distance(agent.position, target.position) <= path.radius) {
+                currentNode += pathDir; // Siguiente objetivo
+
+                // Opción 1. Me quedo en el final
+                //if (currentNode >= nodes.length) {
+                //    currentNode = nodes.length - 1;
+                //}
+
+                // Opción 2. Hago vigilancia (Vuelvo atrás)
+                if (currentNode >= nodes.Count || currentNode < 0)
+                {
+                    pathDir *= -1;
+                    currentNode += pathDir;
+                }
+
+                // Opción 3. Nuevo estado (steering)
+                //if (currentNode >= nodes.length || currentNode < 0) {
+                //    new Steering();
+                //}
+            }
+
+            return base.GetSteering(agent);
+        } else {
+            return new Steering();
+        }
+    }
 
 }

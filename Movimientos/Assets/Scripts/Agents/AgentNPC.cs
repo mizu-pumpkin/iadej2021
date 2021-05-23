@@ -31,7 +31,12 @@ public class AgentNPC : Agent
     
     public void resetAndAddSteering(SteeringBehaviour sb) { // HACK
         //this.steeringBehaviours = new SteeringBehaviour[1];
-        this.steeringBehaviours[0] = sb;
+        this.steeringBehaviours = new SteeringBehaviour[] { sb };
+    }
+
+    public void resetSteering() { // HACK
+        //this.steeringBehaviours = new SteeringBehaviour[1];
+        this.steeringBehaviours = new SteeringBehaviour[] {};
     }
 
     // Usa GetComponents<>() para cargar todas las componentes

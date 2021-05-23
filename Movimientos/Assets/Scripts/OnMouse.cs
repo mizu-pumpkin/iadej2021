@@ -9,7 +9,6 @@ public class OnMouse : MonoBehaviour
     //public Renderer rend;
     //public bool seleccionado = false;
     //public Color originalColor;
-//
     //public GameObject NPCseleccionado;
     //public Color selectedColor = new Color(0, 1, 0);
 //

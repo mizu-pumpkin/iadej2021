@@ -17,33 +17,11 @@ using UnityEngine;
 public class PropuestaOrdenarIrAUnLugar : MonoBehaviour
 {
 
-    public GameObject[] listNPC;
-    private int elementosArray = 0;
-    void chapuza(GameObject npc, Vector3 pos) { // HACK
-        Agent target = gameObject.AddComponent<Agent>();
-        target.position = pos;
-        target.velocity = new Vector3();
+    public List<GameObject> listNPC = new List<GameObject>();
 
-        Arrive steer = gameObject.AddComponent<Arrive>();
-        steer.slowRadius = 8;
-        steer.targetRadius = 1;
-        steer.setTarget(target);
-
-        npc.SendMessage("resetAndAddSteering", steer);
-    }
-
-    void InsertarElemento(GameObject obj){
-        listNPC[elementosArray] = obj;
-        elementosArray++;
-    }
-
-    void EliminarElementos(){
-        elementosArray = 0;
-    }
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("space")) EliminarElementos();
 
         // Damos una orden cuando levantemos el botón del ratón.
         if (Input.GetMouseButtonUp(0))
@@ -60,10 +38,6 @@ public class PropuestaOrdenarIrAUnLugar : MonoBehaviour
                 if (hitInfo.collider != null && hitInfo.collider.CompareTag("Terrain"))
                 {
                     
-                    Vector3 newTarget = hitInfo.point;
-
-                    GameObject[] listNPC = GameObject.FindGameObjectsWithTag("NPC");
-
                     /**
                      * Otra alternativa es recurrir a una lista pública de todas las unidades seleccionadas
                      *              public List<GameObject> selectedUnits;
@@ -77,12 +51,13 @@ public class PropuestaOrdenarIrAUnLugar : MonoBehaviour
                      * lo que facilita y agiliza algunas tareas. P.e. para realizar formaciones.
                      */
 
-                    for (int i = 0; i < elementosArray; i++)
+                    SteeringBehaviour steer = chapuza(hitInfo.point); // HACK
+                    for (int i = 0; i < listNPC.Count; i++)
                     {
                         // Llama al método denominado "NewTarget" en TODOS y cada uno de los MonoBehaviour de este game object (npc)
                         //npc.SendMessage("NewTarget", newTarget);
-
-                        chapuza(listNPC[i], newTarget);
+                        GameObject npc = listNPC[i];
+                        npc.SendMessage("resetAndAddSteering", steer); // HACK
 
                         // Se asume que cada NPC tiene varias componentes scripts (es decir, varios MonoBehaviour).
                         // En algunos de esos scripts está la función "NewTarget(Vector3 target)"
@@ -101,12 +76,56 @@ public class PropuestaOrdenarIrAUnLugar : MonoBehaviour
                     }
                 }
 
-
-                if (hitInfo.collider != null && hitInfo.collider.CompareTag("NPC"))
-                {
-                    InsertarElemento(Debug.Log( hitInfo.transform.gameObject));
+                if (hitInfo.collider.gameObject.transform.parent != null) {
+                    if (hitInfo.collider.gameObject.transform.parent.gameObject.transform.parent != null) {
+                        GameObject npc = hitInfo.collider.gameObject.transform.parent.gameObject.transform.parent.gameObject;
+                        if (npc.CompareTag("NPC")) {
+                            if (listNPC.Contains(npc)) deselecNPC(npc);
+                            else selectNPC(npc);
+                        }
+                    }
                 }
+
+                
             }
         }
+
+        if (Input.GetKeyDown("space"))
+            deselectAll();
+    }
+
+    SteeringBehaviour chapuza(Vector3 pos) {
+        Agent target = gameObject.AddComponent<Agent>();
+        target.position = pos;
+        target.velocity = new Vector3();
+
+        Arrive steer = gameObject.AddComponent<Arrive>();
+        steer.slowRadius = 8;
+        steer.targetRadius = 1;
+        steer.setTarget(target);
+
+        return steer;
+    }
+
+    void selectNPC(GameObject npc) {
+        listNPC.Add(npc);
+        print(npc.name+" selected");
+    }
+
+    void deselecNPC(GameObject npc) {
+        int index = listNPC.IndexOf(npc);
+        listNPC.RemoveAt(index);
+        npc.SendMessage("resetSteering"); // HACK
+        print(npc.name+" deselected");
+    }
+
+    void deselectAll() {
+        List<GameObject> aux = new List<GameObject>(listNPC);
+        foreach (GameObject npc in aux) {
+            int index = listNPC.IndexOf(npc);
+            listNPC.RemoveAt(index);
+            npc.SendMessage("resetSteering"); // HACK
+        }
+        print("NPCs deselected");
     }
 }

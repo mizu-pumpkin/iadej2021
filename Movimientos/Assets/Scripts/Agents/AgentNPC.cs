@@ -72,7 +72,11 @@ public class AgentNPC : Agent
         //this.acceleration = steer.linear * Time.deltaTime;
         this.velocity += steer.linear * Time.deltaTime;
         //this.rotation += steer.angular * Time.deltaTime;
-        this.rotation = steer.angular;
+        this.rotation += steer.angular;
+        
+        // ???: necesito esto?
+        //if (this.rotation > this.maxRotation)
+        //    this.rotation = this.maxRotation;
 
         if (this.velocity.magnitude > this.maxSpeed)
             this.velocity = this.velocity.normalized * this.maxSpeed;
@@ -84,9 +88,9 @@ public class AgentNPC : Agent
         }
 
         // Fórmulas de Newton
-        if (steer.linear.sqrMagnitude > 0)
+        if (steer.linear.sqrMagnitude != 0)
             this.position += this.velocity * Time.deltaTime;
-        if (steer.angular > 0)
+        if (steer.angular != 0)
             this.orientation += this.rotation * Time.deltaTime;
 
         // Limitar la orientación al rango 0~360
@@ -99,5 +103,36 @@ public class AgentNPC : Agent
         transform.rotation = new Quaternion(); // Quaternion.identity;
         transform.Rotate(Vector3.up, this.orientation);//transform.Rotate(0, this.orientation, 0);
     }
+
+/*
+    //Creamos una lista por prioridad
+    List<String> PrioridadMaxima = new List <String>();
+    //Rellenamos la lista
+    List<String> PrioridadMedia = new List <String>();
+    
+    void ApplySterring(Steering steer, String nombre)
+    {
+        int arbitro;
+        if (PrioridadMaxima.Contains(nombre)){
+            arbitro = 0.6;
+        } else if (PrioridadMedia.Contains(nombre)){
+            arbitro = 0.4;
+        } else {
+            arbitro = 0.2;
+        }
+
+        this.velocity += steer.linear * Time.deltaTime*arbitro;
+        this.rotation = steer.angular*arbitro;
+
+        if (this.velocity.magnitude > this.maxSpeed)
+            this.velocity = this.velocity.normalized * this.maxSpeed;
+
+        if (steer.angular == 0)
+            this.rotation = 0;
+        
+        if (steer.linear.sqrMagnitude == 0)
+            this.velocity = Vector3.zero;
+    }
+*/
 
 }

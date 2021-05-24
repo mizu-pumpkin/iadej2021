@@ -24,12 +24,12 @@ public abstract class Bodi : MonoBehaviour
     public float rotation;
     public float maxSpeed = 4;
     public float maxAcceleration = 8;
-    public float maxRotation = 360; // TODO: investigar esto
+    public float maxRotation = 120; // TODO: investigar esto
     public float maxAngularAcceleration = 60; // TODO: investigar esto
 
     // Vectores
     public Vector3 velocity = Vector3.zero;
-    public Vector3 acceleration;
+    public Vector3 acceleration = Vector3.zero;
     public Vector3 position
     { // Para lo posición se usara la información contenida en la componente Transform
         get { return transform.position; }
@@ -40,6 +40,8 @@ public abstract class Bodi : MonoBehaviour
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
+
+    public virtual void Awake() { }
 
     // Convertir la posición del personaje en un angulo
     float PositionToAngle()

@@ -15,7 +15,7 @@ public class Align : SteeringBehaviour
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
-
+    
     override public Steering GetSteering(AgentNPC agent)
     {
         // Create the structure to hold our output
@@ -55,19 +55,19 @@ public class Align : SteeringBehaviour
         }
 
         // Output the steering
-        //steer.linear = Vector3.zero;
+        steer.linear = Vector3.zero;
         return steer;
     }
 
     // This function helps in finding the actual direction of rotation
     // after two orientation values are subtracted
     public float MapToRange(float rotation) {
-        rotation %= 360.0f;
-        if (Mathf.Abs(rotation) > 180.0f) {
-            if (rotation < 0.0f)
-                rotation += 360.0f;
+        rotation %= 360;
+        if (Mathf.Abs(rotation) > 180) {
+            if (rotation < 0)
+                rotation += 360;
             else
-                rotation -= 360.0f;
+                rotation -= 360;
         }
         return rotation;
     }

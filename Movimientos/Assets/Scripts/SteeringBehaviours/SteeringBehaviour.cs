@@ -19,12 +19,14 @@ public abstract class SteeringBehaviour : MonoBehaviour
 
     // Representa a cualquier target sobre el que se calculará el comportamiento
     public Agent target;
-    // ???: weight/priority
+    public int priority;
 
     /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
+    
+    public virtual void Awake() { }
 
     public void setTarget(Agent target) { // HACK
         this.target = target;

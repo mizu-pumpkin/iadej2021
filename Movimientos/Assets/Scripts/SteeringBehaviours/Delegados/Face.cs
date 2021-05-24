@@ -11,8 +11,8 @@ public class Face : Align
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
     
-    public virtual void Awake() {
-        //base.Awake();
+    public override void Awake() {
+        base.Awake();
         targetAux = target;
         target = new GameObject().AddComponent<Agent>();
     }

@@ -29,8 +29,9 @@ public class Agent : Bodi
 
     // Construye las Propiedades para que los valores interiores siempre sean
     // inferiores a los exteriores
-    public virtual void Awake()
+    public override void Awake()
     {
+        base.Awake();
         float [] localScale = new float[] {
             transform.localScale.x,
             //transform.localScale.y,

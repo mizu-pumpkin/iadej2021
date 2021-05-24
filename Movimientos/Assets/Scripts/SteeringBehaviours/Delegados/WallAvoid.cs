@@ -24,8 +24,8 @@ public class WallAvoid : Seek
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
 
-    void Awake() {
-        //base.Awake();
+    public override void Awake() {
+        base.Awake();
         target = new GameObject().AddComponent<Agent>();
     }
 

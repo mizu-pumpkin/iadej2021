@@ -22,7 +22,8 @@ public class PathFollowing : Seek
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
     
-    void Awake() {
+    public override void Awake() {
+        base.Awake();
         target = new GameObject().AddComponent<Agent>();
     }
 

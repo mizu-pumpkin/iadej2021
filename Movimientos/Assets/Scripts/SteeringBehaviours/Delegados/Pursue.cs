@@ -14,7 +14,8 @@ public class Pursue : Seek
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
     
-    void Awake(){
+    public override void Awake() {
+        base.Awake();
         targetAgent = target.GetComponent<Agent>();
         targetAux = target;
         target = new GameObject().AddComponent<Agent>();

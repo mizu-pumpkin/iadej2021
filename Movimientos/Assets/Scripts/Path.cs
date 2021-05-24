@@ -10,8 +10,6 @@ public class Path
      */
     
     private List<Vector3> nodes;
-
-    public float radius = 1;
     
     /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
@@ -21,6 +19,7 @@ public class Path
     public Path()
     {
         this.nodes = new List<Vector3>();
+        // TODO
         AddNode(new Vector3(-10,0.5f,0));
         AddNode(new Vector3(-4,0.5f,6));
         AddNode(new Vector3(6,0.5f,5));

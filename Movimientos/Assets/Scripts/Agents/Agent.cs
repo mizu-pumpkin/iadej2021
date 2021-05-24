@@ -19,8 +19,8 @@ public class Agent : Bodi
 
     public float interiorRadius; // radio de colision
     public float exteriorRadius; // radio de llegada
-    public float interiorAngle; // angulo de colision
-    public float exteriorAngle; // angulo de llegada, limite
+    public float interiorAngle; // angulo de colision / vision normal
+    public float exteriorAngle; // angulo de llegada / limite de vision
 
     /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
@@ -33,15 +33,14 @@ public class Agent : Bodi
     {
         float [] localScale = new float[] {
             transform.localScale.x,
-            transform.localScale.y,
+            //transform.localScale.y,
             transform.localScale.z
         };
         
-        this.interiorRadius = Mathf.Min(localScale);
-        // TODO:???: preguntar qué se supone que deberían representar estos valores
-        this.exteriorRadius = Mathf.Max(localScale);
-        this.interiorAngle = 0;
-        this.exteriorAngle = 0;
+        this.interiorRadius = Mathf.Max(localScale) * 1.5f;
+        this.exteriorRadius = this.interiorRadius * 2;
+        this.interiorAngle = 45;
+        this.exteriorAngle = 90;
     }
 
     /*
@@ -51,7 +50,7 @@ public class Agent : Bodi
 
     // Para la depuración. Dispón de un variable booleana para que,
     // según su valor, muestre como Gizmos los 4 valores anteriores.
-    public bool debug = true;
+    public bool debug = false;
 
     void OnDrawGizmos()
     {
@@ -63,7 +62,7 @@ public class Agent : Bodi
                 "\nAngulo interior: " + this.interiorAngle +
                 "\nAngulo exterior: " + this.exteriorAngle;
             Handles.Label(transform.position, text);
-            // TODO: cambiar lo de arriba por lo de abajo
+            // TODO: cambiar lo de arriba por lo de abajo cuando se implemente
             //DrawGizmoInteriorRadius();
             //DrawGizmoExteriorRadius();
             //DrawGizmoInteriorAngle();

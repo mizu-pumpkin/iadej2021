@@ -32,6 +32,7 @@ public class Arrive : SteeringBehaviour
 
         float targetSpeed;
         // If we are outside the slowRadius, then go max speed
+        // TODO: añadir que pare antes de tocar al target (interiorRadius)
         if (distance > slowRadius)
             targetSpeed = agent.maxSpeed;
         // Otherwise calculate a scaled speed
@@ -54,7 +55,7 @@ public class Arrive : SteeringBehaviour
         }
 
         // Output the steering
-        steer.angular = agent.Heading(target.position); // steer.angular = 0;
+        steer.angular = 0;
         return steer;
     }
 

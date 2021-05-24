@@ -11,6 +11,7 @@ public class Flee : SteeringBehaviour
 
     // Si el agente está cerca del objetivo no se moverá; pero si aún no
     // está cerca, entonces irá al objetivo a máxima velocidad
+    // TODO: añadir distancia limite para que deje de huir
     override public Steering GetSteering(AgentNPC agent)
     {
         // Create the structure to hold our output
@@ -24,7 +25,7 @@ public class Flee : SteeringBehaviour
         steer.linear *= agent.maxAcceleration;
 
         // Output the steering
-        //steer.angular = agent.Heading(target.position) + 180; // steer.angular = 0;
+        steer.angular = 0;
         return steer;
     }
 

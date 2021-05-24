@@ -22,10 +22,10 @@ public abstract class Bodi : MonoBehaviour
     public float mass = 60;
     public float orientation;
     public float rotation;
-    public float maxSpeed = 8;
-    public float maxAcceleration = 4;
-    public float maxRotation = 360;
-    public float maxAngularAcceleration = 60;
+    public float maxSpeed = 4;
+    public float maxAcceleration = 8;
+    public float maxRotation = 360; // TODO: investigar esto
+    public float maxAngularAcceleration = 60; // TODO: investigar esto
 
     // Vectores
     public Vector3 velocity = Vector3.zero;
@@ -70,21 +70,20 @@ public abstract class Bodi : MonoBehaviour
     public float Heading(Vector3 targetPosition)
     {
         Vector3 direction = targetPosition - position;
-        float angle = Vector3.SignedAngle(forward(), direction, Vector3.up);
+        // TODO: esto hay que cambiarlo porque es "ilegal" usar el transform.rotation
+        // Usar OrientationToVector()
+        //Vector3 forward = transform.rotation * Vector3.forward; // !!!: no se puede usar transform.forward
+        Vector3 forward = OrientationToVector();
+        //probar la posicion actual
+        float angle = Vector3.SignedAngle(forward, direction, Vector3.up);
         return angle;
     }
 
     // Añade cuantos métodos te sean necesarios, y relacionado solo
     // con las características físicas, conforme vayas añadiendo
     // comportamiento a los NPC.
-    // TODO
-    public Vector3 forward()
-    {
-        // !!!: no se puede usar transform.forward
-        return transform.rotation * Vector3.forward;
-    }
 
-    public float LookAt(Vector3 targetPosition)
+    float LookAt(Vector3 targetPosition) // !!!: de momento no se usa en ningún lado
     {
         Vector3 direction = targetPosition - position;
         return PositionToAngle(direction);

@@ -28,7 +28,7 @@ public class Seek : SteeringBehaviour
             steer.linear.Normalize();
             steer.linear *= agent.maxAcceleration;
 
-            steer.angular = agent.Heading(target.position); // steer.angular = 0;
+            steer.angular = 0;
         }
         // Output the steering
         return steer;

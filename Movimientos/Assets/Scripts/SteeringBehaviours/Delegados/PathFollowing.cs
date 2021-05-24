@@ -45,7 +45,7 @@ public class PathFollowing : Seek
             target.position = nodes[currentNode];
 
             // Si he “llegado” al target, pasar al siguiente target
-            if (Distance(agent.position, target.position) <= path.radius) {
+            if (Distance(agent.position, target.position) <= target.interiorRadius) {
                 currentNode += pathDir; // Siguiente objetivo
 
                 // Opción 1. Me quedo en el final

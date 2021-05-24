@@ -55,16 +55,16 @@ public class PropuestaOrdenarIrAUnLugar : MonoBehaviour
                     for (int i = 0; i < listNPC.Count; i++)
                     {
                         // Llama al método denominado "NewTarget" en TODOS y cada uno de los MonoBehaviour de este game object (npc)
-                        //npc.SendMessage("NewTarget", newTarget);
+                        //npc.SendMessage("NewTarget", target);
                         GameObject npc = listNPC[i];
-                        npc.SendMessage("resetAndAddSteering", steer); // HACK
+                        npc.SendMessage("NewTarget", steer); // HACK
 
                         // Se asume que cada NPC tiene varias componentes scripts (es decir, varios MonoBehaviour).
                         // En algunos de esos scripts está la función "NewTarget(Vector3 target)"
                         // Dicha función contendrá las instrucciones necesarias para ir o no al nuevo destino.
                         // P.e. Dejar lo que esté haciendo y  disparar a target.
                         // P.e. Si no tengo vida suficiente huir de target.
-                        // P.e. Si fui seleccionado en una acción anterio y estoy a la espera de nuevas órdenes, entonces hacer un Arrive a target.
+                        // P.e. Si fui seleccionado en una acción anterior y estoy a la espera de nuevas órdenes, entonces hacer un Arrive a target.
 
                         // Nota1: En el caso de que tu objeto tenga una estructura jerárquica, 
                         // y se quiera invocar a NewTarget de todos sus hijos, deberás usar BroadcastMessage.
@@ -113,18 +113,16 @@ public class PropuestaOrdenarIrAUnLugar : MonoBehaviour
     }
 
     void deselecNPC(GameObject npc) {
-        int index = listNPC.IndexOf(npc);
-        listNPC.RemoveAt(index);
-        npc.SendMessage("resetSteering"); // HACK
+        listNPC.Remove(npc);
+        npc.SendMessage("resetSteerings"); // HACK
         print(npc.name+" deselected");
     }
 
     void deselectAll() {
         List<GameObject> aux = new List<GameObject>(listNPC);
         foreach (GameObject npc in aux) {
-            int index = listNPC.IndexOf(npc);
-            listNPC.RemoveAt(index);
-            npc.SendMessage("resetSteering"); // HACK
+            listNPC.Remove(npc);
+            npc.SendMessage("resetSteerings"); // HACK
         }
         print("NPCs deselected");
     }

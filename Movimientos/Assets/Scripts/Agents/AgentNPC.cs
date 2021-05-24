@@ -22,6 +22,7 @@ public class AgentNPC : Agent
     // Dispone de una lista de referencias a todas las componentes SteeringBehavior que tiene el personaje
     SteeringBehaviour[] steeringBehaviours;
     List<Steering> steerings = new List<Steering>();
+    
     // ???: blendWeight/blendPriority
 
     /*
@@ -52,17 +53,15 @@ public class AgentNPC : Agent
     void LateUpdate()
     {
         steerings = new List<Steering>();
-        foreach (SteeringBehaviour str in this.steeringBehaviours)
-            steerings.Add(str.GetSteering(this));
+        foreach (SteeringBehaviour sb in this.steeringBehaviours)
+            steerings.Add(sb.GetSteering(this));
     }
 
     // En el método Update() se invocará, al menos, al método ApplySteering()
     void Update()
     {
-        foreach (Steering kinetic in this.steerings) {
-            ApplySteering(kinetic);
-            Move();
-        }
+        foreach (Steering steer in this.steerings)
+            ApplySteering(steer);
     }
 
     // TODO: Modifica el método para que la aceleración lineal del Steering se
@@ -70,37 +69,33 @@ public class AgentNPC : Agent
     // a = F/masa. Ejecuta el programa cambiando en tiempo de ejecución la masa.
     void ApplySteering(Steering steer)
     {
-        //this.acceleration = Vector3.zero;
+        //this.acceleration = steer.linear * Time.deltaTime;
         this.velocity += steer.linear * Time.deltaTime;
-        //this.velocity = steer.linear;
         //this.rotation += steer.angular * Time.deltaTime;
         this.rotation = steer.angular;
 
         if (this.velocity.magnitude > this.maxSpeed)
-        {
-            this.velocity.Normalize();
-            this.velocity = this.velocity * this.maxSpeed;
+            this.velocity = this.velocity.normalized * this.maxSpeed;
+
+        if (steer.linear.sqrMagnitude == 0 && steer.angular == 0) {
+            //this.acceleration = Vector3.zero;
+            this.velocity = Vector3.zero;
+            this.rotation = 0;
         }
 
-        //if (steer.angular == 0.0f)
-        //    this.rotation = 0.0f;
-        
-        if (steer.linear.sqrMagnitude == 0.0f)
-            this.velocity = Vector3.zero;
-    }
-
-    void Move()
-    {
         // Fórmulas de Newton
-        this.position += this.velocity * Time.deltaTime;
-        this.orientation += this.rotation * Time.deltaTime;
+        if (steer.linear.sqrMagnitude > 0)
+            this.position += this.velocity * Time.deltaTime;
+        if (steer.angular > 0)
+            this.orientation += this.rotation * Time.deltaTime;
 
-        if (this.orientation < 0.0f)
-            this.orientation += 360.0f;
-        else if (this.orientation > 360.0f)
-            this.orientation -= 360.0f;
+        // Limitar la orientación al rango 0~360
+        if (this.orientation < 0)
+            this.orientation += 360;
+        else if (this.orientation > 360)
+            this.orientation -= 360;
 
-        // Pasar los valores position y orientation a Unity. Por ejemplo
+        // Pasar los valores position y orientation a Unity
         transform.rotation = new Quaternion(); // Quaternion.identity;
         transform.Rotate(Vector3.up, this.orientation);//transform.Rotate(0, this.orientation, 0);
     }

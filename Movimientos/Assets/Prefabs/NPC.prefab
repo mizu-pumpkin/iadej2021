@@ -289,12 +289,12 @@ MonoBehaviour:
   rotation: 0
   maxSpeed: 4
   maxAcceleration: 8
-  maxRotation: 360
+  maxRotation: 120
   maxAngularAcceleration: 60
   velocity: {x: 0, y: 0, z: 0}
   acceleration: {x: 0, y: 0, z: 0}
   interiorRadius: 0
   exteriorRadius: 0
-  interiorAngle: 0
-  exteriorAngle: 0
+  interiorAngle: 45
+  exteriorAngle: 90
   debug: 0

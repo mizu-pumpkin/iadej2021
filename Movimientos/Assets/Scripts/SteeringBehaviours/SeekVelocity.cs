@@ -20,17 +20,17 @@ public class SeekVelocity : SteeringBehaviour
         Vector3 direction = this.target.position - agent.position;
         float distance = direction.magnitude;
 
+        if (distance <= this.target.interiorRadius)
+            return null;
+
         // Si la distancia es mayor que el radio interior del target establece la
         // magnitud vectorial del steering como el vector cuya magnitud es la
         // velocidad máxima del agente y cuya dirección va del agente hacia el target
-        if (distance > this.target.interiorRadius)
-        {
-            steer.linear = direction;
-            steer.linear.Normalize();
-            steer.linear *= agent.maxSpeed;
-            steer.angular = 0;
-        }
+        steer.linear = direction;
+        steer.linear.Normalize();
+        steer.linear *= agent.maxSpeed;
 
+        steer.angular = 0;
         return steer;
     }
 

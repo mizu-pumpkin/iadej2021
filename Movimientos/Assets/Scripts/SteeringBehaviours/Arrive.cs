@@ -3,7 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Arrive : SteeringBehaviour
-{    // Holds the radius for arriving at the target
+{
+    /*
+        █▀█ █▀█ █▀█ █▀█ █▀▀ █▀█ ▀█▀ █ █▀▀ █▀
+        █▀▀ █▀▄ █▄█ █▀▀ ██▄ █▀▄ ░█░ █ ██▄ ▄█
+     */
+    
+    // Holds the radius for arriving at the target
     public float targetRadius;
     // Holds the radius for beginning to slow down
     public float slowRadius;
@@ -28,7 +34,7 @@ public class Arrive : SteeringBehaviour
 
         // Check if we are there, return no steering
         if (distance < targetRadius)
-            return steer;
+            return null;
 
         float targetSpeed;
         // If we are outside the slowRadius, then go max speed

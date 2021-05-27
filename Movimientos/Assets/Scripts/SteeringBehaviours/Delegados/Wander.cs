@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class Wander : Face
 {
-    // Holds the radius and forward offset of the wander circle
+    /*
+        █▀█ █▀█ █▀█ █▀█ █▀▀ █▀█ ▀█▀ █ █▀▀ █▀
+        █▀▀ █▀▄ █▄█ █▀▀ ██▄ █▀▄ ░█░ █ ██▄ ▄█
+     */
+    
+    // Holds the wanderRand forward offset of the wander circle
     public float wanderOffset;
     public float wanderRadius;
-    // Holds the maximum rate at which the wander orientation can change
+    // Holds the maximum wanderRat which the wander orientation can change
     public float wanderRate;
     // Holds the current orientation of the wander target
     float wanderOrientation;
@@ -23,30 +28,39 @@ public class Wander : Face
         base.Awake();
     }
 
+    public Vector3 OrientationToVector(float orientation) {
+        Vector3 vector  = Vector3.zero;
+        vector.x = Mathf.Sin(orientation * Mathf.Deg2Rad) * 1.0f;
+        vector.z = Mathf.Cos(orientation * Mathf.Deg2Rad) * 1.0f;
+        return vector.normalized;
+    }
+
     override public Steering GetSteering(AgentNPC agent)
     {
         // 1. Calculate the target to delegate to face
 
         // Update the wander orientation
-        wanderOrientation += Random.Range(-1.0f, 1.0f) * wanderRate;
+        float wanderOrientation = Random.Range(-1.0f, 1.0f) * wanderRate;
 
         // Calculate the combined target orientation
         float targetOrientation = wanderOrientation + agent.orientation;
 
         // Calculate the center of the wander circle
-        target.position = agent.position + wanderOffset * agent.OrientationToVector();
+        targetAux.position = agent.position + wanderOffset * OrientationToVector(agent.orientation);
 
         // Calculate the target location
-        target.position += wanderRadius * agent.OrientationToVector(targetOrientation);
+        targetAux.position += wanderRadius * OrientationToVector(targetOrientation);
 
         // 2. Delegate to Face
         Steering steer = base.GetSteering(agent);
+        if (steer == null) steer = new Steering();
 
         // 3. Now set the linear acceleration to be at full
         // acceleration in the direction of the orientation
-        steer.linear = agent.maxAcceleration * agent.OrientationToVector().normalized;
+        steer.linear = agent.maxAcceleration * OrientationToVector(agent.orientation);
 
         // Output the steering
         return steer;
     }
+    
 }

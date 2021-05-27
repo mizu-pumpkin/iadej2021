@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class Face : Align
 {
+    /*
+        █▀█ █▀█ █▀█ █▀█ █▀▀ █▀█ ▀█▀ █ █▀▀ █▀
+        █▀▀ █▀▄ █▄█ █▀▀ ██▄ █▀▄ ░█░ █ ██▄ ▄█
+     */
+    
     protected Agent targetAux;
 
     /*
@@ -13,11 +18,12 @@ public class Face : Align
     
     public override void Awake() {
         base.Awake();
+        priority = 2;
         targetAux = target;
         target = new GameObject().AddComponent<Agent>();
     }
 
-    void OnDestroy ()
+    void OnDestroy()
     {
         Destroy(target);
     }
@@ -32,7 +38,7 @@ public class Face : Align
 
         // Check for a zero direction, and make no change if so
         if (direction.magnitude == 0.0f)
-            return new Steering();
+            return null;
         
         // Put the target together
         target.orientation = agent.PositionToAngle(direction);
@@ -40,4 +46,5 @@ public class Face : Align
         // 2. Delegate to align
         return base.GetSteering(agent);
     }
+    
 }

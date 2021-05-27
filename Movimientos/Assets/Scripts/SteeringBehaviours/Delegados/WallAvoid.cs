@@ -14,7 +14,7 @@ public class WallAvoid : Seek
 
     // Holds the minimum distance to a wall
     // should be greater than the radius of character
-    public float avoidDistance;
+    float avoidDistance;
 
     // Holds the distance to look ahead for a collision
     public float lookAhead = 10;
@@ -26,6 +26,7 @@ public class WallAvoid : Seek
 
     public override void Awake() {
         base.Awake();
+        priority = 1;
         target = new GameObject().AddComponent<Agent>();
     }
 
@@ -49,7 +50,7 @@ public class WallAvoid : Seek
 
         // If have no collision, do nothing
         if (!collision)
-            return new Steering();
+            return null;
 
         // Otherwise create a target
         target.position = hit.point + hit.normal * avoidDistance;

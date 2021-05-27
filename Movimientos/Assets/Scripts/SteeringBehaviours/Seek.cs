@@ -19,18 +19,18 @@ public class Seek : SteeringBehaviour
         Vector3 direction = target.position - agent.position;
         float distance = direction.magnitude;
 
-        if (distance > target.interiorRadius)
-        {
-            // Get the direction to the target
-            steer.linear = direction;
+        if (distance <= target.interiorRadius)
+            return null;
+        
+        // Get the direction to the target
+        steer.linear = direction;
 
-            // Give full acceleration along this direction
-            steer.linear.Normalize();
-            steer.linear *= agent.maxAcceleration;
+        // Give full acceleration along this direction
+        steer.linear.Normalize();
+        steer.linear *= agent.maxAcceleration;
 
-            steer.angular = 0;
-        }
         // Output the steering
+        steer.angular = 0;
         return steer;
     }
 

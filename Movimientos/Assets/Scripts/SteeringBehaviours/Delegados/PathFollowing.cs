@@ -63,13 +63,13 @@ public class PathFollowing : Seek
 
                 // Opción 3. Nuevo estado (steering)
                 //if (currentNode >= nodes.length || currentNode < 0) {
-                //    new Steering();
+                //    null;
                 //}
             }
 
             return base.GetSteering(agent);
         } else {
-            return new Steering();
+            return null;
         }
     }
 

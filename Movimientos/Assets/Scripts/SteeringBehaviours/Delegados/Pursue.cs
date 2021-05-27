@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class Pursue : Seek
 {
-
+    /*
+        █▀█ █▀█ █▀█ █▀█ █▀▀ █▀█ ▀█▀ █ █▀▀ █▀
+        █▀▀ █▀▄ █▄█ █▀▀ ██▄ █▀▄ ░█░ █ ██▄ ▄█
+     */
+    
     // Holds the maximum prediction time
     public float maxPrediction;
+
     protected Agent targetAgent, targetAux;
 
     /*
@@ -52,4 +57,5 @@ public class Pursue : Seek
         // 2. Delegate to seek
         return base.GetSteering(agent);
     }
+    
 }

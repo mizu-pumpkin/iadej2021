@@ -26,7 +26,9 @@ public abstract class SteeringBehaviour : MonoBehaviour
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
     
-    public virtual void Awake() { }
+    public virtual void Awake() {
+        priority = 3;
+    }
 
     public void setTarget(Agent target) { // HACK
         this.target = target;
@@ -38,7 +40,7 @@ public abstract class SteeringBehaviour : MonoBehaviour
     // GetSteering serán invocado desde el agente A como:
     // Steering steer = steeringConcreto.GetSteering(this)
     public virtual Steering GetSteering(AgentNPC agent) {
-        return new Steering();
+        return null;
     }
 
     //public AgentNPC agent;

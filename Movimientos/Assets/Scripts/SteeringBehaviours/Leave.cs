@@ -8,6 +8,11 @@ using UnityEngine;
 // En la práctica, lo opuesto de Arrive es Flee.
 public class Leave : SteeringBehaviour
 {
+    /*
+        █▀█ █▀█ █▀█ █▀█ █▀▀ █▀█ ▀█▀ █ █▀▀ █▀
+        █▀▀ █▀▄ █▄█ █▀▀ ██▄ █▀▄ ░█░ █ ██▄ ▄█
+     */
+    
     // Holds the radius for escaping the target
     public float escapeRadius;
     // Holds the radius for the danger zone from the target
@@ -19,6 +24,11 @@ public class Leave : SteeringBehaviour
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
+
+    public override void Awake() {
+        base.Awake();
+        priority = 2;
+    }
 
     // Si el agente está cerca del objetivo no se moverá; pero si aún no
     // está cerca, entonces irá al objetivo a máxima velocidad
@@ -33,7 +43,7 @@ public class Leave : SteeringBehaviour
 
         // Check if we are out of danger, return no steering
         if (distance > dangerRadius)
-            return steer;
+            return null;
 
         float reduce;
         // Keep speed if we are still inside escapeRadius

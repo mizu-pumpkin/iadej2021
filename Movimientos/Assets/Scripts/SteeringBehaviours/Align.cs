@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class Align : SteeringBehaviour
 {
+    /*
+        █▀█ █▀█ █▀█ █▀█ █▀▀ █▀█ ▀█▀ █ █▀▀ █▀
+        █▀▀ █▀▄ █▄█ █▀▀ ██▄ █▀▄ ░█░ █ ██▄ ▄█
+     */
+    
     // Holds the radius for arriving at the target
     public float targetRadius;
     // Holds the radius for beginning to slow down
@@ -15,6 +20,11 @@ public class Align : SteeringBehaviour
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
+    
+    public override void Awake() {
+        base.Awake();
+        priority = 2;
+    }
     
     override public Steering GetSteering(AgentNPC agent)
     {
@@ -30,7 +40,7 @@ public class Align : SteeringBehaviour
         
         // Check if we are there, return no steering 
         if (rotationSize < targetRadius)
-            return steer;
+            return null;
         
         float targetRotation;
         // If we are outside the slowRadius, then use maximum rotation

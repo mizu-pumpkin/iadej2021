@@ -22,7 +22,7 @@ public class AgentNPC : Agent
     // Dispone de una lista de referencias a todas las componentes SteeringBehavior que tiene el personaje
     SteeringBehaviour[] steeringBehaviours;
     List<Steering> steerings = new List<Steering>();
-    
+
     // ???: blendWeight/blendPriority
 
     /*
@@ -61,7 +61,8 @@ public class AgentNPC : Agent
     void Update()
     {
         foreach (Steering steer in this.steerings)
-            ApplySteering(steer);
+            if (steer != null)
+                ApplySteering(steer);
     }
 
     // TODO: Modifica el método para que la aceleración lineal del Steering se
@@ -103,36 +104,5 @@ public class AgentNPC : Agent
         transform.rotation = new Quaternion(); // Quaternion.identity;
         transform.Rotate(Vector3.up, this.orientation);//transform.Rotate(0, this.orientation, 0);
     }
-
-/*
-    //Creamos una lista por prioridad
-    List<String> PrioridadMaxima = new List <String>();
-    //Rellenamos la lista
-    List<String> PrioridadMedia = new List <String>();
-    
-    void ApplySterring(Steering steer, String nombre)
-    {
-        int arbitro;
-        if (PrioridadMaxima.Contains(nombre)){
-            arbitro = 0.6;
-        } else if (PrioridadMedia.Contains(nombre)){
-            arbitro = 0.4;
-        } else {
-            arbitro = 0.2;
-        }
-
-        this.velocity += steer.linear * Time.deltaTime*arbitro;
-        this.rotation = steer.angular*arbitro;
-
-        if (this.velocity.magnitude > this.maxSpeed)
-            this.velocity = this.velocity.normalized * this.maxSpeed;
-
-        if (steer.angular == 0)
-            this.rotation = 0;
-        
-        if (steer.linear.sqrMagnitude == 0)
-            this.velocity = Vector3.zero;
-    }
-*/
 
 }

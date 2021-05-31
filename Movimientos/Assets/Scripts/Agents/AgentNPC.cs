@@ -20,9 +20,9 @@ public class AgentNPC : Agent
      */
 
     // Dispone de una lista de referencias a todas las componentes SteeringBehavior que tiene el personaje
-    SteeringBehaviour[] steeringBehaviours;
-    List<Steering> steerings = new List<Steering>();
-
+    public List<SteeringBehaviour> steeringBehaviours;
+    public List<Steering> steerings = new List<Steering>();
+    
     // ???: blendWeight/blendPriority
 
     /*
@@ -30,13 +30,25 @@ public class AgentNPC : Agent
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
     
-    public void NewTarget(SteeringBehaviour sb) {
-        // TODO: añadir el nuevo target y arbitrarlo
-        this.steeringBehaviours = new SteeringBehaviour[] { sb }; // HACK
+    // Vacía la lista de SteeringBehaviour del NPC, que ahora solo tendrá sb
+    public virtual void NewTarget(SteeringBehaviour sb) {
+        this.steeringBehaviours = new List<SteeringBehaviour>();
+        this.steeringBehaviours.Add(sb);
     }
 
-    public void resetSteerings() {
-        this.steeringBehaviours = new SteeringBehaviour[] {}; // HACK
+    // Si no quiero vaciar la lista pero quiero añadirle un nuevo sb
+    public virtual void AddTarget(SteeringBehaviour sb) {
+        this.steeringBehaviours.Add(sb);
+    }
+
+    // Para quitar un sb de la lista del NPC
+    public virtual void RemoveTarget(SteeringBehaviour sb) {
+        this.steeringBehaviours.Remove(sb);
+    }
+
+    // Si quiero resetear los sb para que vuelvan a ser los del principio
+    public virtual void ResetSteerings() {
+        this.steeringBehaviours = new List<SteeringBehaviour>(this.GetComponents<SteeringBehaviour>());
     }
 
     // Usa GetComponents<>() para cargar todas las componentes
@@ -44,13 +56,13 @@ public class AgentNPC : Agent
     public override void Awake()
     {
         base.Awake();
-        this.steeringBehaviours = this.GetComponents<SteeringBehaviour>();
+        ResetSteerings();
     }
 
     // Recorre la lista construida en Awake() y calcula cada uno
     // de los Steering que calcula cada SteeringBehaviour
     // TODO: En este punto puedes aplicar un árbitro o dejarlo para el método Update()
-    void LateUpdate()
+    public virtual void LateUpdate()
     {
         steerings = new List<Steering>();
         foreach (SteeringBehaviour sb in this.steeringBehaviours)
@@ -58,7 +70,7 @@ public class AgentNPC : Agent
     }
 
     // En el método Update() se invocará, al menos, al método ApplySteering()
-    void Update()
+    public virtual void Update()
     {
         foreach (Steering steer in this.steerings)
             if (steer != null)
@@ -68,7 +80,7 @@ public class AgentNPC : Agent
     // TODO: Modifica el método para que la aceleración lineal del Steering se
     // interprete como una fuerza. En esta caso la aceleración vendrá dada por
     // a = F/masa. Ejecuta el programa cambiando en tiempo de ejecución la masa.
-    void ApplySteering(Steering steer)
+    public virtual void ApplySteering(Steering steer)
     {
         //this.acceleration = steer.linear * Time.deltaTime;
         this.velocity += steer.linear * Time.deltaTime;
@@ -87,6 +99,8 @@ public class AgentNPC : Agent
             this.velocity = Vector3.zero;
             this.rotation = 0;
         }
+
+        this.velocity.y = 0; // HACK
 
         // Fórmulas de Newton
         if (steer.linear.sqrMagnitude != 0)

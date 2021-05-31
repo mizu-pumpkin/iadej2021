@@ -30,9 +30,9 @@ public class UnitsController : MonoBehaviour
         target = gameObject.AddComponent<Agent>();
         steer = gameObject.AddComponent<Arrive>();
 
-        steer.slowRadius = 8;
+        steer.target = target;
         steer.targetRadius = 1;
-        steer.setTarget(target);
+        steer.slowRadius = 8;
     }
 
     void Update()
@@ -57,7 +57,7 @@ public class UnitsController : MonoBehaviour
 
                     // Llama al método denominado "NewTarget" en todas las unidades seleccionadas
                     for (int i = 0; i < selectedUnits.Count; i++)
-                        selectedUnits[i].SendMessage("NewTarget", steer); // HACK
+                        selectedUnits[i].SendMessage("NewTarget", steer);
                 }
 
                 // Si lo que golpea es un NPC
@@ -70,7 +70,7 @@ public class UnitsController : MonoBehaviour
                     // Si ya está en la lista, lo deselecciona
                     if (selectedUnits.Contains(npc)) {
                         selectedUnits.Remove(npc);
-                        npc.SendMessage("resetSteerings"); // HACK
+                        npc.SendMessage("ResetSteerings");
                         print(npc.name+" deselected");
                     }
                     // Si no estaba en la lista, lo selecciona
@@ -89,7 +89,7 @@ public class UnitsController : MonoBehaviour
             List<GameObject> aux = new List<GameObject>(selectedUnits);
             foreach (GameObject npc in aux) {
                 selectedUnits.Remove(npc);
-                npc.SendMessage("resetSteerings"); // HACK
+                npc.SendMessage("ResetSteerings");
             }
             print("NPCs deselected");
         }

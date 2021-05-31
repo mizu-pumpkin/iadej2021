@@ -30,10 +30,6 @@ public abstract class SteeringBehaviour : MonoBehaviour
         priority = 3;
     }
 
-    public void setTarget(Agent target) { // HACK
-        this.target = target;
-    }
-
     // Calcular el Steering para el agente dado en función del comportamiento deseado
     // Supongamos que el agente A se mueve en la dirección del agente B.
     // Entonces el SteeringBehaviour tendrá como target al agente B y el método

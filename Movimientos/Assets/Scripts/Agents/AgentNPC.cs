@@ -65,16 +65,27 @@ public class AgentNPC : Agent
     public virtual void LateUpdate()
     {
         steerings = new List<Steering>();
-        foreach (SteeringBehaviour sb in this.steeringBehaviours)
-            steerings.Add(sb.GetSteering(this));
+        foreach (SteeringBehaviour sb in this.steeringBehaviours) {
+            Steering steer = sb.GetSteering(this);
+            if (steer == null) continue;
+
+            // HACK: para que no salga de las paredes
+            // Funciona el 90% del tiempo :D
+            if (sb is WallAvoid) {
+                steerings = new List<Steering>();
+                steerings.Add(steer);
+                break;
+            }
+
+            steerings.Add(steer);
+        }
     }
 
     // En el método Update() se invocará, al menos, al método ApplySteering()
     public virtual void Update()
     {
         foreach (Steering steer in this.steerings)
-            if (steer != null)
-                ApplySteering(steer);
+            ApplySteering(steer);
     }
 
     // TODO: Modifica el método para que la aceleración lineal del Steering se

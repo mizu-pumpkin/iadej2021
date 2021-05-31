@@ -19,8 +19,8 @@ public class Agent : Bodi
 
     public float interiorRadius; // radio de colision
     public float exteriorRadius; // radio de llegada
-    public float interiorAngle; // angulo de colision / vision normal
-    public float exteriorAngle; // angulo de llegada / limite de vision
+    public float interiorAngle = 45; // angulo de colision / vision normal
+    public float exteriorAngle = 90; // angulo de llegada / limite de vision
 
     /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
@@ -40,8 +40,6 @@ public class Agent : Bodi
         
         this.interiorRadius = Mathf.Max(localScale) * 1.5f;
         this.exteriorRadius = this.interiorRadius * 2;
-        this.interiorAngle = 45;
-        this.exteriorAngle = 90;
     }
 
     /*

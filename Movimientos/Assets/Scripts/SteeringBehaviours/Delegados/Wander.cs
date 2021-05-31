@@ -10,10 +10,10 @@ public class Wander : Face
      */
     
     // Holds the wanderRand forward offset of the wander circle
-    public float wanderOffset;
-    public float wanderRadius;
+    public float wanderOffset = 2;
+    public float wanderRadius = 8;
     // Holds the maximum wanderRat which the wander orientation can change
-    public float wanderRate;
+    public float wanderRate = 90;
     // Holds the current orientation of the wander target
     float wanderOrientation;
     

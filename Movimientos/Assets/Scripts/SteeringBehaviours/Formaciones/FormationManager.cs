@@ -100,7 +100,7 @@ public class FormationManager //: MonoBehaviour
         Vector3 anchor = getAnchorPoint();
 
         // Get the orientation of the anchor point as a matrix
-         int[,] orientationMatrix = new int[,] {{Math.Cos(), -Math.Sin()}, {Math.Sin(), Math.Cos()}};
+         int[,] orientationMatrix = new int[,] {{Math.Cos(character), -1*Math.Sin(character)}, {Math.Sin(character), Math.Cos(character)}};
 
         // Go through each character in turn
         for (int i in slotAssignments.length()){

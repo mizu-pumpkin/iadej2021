@@ -120,10 +120,7 @@ public class AgentNPC : Agent
             this.orientation += this.rotation * Time.deltaTime;
 
         // Limitar la orientación al rango 0~360
-        if (this.orientation < 0)
-            this.orientation += 360;
-        else if (this.orientation > 360)
-            this.orientation -= 360;
+        this.orientation = Utils.rangoPI(this.orientation);
 
         // Pasar los valores position y orientation a Unity
         transform.rotation = new Quaternion(); // Quaternion.identity;

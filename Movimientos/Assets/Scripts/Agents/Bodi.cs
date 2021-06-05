@@ -46,32 +46,21 @@ public abstract class Bodi : MonoBehaviour
     // Convertir la posición del personaje en un angulo
     float PositionToAngle()
     {
-        return Mathf.Atan2(this.position.x, this.position.z) * Mathf.Rad2Deg; //(x,z)
-    }
-    
-    public float PositionToAngle(Vector3 position)
-    {
-        return Mathf.Atan2(position.x, position.z) * Mathf.Rad2Deg; //(x,z)
+        return Utils.PositionToAngle(this.position);
     }
 
     // Convertir la orientación del personaje en un vector
     public Vector3 OrientationToVector()
     {
-        float rad = this.orientation * Mathf.Deg2Rad * 1.0f;
-        return new Vector3(Mathf.Sin(rad), 0, Mathf.Cos(rad)).normalized;
-    }
-    
-    public Vector3 OrientationToVector(float orientation)
-    {
-        float rad = orientation * Mathf.Deg2Rad * 1.0f;
-        return new Vector3(Mathf.Sin(rad), 0, Mathf.Cos(rad)).normalized;
+        return Utils.OrientationToVector(this.orientation);
     }
 
     // Dada la posición de otro personaje (un Vector3) determinar cuál es
     // el ángulo más pequeño para que el personaje se rote hacia él
-    public float Heading(Vector3 targetPosition)
+    public float LookAt(Vector3 targetPosition)
     {
         Vector3 direction = targetPosition - position;
+        //return PositionToAngle(direction);
         // TODO: esto hay que cambiarlo porque es "ilegal" usar el transform.rotation
         // Usar OrientationToVector()
         //Vector3 forward = transform.rotation * Vector3.forward; // !!!: no se puede usar transform.forward
@@ -85,10 +74,9 @@ public abstract class Bodi : MonoBehaviour
     // con las características físicas, conforme vayas añadiendo
     // comportamiento a los NPC.
 
-    float LookAt(Vector3 targetPosition) // !!!: de momento no se usa en ningún lado
+    public Vector3 Heading()
     {
-        Vector3 direction = targetPosition - position;
-        return PositionToAngle(direction);
+        return OrientationToVector();
     }
 
 }

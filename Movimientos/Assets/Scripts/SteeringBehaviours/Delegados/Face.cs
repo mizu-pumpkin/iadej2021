@@ -41,7 +41,7 @@ public class Face : Align
             return null;
         
         // Put the target together
-        target.orientation = agent.PositionToAngle(direction);
+        target.orientation = Utils.PositionToAngle(direction);
 
         // 2. Delegate to align
         return base.GetSteering(agent);

@@ -35,7 +35,7 @@ public class Align : SteeringBehaviour
         float rotation = target.orientation - agent.orientation;
 
         // Map the result to the (-pi, pi) interval
-        rotation = MapToRange(rotation);
+        rotation = Utils.MapToRange(rotation);
         float rotationSize = Mathf.Abs(rotation);
         
         // Check if we are there, return no steering 
@@ -67,19 +67,6 @@ public class Align : SteeringBehaviour
         // Output the steering
         steer.linear = Vector3.zero;
         return steer;
-    }
-
-    // This function helps in finding the actual direction of rotation
-    // after two orientation values are subtracted
-    public float MapToRange(float rotation) {
-        rotation %= 360;
-        if (Mathf.Abs(rotation) > 180) {
-            if (rotation < 0)
-                rotation += 360;
-            else
-                rotation -= 360;
-        }
-        return rotation;
     }
 
 }

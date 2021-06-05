@@ -4,8 +4,18 @@ using UnityEngine;
 
 public class JumpAgentNPC : AgentNPC
 {
+    /*
+        █▀█ █▀█ █▀█ █▀█ █▀▀ █▀█ ▀█▀ █ █▀▀ █▀
+        █▀▀ █▀▄ █▄█ █▀▀ ██▄ █▀▄ ░█░ █ ██▄ ▄█
+     */
+    
     public List<string> favoriteTerrain;
     public List<string> difficultTerrain;
+
+    /*
+        █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
+        █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
+     */
 
     public override void Awake()
     {
@@ -22,17 +32,12 @@ public class JumpAgentNPC : AgentNPC
         steerings = new List<Steering>();
         Steering accum = new Steering();
 
-        // Arbitro
+        // TODO: Arbitro
         foreach (SteeringBehaviour sb in this.steeringBehaviours) {
             Steering steer = sb.GetSteering(this);
             if (steer == null) continue;
 
-            if (sb is WallAvoid) {
-                steerings = new List<Steering>();
-                steerings.Add(steer);
-                //accum = steer;
-                break;
-            }
+            if (sb is WallAvoid) continue;
 
             steer.linear *= sb.priority;
             steer.angular *= sb.priority;

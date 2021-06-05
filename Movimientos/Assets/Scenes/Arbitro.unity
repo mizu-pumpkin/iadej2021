@@ -724,6 +724,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: JumpGreen
       objectReference: {fileID: 0}
+    - target: {fileID: 8957869804740303796, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: c275acd848d104541952ccbb69af467b, type: 3}
@@ -829,7 +834,7 @@ PrefabInstance:
     - target: {fileID: 8957869804740303796, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b, type: 3}

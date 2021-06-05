@@ -95,8 +95,9 @@ public class AgentNPC : Agent
     {
         //this.acceleration = steer.linear * Time.deltaTime;
         this.velocity += steer.linear * Time.deltaTime;
-        //this.rotation += steer.angular * Time.deltaTime;
         this.rotation += steer.angular;
+        // ???: por qué me da error cuando hago esto?
+        //this.rotation += steer.angular * Time.deltaTime;
         
         // ???: necesito esto?
         //if (this.rotation > this.maxRotation)

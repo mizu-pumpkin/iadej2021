@@ -30,23 +30,29 @@ public class JumpAgentNPC : AgentNPC
     public override void LateUpdate()
     {
         steerings = new List<Steering>();
-        Steering accum = new Steering();
 
         // TODO: Arbitro
         foreach (SteeringBehaviour sb in this.steeringBehaviours) {
             Steering steer = sb.GetSteering(this);
             if (steer == null) continue;
 
-            if (sb is WallAvoid) continue;
+            if (sb is WallAvoid) continue; // HACK: para que salte los muros
 
-            steer.linear *= sb.priority;
-            steer.angular *= sb.priority;
+            steer.linear *= sb.priority; // FIXME: sb.weight
+            steer.angular *= sb.priority; // FIXME: sb.weight
             steerings.Add(steer);
-
-            accum.linear += steer.linear; // FIXME: sb.weight
-            accum.angular += steer.angular; // FIXME: sb.weight
         }
 
+        //Steering accum = new Steering();
+        //foreach (SteeringBehaviour sb in this.steeringBehaviours) {
+        //    Steering steer = sb.GetSteering(this);
+        //    if (steer == null) continue;
+        //    if (sb is WallAvoid) continue; // HACK: para que salte los muros
+        //    accum.linear += steer.linear * sb.weight;
+        //    accum.angular += steer.angular * sb.weight;
+        //}
+        //accum.linear = Mathf.Max(accum.linear, this.maxAcceleration);
+        //accum.angular = Mathf.Max(accum.angular, this.maxRotation);
         //steerings.Add(accum);
     }
 

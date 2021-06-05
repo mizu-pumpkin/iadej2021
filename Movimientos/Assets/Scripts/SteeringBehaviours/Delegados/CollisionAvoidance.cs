@@ -21,9 +21,10 @@ public class CollisionAvoidance : SteeringBehaviour
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
 
-    void Start()
+    public override void Awake()
     {
-        targets = GameObject.FindGameObjectsWithTag("Agent");
+        base.Awake();
+        targets = GameObject.FindGameObjectsWithTag("Agent"); // HACK
         //targets =
         //    from c in GameObject.FindGameObjectsWithTag("NPC");
         //    select c.gameObject.transform.parent.gameObject.transform.parent.gameObject;

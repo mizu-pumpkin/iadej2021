@@ -20,6 +20,7 @@ public abstract class SteeringBehaviour : MonoBehaviour
     // Representa a cualquier target sobre el que se calculará el comportamiento
     public Agent target;
     public int priority;
+    public float weight = 1.0f;
 
     /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀

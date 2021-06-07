@@ -2,11 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Line : Seek
-{/*
+public class FormacionesFijas : Seek
+{
     //Elección de lider
-    public Agent lider = UnitsController.lider;
-    
+    public Agent lider;
+    GameObject[] formacion;
+
+    //Introducir en la lista aquellos que vayan a realizar la formación
+    public override void Awake() {
+        base.Awake();
+        formacion = GameObject.FindGameObjectsWithTag("PFija");
+    }
 
     override public Steering GetSteering(AgentNPC agent){
 
@@ -18,5 +24,5 @@ public class Line : Seek
          this.target.orientation = lider.orientation + agent.orientation;
          return base.GetSteering(agent);
 
-     } */
+     } 
 }

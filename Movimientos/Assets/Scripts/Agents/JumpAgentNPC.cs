@@ -38,8 +38,8 @@ public class JumpAgentNPC : AgentNPC
 
             if (sb is WallAvoid) continue; // HACK: para que salte los muros
 
-            steer.linear *= sb.priority; // FIXME: sb.weight
-            steer.angular *= sb.priority; // FIXME: sb.weight
+            steer.linear *= sb.weight;
+            steer.angular *= sb.weight;
             steerings.Add(steer);
         }
 

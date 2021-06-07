@@ -18,7 +18,7 @@ public class Separation : SteeringBehaviour
 
     //Holds the constant coefficient of decay for the 
     //inverse square law force
-    public float decayCoefficient;
+    public float decayCoefficient = 20;
 
     //Holds the maximum acceleration of the character
     //maxAcceleration

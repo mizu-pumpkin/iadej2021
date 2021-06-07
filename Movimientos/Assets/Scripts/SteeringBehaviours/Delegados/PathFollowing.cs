@@ -10,7 +10,7 @@ public class PathFollowing : Seek
      */
     
     // Holds the path to follow
-    public Path path = new Path();
+    public List<Vector3> path;
 
     // Holds the current position on the path
     public int currentNode = 0;
@@ -32,21 +32,17 @@ public class PathFollowing : Seek
         Destroy(target);
     }
 
-    public float Distance(Vector3 a, Vector3 b)
-    {
-        return Mathf.Sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
-    }
-
     override public Steering GetSteering(AgentNPC agent)
     {
-        if (path != null) { // Comprueba si el personaje sigue algún camino
-            List<Vector3> nodes = path.GetNodes();
+        if (path.Count > 0) { // Comprueba si el personaje sigue algún camino
+            List<Vector3> nodes = path;
 
             // Buscar objetivo actual
             target.position = nodes[currentNode];
 
             // Si he “llegado” al target, pasar al siguiente target
-            if (Distance(agent.position, target.position) <= target.interiorRadius) {
+            float distance = Mathf.Abs((target.position - agent.position).magnitude);
+            if (distance <= agent.interiorRadius) {
                 currentNode += pathDir; // Siguiente objetivo
 
                 // Opción 1. Me quedo en el final

@@ -44,9 +44,7 @@ public class Cohesion : Seek
             if (distance > threshold)
                 continue;
             
-            centerOfMass.x += targetAgent.position.x;
-            centerOfMass.z += targetAgent.position.z;
-            //centerOfMass += targetAgent.position;
+            centerOfMass += targetAgent.position;
             count++;
         }
 

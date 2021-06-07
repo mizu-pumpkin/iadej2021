@@ -95,9 +95,8 @@ public class AgentNPC : Agent
     {
         //this.acceleration = steer.linear * Time.deltaTime;
         this.velocity += steer.linear * Time.deltaTime;
-        this.rotation += steer.angular;
-        // ???: por qué me da error cuando hago esto?
-        //this.rotation += steer.angular * Time.deltaTime;
+        //this.rotation += steer.angular;
+        this.rotation += steer.angular * Time.deltaTime;
         
         // ???: necesito esto?
         //if (this.rotation > this.maxRotation)
@@ -121,7 +120,7 @@ public class AgentNPC : Agent
             this.orientation += this.rotation * Time.deltaTime;
 
         // Limitar la orientación al rango 0~360
-        this.orientation = Utils.rangoPI(this.orientation);
+        this.orientation = Utils.rango360(this.orientation);
 
         // Pasar los valores position y orientation a Unity
         transform.rotation = new Quaternion(); // Quaternion.identity;

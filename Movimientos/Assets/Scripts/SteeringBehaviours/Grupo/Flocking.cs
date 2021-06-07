@@ -25,8 +25,8 @@ public class Flocking : BlendedSteering
         VelocityMatching velocityMatching = gameObject.AddComponent<VelocityMatching>();
 
         separation.threshold = 5;
-        separation.decayCoefficient = 1.2f;
-        separation.weight = 1.2f;
+        separation.decayCoefficient = 20.0f;
+        separation.weight = 10.0f;
 
         cohesion.threshold = 5;
         cohesion.weight = 1.1f;

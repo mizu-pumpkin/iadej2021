@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Alignment : SteeringBehaviour
+public class Alignment : Align
 {
     /*
         █▀█ █▀█ █▀█ █▀█ █▀▀ █▀█ ▀█▀ █ █▀▀ █▀
@@ -15,10 +15,6 @@ public class Alignment : SteeringBehaviour
     // Holds the threshold to take action
     public float threshold;
 
-    // Holds the constant coefficient of decay for the 
-    // inverse square law force
-    //decayCoefficient
-
     /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
@@ -26,14 +22,15 @@ public class Alignment : SteeringBehaviour
 
     public override void Awake() {
         base.Awake();
-        //target = new GameObject().AddComponent<Agent>();
+        target = new GameObject().AddComponent<Agent>();
         targets = GameObject.FindGameObjectsWithTag("Agent");
     }
 
     override public Steering GetSteering(AgentNPC agent)
     {
         int count = 0;
-        Vector3 heading = new Vector3(); // 2D
+        //Vector3 heading = new Vector3(); // 2D
+        float heading = 0;
         Vector3 direction;
         float distance;
 
@@ -47,22 +44,20 @@ public class Alignment : SteeringBehaviour
             if (distance > threshold)
                 continue;
             
-            heading += targetAgent.Heading();
+            //heading += Utils.OrientationToVector(targetAgent.orientation).normalized;
+            heading += targetAgent.orientation;
             count++;
         }
 
         if (count > 0) {
             heading /= count;
-            heading -= agent.Heading();
+            //heading -= Utils.OrientationToVector(agent.orientation).normalized;
+            //heading -= agent.orientation;
         }
-        
-        // return heading;
-        
-        // ???
-        Steering steer = new Steering();
-        steer.angular = Utils.PositionToAngle(heading);
 
-        return steer;
+        //target.orientation = Utils.PositionToAngle(heading);
+        target.orientation = heading;
+        return base.GetSteering(agent);
     }
 
 }

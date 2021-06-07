@@ -12,7 +12,7 @@ public class Utils
         vector.z = Mathf.Cos(orientation * Mathf.Deg2Rad) * 1.0f;
         return vector;
     }
-    
+
     public static float PositionToAngle(Vector3 position)
     {
         return Mathf.Atan2(position.x, position.z) * Mathf.Rad2Deg; //(x,z)
@@ -31,7 +31,7 @@ public class Utils
         return rotation;
     }
 
-    public static float rangoPI(float orientation) {
+    public static float rango360(float orientation) {
         if (orientation < 0)
             orientation += 360;
         else if (orientation > 360)

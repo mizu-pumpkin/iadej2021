@@ -17,8 +17,8 @@ public class Agent : Bodi
         █▀▀ █▀▄ █▄█ █▀▀ ██▄ █▀▄ ░█░ █ ██▄ ▄█
      */
 
-    public float interiorRadius; // radio de colision
-    public float exteriorRadius; // radio de llegada
+    public float interiorRadius = 0; // radio de colision
+    public float exteriorRadius = 0; // radio de llegada
     public float interiorAngle = 45; // angulo de colision / vision normal
     public float exteriorAngle = 90; // angulo de llegada / limite de vision
 
@@ -32,14 +32,14 @@ public class Agent : Bodi
     public override void Awake()
     {
         base.Awake();
-        float [] localScale = new float[] {
-            transform.localScale.x,
-            //transform.localScale.y,
-            transform.localScale.z
-        };
+        if (this.exteriorRadius < 0)
+            this.exteriorRadius = 0;
         
-        this.interiorRadius = Mathf.Max(localScale) * 1.5f;
-        this.exteriorRadius = this.interiorRadius * 2;
+        if (this.interiorRadius < 0)
+            this.interiorRadius = 0;
+        
+        if (this.interiorRadius > this.exteriorRadius)
+            this.interiorRadius = this.exteriorRadius;
     }
 
     /*

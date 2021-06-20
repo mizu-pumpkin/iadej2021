@@ -25,10 +25,43 @@ public class AgentNPC : Agent
     
     // ???: blendWeight/blendPriority
 
+    Agent target;
+    Arrive arrive;
+    Face face;
+
     /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
+
+    public void CreateTargetSteering() {
+        target = new GameObject("FormationTarget").AddComponent<Agent>();
+        target.interiorRadius = 0.1f;
+        target.exteriorRadius = 2;
+        target.debug = true;
+        
+        arrive = new GameObject("FormationArrive").AddComponent<Arrive>();
+        arrive.target = target;
+        arrive.targetRadius = target.interiorRadius;
+        arrive.slowRadius = target.exteriorRadius;
+
+        face = new GameObject("FormationFace").AddComponent<Face>();
+        face.target = target;
+    }
+    
+    public virtual void SetTarget(Steering location)
+    {   
+        if (target == null)
+            CreateTargetSteering();
+        
+        if (!steeringBehaviours.Contains(arrive)) {
+            AddTarget(arrive);
+            AddTarget(face);
+        }
+        target.position = location.linear;
+        target.orientation = location.angular;
+        print(target.orientation);
+    }
     
     // Vacía la lista de SteeringBehaviour del NPC, que ahora solo tendrá sb
     public virtual void NewTarget(SteeringBehaviour sb) {
@@ -38,16 +71,19 @@ public class AgentNPC : Agent
 
     // Si no quiero vaciar la lista pero quiero añadirle un nuevo sb
     public virtual void AddTarget(SteeringBehaviour sb) {
+        if (this.steeringBehaviours == null)
+            this.steeringBehaviours = new List<SteeringBehaviour>();
         this.steeringBehaviours.Add(sb);
     }
 
     // Para quitar un sb de la lista del NPC
     public virtual void RemoveTarget(SteeringBehaviour sb) {
-        this.steeringBehaviours.Remove(sb);
+        if (this.steeringBehaviours.Contains(sb))
+            this.steeringBehaviours.Remove(sb);
     }
 
     // Si quiero resetear los sb para que vuelvan a ser los del principio
-    public virtual void ResetSteerings() {
+    public virtual void InitializeSteerings() {
         this.steeringBehaviours = new List<SteeringBehaviour>(this.GetComponents<SteeringBehaviour>());
     }
 
@@ -56,7 +92,7 @@ public class AgentNPC : Agent
     public override void Awake()
     {
         base.Awake();
-        ResetSteerings();
+        InitializeSteerings();
     }
 
     // Recorre la lista construida en Awake() y calcula cada uno

@@ -21,19 +21,21 @@ public class UnitsController : MonoBehaviour
 {
 
     public static List<GameObject> selectedUnits;
-    public static Agent leader;
     Agent target;
     Arrive steer;
 
     void Awake()
     {
         selectedUnits = new List<GameObject>();
-        target = gameObject.AddComponent<Agent>();
-        steer = gameObject.AddComponent<Arrive>();
 
+        target = new GameObject("UnitsControllerTarget").AddComponent<Agent>();
+        target.interiorRadius = 0.1f;
+        target.exteriorRadius = 2;
+
+        steer = new GameObject("UnitsControllerArrive").AddComponent<Arrive>();
         steer.target = target;
-        steer.targetRadius = 1;
-        steer.slowRadius = 8;
+        steer.targetRadius = target.interiorRadius;
+        steer.slowRadius = target.exteriorRadius;
     }
 
     void Update()
@@ -57,8 +59,11 @@ public class UnitsController : MonoBehaviour
                     target.position = hitInfo.point;
 
                     // Llama al método denominado "NewTarget" en todas las unidades seleccionadas
-                    for (int i = 0; i < selectedUnits.Count; i++)
-                        selectedUnits[i].SendMessage("NewTarget", steer);
+                    for (int i = 0; i < selectedUnits.Count; i++) {
+                        selectedUnits[i].SendMessage("RemoveTarget", steer);
+                        selectedUnits[i].SendMessage("AddTarget", steer);
+                        //selectedUnits[i].SendMessage("SetTarget", new Steering(0, hitInfo.point));
+                    }
                 }
 
                 // Si lo que golpea es un NPC
@@ -71,7 +76,7 @@ public class UnitsController : MonoBehaviour
                     // Si ya está en la lista, lo deselecciona
                     if (selectedUnits.Contains(npc)) {
                         selectedUnits.Remove(npc);
-                        npc.SendMessage("ResetSteerings");
+                        npc.SendMessage("RemoveTarget", steer);//.SendMessage("InitializeSteerings");
                         print(npc.name+" deselected");
                     }
                     // Si no estaba en la lista, lo selecciona
@@ -90,29 +95,9 @@ public class UnitsController : MonoBehaviour
             List<GameObject> aux = new List<GameObject>(selectedUnits);
             foreach (GameObject npc in aux) {
                 selectedUnits.Remove(npc);
-                npc.SendMessage("ResetSteerings");
+                npc.SendMessage("RemoveTarget", steer);//.SendMessage("InitializeSteerings");
             }
             print("NPCs deselected");
-        }
-
-        if (Input.GetKeyDown("l"))
-        {
-            Vector3 separacion = new Vector3(4,0,0);
-
-            leader = selectedUnits[0].GetComponent<Agent>();
-            print(leader.position);
-
-            for (int i = 1; i < selectedUnits.Count; i++) {
-                GameObject npc = selectedUnits[i];
-
-                // HACK
-                AgentNPC npcAgent = npc.GetComponent<AgentNPC>();
-                npcAgent.position = leader.position + separacion * i;
-                npcAgent.orientation = leader.orientation;
-
-                Line line = gameObject.AddComponent<Line>();
-                npc.SendMessage("NewTarget", line);
-            }
         }
         
     }

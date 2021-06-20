@@ -23,7 +23,7 @@ public class Pursue : Seek
         base.Awake();
         targetAgent = target.GetComponent<Agent>();
         targetAux = target;
-        target = new GameObject().AddComponent<Agent>();
+        target = new GameObject("PursueTarget").AddComponent<Agent>();
     }
 
     void OnDestroy ()

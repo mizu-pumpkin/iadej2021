@@ -31,7 +31,7 @@ public class Align : SteeringBehaviour
     override public Steering GetSteering(AgentNPC agent)
     {
         // ???:FIXME
-        targetRadius = agent.interiorAngle; // 1
+        targetRadius = 1;//agent.interiorAngle;
         slowRadius = agent.exteriorAngle;
 
         // Create the structure to hold our output

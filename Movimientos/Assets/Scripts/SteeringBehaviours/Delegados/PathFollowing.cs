@@ -24,7 +24,7 @@ public class PathFollowing : Seek
     
     public override void Awake() {
         base.Awake();
-        target = new GameObject().AddComponent<Agent>();
+        target = new GameObject("PathFollowingTarget").AddComponent<Agent>();
     }
 
     void OnDestroy ()

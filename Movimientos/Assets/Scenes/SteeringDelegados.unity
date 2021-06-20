@@ -278,6 +278,7 @@ MonoBehaviour:
   priority: 0
   weight: 1
   lookAhead: 10
+  debug: 0
 --- !u!114 &224119685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476,6 +477,11 @@ PrefabInstance:
         type: 3}
       propertyPath: debug
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: interiorAngle
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}

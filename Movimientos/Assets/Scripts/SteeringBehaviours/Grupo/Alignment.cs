@@ -23,7 +23,7 @@ public class Alignment : Align
 
     public override void Awake() {
         base.Awake();
-        target = new GameObject().AddComponent<Agent>();
+        target = new GameObject("AlignmentTarget").AddComponent<Agent>();
         targets = GameObject.FindGameObjectsWithTag("Agent");
     }
 

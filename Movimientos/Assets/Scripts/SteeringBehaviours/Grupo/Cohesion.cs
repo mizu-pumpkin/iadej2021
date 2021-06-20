@@ -22,7 +22,7 @@ public class Cohesion : Seek
 
     public override void Awake() {
         base.Awake();
-        this.target = new GameObject().AddComponent<Agent>();
+        this.target = new GameObject("CohesionTarget").AddComponent<Agent>();
         targets = GameObject.FindGameObjectsWithTag("Agent");
     }
 

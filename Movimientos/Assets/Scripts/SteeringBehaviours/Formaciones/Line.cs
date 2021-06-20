@@ -2,21 +2,57 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Line : Seek
-{/*
-    //Elección de lider
-    public Agent lider = UnitsController.lider;
+public class Line : SteeringBehaviour
+{
+    //Elección de leader
+    public Agent leader;
+    public Vector3 posicionLeader;
+    public float orientacionLeader;
+
+    public override void Awake()
+    {
+        target = new GameObject().AddComponent<Agent>();
+    }
     
+    public void Update()
+    {
+        leader = UnitsController.leader;
+    }
 
-    override public Steering GetSteering(AgentNPC agent){
+    public virtual void LateUpdate()
+    {
+        if (leader != null) {
+            posicionLeader = leader.position;
+            orientacionLeader = leader.orientation;
+        }
+    }
+    
+    override public Steering GetSteering(AgentNPC agent)
+    {
+        if (leader == null || (posicionLeader == leader.position && orientacionLeader == leader.orientation))
+            return null;
 
-         float[,] omegaLider = new float[,] { { Mathf.Cos(lider.orientation), -1*Mathf.Sin(lider.orientation) }, { Mathf.Sin(lider.orientation), Mathf.Cos(lider.orientation)}};
-         Vector3 rs = lider.position - agent.position; //Rs, distancia del agente con respecto al lider
-         Vector3 omegaRs = new Vector3 ((omegaLider[0,0]* rs.x +omegaLider[0,1]*rs.x), rs.y, (omegaLider[1,0]* rs.z +omegaLider[1,1]*rs.z));
-         Agent targetAgent = target.GetComponent<Agent>();
-         this.target.position = lider.position + omegaRs;
-         this.target.orientation = lider.orientation + agent.orientation;
-         return base.GetSteering(agent);
+        // Create the structure to hold our output
+        Steering steer = new Steering();    
+        
+        float[,] omegaLeader = new float[,] {
+            { Mathf.Cos(leader.orientation), -Mathf.Sin(leader.orientation) },
+            { Mathf.Sin(leader.orientation), Mathf.Cos(leader.orientation) }
+        };
+        
+        Vector3 rs = leader.position - agent.position; //Rs, distancia del agente con respecto al leader
 
-     } */
+        Vector3 omegaRs = new Vector3 (
+            (omegaLeader[0,0]* rs.x +omegaLeader[0,1]*rs.x),
+            rs.y,
+            (omegaLeader[1,0]* rs.z +omegaLeader[1,1]*rs.z)
+        );  
+
+        steer.linear = leader.position + omegaRs;
+        float ws = leader.orientation - agent.orientation;
+        steer.angular = leader.orientation + ws;
+
+        return steer;
+    }
+    
 }

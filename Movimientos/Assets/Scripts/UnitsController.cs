@@ -20,7 +20,8 @@ using UnityEngine;
 public class UnitsController : MonoBehaviour
 {
 
-    public List<GameObject> selectedUnits;
+    public static List<GameObject> selectedUnits;
+    public static Agent leader;
     Agent target;
     Arrive steer;
 
@@ -92,6 +93,26 @@ public class UnitsController : MonoBehaviour
                 npc.SendMessage("ResetSteerings");
             }
             print("NPCs deselected");
+        }
+
+        if (Input.GetKeyDown("l"))
+        {
+            Vector3 separacion = new Vector3(4,0,0);
+
+            leader = selectedUnits[0].GetComponent<Agent>();
+            print(leader.position);
+
+            for (int i = 1; i < selectedUnits.Count; i++) {
+                GameObject npc = selectedUnits[i];
+
+                // HACK
+                AgentNPC npcAgent = npc.GetComponent<AgentNPC>();
+                npcAgent.position = leader.position + separacion * i;
+                npcAgent.orientation = leader.orientation;
+
+                Line line = gameObject.AddComponent<Line>();
+                npc.SendMessage("NewTarget", line);
+            }
         }
         
     }

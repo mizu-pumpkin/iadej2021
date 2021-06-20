@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FormationPattern : MonoBehaviour
+// Cada patrón particular (V, Cuña, Círculo, ...) necesita su propia
+// instancia de clase que implementa la siguiente interfaz
+public abstract class FormationPattern : MonoBehaviour
 {
-/*
     // Holds the number of slots currently in the
     // pattern This is updated in the getDriftOffset
     // method It may be a fixed value.
@@ -12,22 +13,13 @@ public class FormationPattern : MonoBehaviour
 
     // Calculates the drift offset when characters are in
     // given set of slots
-    public float getDriftOffset(slotAssignments)  //?? Creo que es un float 
-    {
-
-    }
+    public abstract DriftOffset getDriftOffset(List<SlotAssignment> slotAssignments);
 
     // Gets the location of the given slot index.
-    public void getSlotLocation(slotNumber)
-    {
-
-    }
+    public abstract DriftOffset getSlotLocation(int slotNumber);
 
     // Returns true if the pattern can support the given
     // number of slots
-    public bool supportsSlots(slotCount)
-    {
+    public abstract bool supportsSlots(int slotCount);
 
-    }
-*/
 }

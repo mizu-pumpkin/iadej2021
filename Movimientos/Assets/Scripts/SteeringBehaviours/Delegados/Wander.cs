@@ -17,15 +17,24 @@ public class Wander : Face
     public float wanderRate = 90;
     // Holds the current orientation of the wander target
     float wanderOrientation;
+
+    protected Agent targetAux;
     
     /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
 
+    void OnDestroy()
+    {
+        Destroy(target);
+    }
+
     public override void Awake() {
-        target = new GameObject().AddComponent<Agent>();
+        target = new GameObject("WanderTarget").AddComponent<Agent>();
         target.position = transform.position;
+        targetAux = target;
+        target = new GameObject("FaceTarget").AddComponent<Agent>();
         base.Awake();
     }
 

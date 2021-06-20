@@ -11,12 +11,12 @@ public class Line : SteeringBehaviour
 
     public override void Awake()
     {
-        target = new GameObject().AddComponent<Agent>();
+        target = new GameObject("LineTarget").AddComponent<Agent>();
     }
     
     public void Update()
     {
-        leader = UnitsController.leader;
+        leader = UnitsController.selectedUnits[0].GetComponent<AgentNPC>();
     }
 
     public virtual void LateUpdate()

@@ -23,11 +23,30 @@ public class FormationManager : MonoBehaviour
     // P.e. una malla estática rectangular, una escalable cirular, ...
     public FormationPattern pattern;
 
+    public List<AgentNPC> npcs; // HACK: tmp
+
     /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
 
+    public void Awake()
+    {
+        slotAssignments = new List<SlotAssignment>();
+
+        foreach (AgentNPC npc in npcs) addCharacter(npc); // HACK: tmp
+        //foreach (GameObject go in UnitsController.selectedUnits) {
+        //    AgentNPC npc = go.GetComponent<AgentNPC>();
+        //    addCharacter(npc);
+        //}
+    }
+
+    public void Update()
+    {
+        if (Input.GetKeyDown("u")) // HACK
+            updateSlots();
+    }
+    
     // Updates the assignment of characters to slot
     public void updateSlotAssignments()
     {
@@ -42,7 +61,7 @@ public class FormationManager : MonoBehaviour
         // Update the drift offset
         // Calcular la posicion y orientacion para evitar los derrapes
         // en funcion de las ranuras ocupadas
-        DriftOffset driftOffset = pattern.getDriftOffset(slotAssignments);
+        driftOffset = pattern.getDriftOffset(slotAssignments);
     }
 
     // Add a new character to the first avaible slot.
@@ -70,13 +89,13 @@ public class FormationManager : MonoBehaviour
     }
 
     // Removes a character from its slot.position
-    public void removeCharacter(Agent character)
+    public void removeCharacter(AgentNPC character)
     {
         // Find the character's slot
-        SlotAssignment slot = null;// charactersInSlots.find(character); // ???: de donde sale???
+        SlotAssignment slot = findSlot(character);
 
         // Make sure we've found a valid result
-        if (slotAssignments.Contains(slot))
+        if (slot != null && slotAssignments.Contains(slot))
         {
             // Remove the slot
             slotAssignments.Remove(slot);
@@ -86,17 +105,13 @@ public class FormationManager : MonoBehaviour
         }
     }
 
-    //TODO
-    public AgentNPC getAnchorPoint()
-    {
-        return null;
-    }
-
     //Write new slot locations to each character
     public void updateSlots()
     {
         //Find the anchor point
-        AgentNPC anchor = getAnchorPoint();
+        AgentNPC anchor = pattern.getAnchorPoint(slotAssignments);
+        if (anchor == null)
+            return;
 
         // Get the orientation of the anchor point as a matrix
         float[] orientationMatrix = new float[4] {
@@ -114,29 +129,41 @@ public class FormationManager : MonoBehaviour
             //Transform it by the anchor point’s position and
             //orientation
             DriftOffset location = new DriftOffset();
-            location.position = productoMatricial(relativeLoc.position, orientationMatrix) + anchor.position;
+            location.position = MatrixProduct(relativeLoc.position, orientationMatrix) + anchor.position;
             location.orientation = anchor.orientation + relativeLoc.orientation;
 
             //And add the drift component
             location.position -= driftOffset.position;
             location.orientation -= driftOffset.orientation;
-
+            
             //Write the static to the character
-            // FIXME: esto creo que tiene que ser un Steering
-            //slotAssignments[i].character.setTarget(location);
-            // HACK
-            Steering steer = new Steering();
-            steer.linear = location.position;
-            steer.angular = location.orientation;
-            slotAssignments[i].character.ApplySteering(steer);
+            slotAssignments[i].character.SetTarget(//location);
+                new Steering(location.orientation, location.position)
+            );
         }
 
     }
 
-    public Vector3 productoMatricial(Vector3 posicionGrid, float[] x)
-    {
-        Vector3 resultado = new Vector3(x[0] * posicionGrid.x + x[2] *posicionGrid.z,0, x[1] * posicionGrid.x + x[3]*posicionGrid.z);
-        return resultado;
+    /*
+        ▄▀█ █░█ ▀▄▀
+        █▀█ █▄█ █░█
+     */
+
+    SlotAssignment findSlot(AgentNPC npc)
+    { // FIXME
+        foreach (SlotAssignment sa in slotAssignments)
+            if (sa.character == npc)
+                return sa;
+        return null;
+    }
+
+    public Vector3 MatrixProduct(Vector3 relativeLocPosition, float[] orientationMatix)
+    { // FIXME
+        return new Vector3(
+            orientationMatix[0] * relativeLocPosition.x + orientationMatix[2] * relativeLocPosition.z,
+            0,
+            orientationMatix[1] * relativeLocPosition.x + orientationMatix[3] * relativeLocPosition.z
+        );
     }
 
 }

@@ -6,7 +6,7 @@ public class DefensiveCirclePattern : FormationPattern
 {
     // The radius of one character, this is needed to determine how
     // close we can pack a given number of characters around a cirle
-    public float characterRadius;
+    public float characterRadius = 1;
 
     // Calculates the number of slots in the pattern from the
     // assignment data. This is not part of the formation
@@ -33,6 +33,8 @@ public class DefensiveCirclePattern : FormationPattern
     // Calculates the drift offset of the pattern
     public override DriftOffset getDriftOffset(List<SlotAssignment> slotAssignments)
     {
+        numberOfSlots = slotAssignments.Count;
+
         // Store the center of mass
         DriftOffset center = new DriftOffset();
 
@@ -46,7 +48,7 @@ public class DefensiveCirclePattern : FormationPattern
         }
     
         // Divide through to get the drift offset.
-        int numberOfAssignments = slotAssignments.Count;
+        float numberOfAssignments = slotAssignments.Count;
         center.position /= numberOfAssignments;
         center.orientation /= numberOfAssignments;
         return center;
@@ -57,12 +59,12 @@ public class DefensiveCirclePattern : FormationPattern
     {
         // We place the slots around a circle based on their
         // slot number
-        float angleAroundCircle = slotNumber / numberOfSlots * Mathf.PI * 2;
+        float angleAroundCircle = (slotNumber / (float)numberOfSlots) * Mathf.PI * 2;
     
         // The radius depends on the radius of the character,
         // and the number of characters in the circle:
         // we want there to be no gap between character's shoulders.
-        float radius = characterRadius / Mathf.Sin(Mathf.PI / numberOfSlots);
+        float radius = characterRadius / Mathf.Sin(Mathf.PI / (float)numberOfSlots);
     
         // Create a location, and fill its components based
         // on the angle around circle.
@@ -71,7 +73,7 @@ public class DefensiveCirclePattern : FormationPattern
         location.position.z = radius * Mathf.Sin(angleAroundCircle);
         
         // The characters should be facing out
-        location.orientation = angleAroundCircle;
+        location.orientation = angleAroundCircle - Mathf.PI/2;
 
         // Return the slot location
         return location;
@@ -82,6 +84,14 @@ public class DefensiveCirclePattern : FormationPattern
     public override bool supportsSlots(int slotCount)
     {
         return true;
+    }
+
+    public override AgentNPC getAnchorPoint(List<SlotAssignment> slotAssignments)
+    {
+        if (slotAssignments.Count > 0)
+            return slotAssignments[0].character;
+        else
+            return null;
     }
 
 }

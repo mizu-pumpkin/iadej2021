@@ -42,9 +42,8 @@ public class BlendedSteering : SteeringBehaviour
         }
 
         // Crop the result and return
-        //accum.linear = Mathf.Max(accum.linear, agent.maxAcceleration);
-        if (accum.linear.magnitude > agent.maxSpeed)
-            accum.linear = accum.linear.normalized * agent.maxSpeed;
+        if (accum.linear.magnitude > agent.maxSpeed) // FIXME: agent.maxAcceleration
+            accum.linear = accum.linear.normalized * agent.maxSpeed; // FIXME: agent.maxAcceleration
         accum.angular = Mathf.Max(accum.angular, agent.maxRotation);
 
         return accum;

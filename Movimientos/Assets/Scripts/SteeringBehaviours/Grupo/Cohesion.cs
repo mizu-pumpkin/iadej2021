@@ -39,7 +39,7 @@ public class Cohesion : Seek
             Agent targetAgent = target.GetComponent<Agent>();
             
             direction = targetAgent.position - agent.position;
-            distance = Mathf.Abs(direction.magnitude); // abs(direction)
+            distance = direction.magnitude; // abs(direction)
 
             if (distance > threshold)
                 continue;

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// FIXME: controla que esté bien en la página web
 public class Wander : Face
 {
     /*

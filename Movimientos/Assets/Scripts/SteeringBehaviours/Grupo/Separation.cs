@@ -38,7 +38,6 @@ public class Separation : SteeringBehaviour
     {
         Vector3 direction;
         float distance;
-        float strength;
 
         // The steering variable holds the output
         Steering steer = new Steering();
@@ -49,14 +48,13 @@ public class Separation : SteeringBehaviour
             Agent targetAgent = target.GetComponent<Agent>();
 
             // Check if the target is close
-            direction = targetAgent.position - agent.position;
+            direction = agent.position - targetAgent.position;
             distance = direction.magnitude;
 
             if (distance < threshold)
             {
                 // Calculate the strength of repulsion
-                strength = Mathf.Min(decayCoefficient / (distance * distance), agent.maxAcceleration);
-                strength *= -1; // ???: attraction (-1)^*stren
+                float strength = Mathf.Min(decayCoefficient / (distance * distance), agent.maxAcceleration);
                 
                 // Add the acceleration
                 direction.Normalize();

@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 // FIXME: Align tiene que ir rápido al principio
 // slowRadius tendría que ser su ángulo de visión
 public class Align : SteeringBehaviour
@@ -13,9 +12,9 @@ public class Align : SteeringBehaviour
      */
     
     // Holds the radius for arriving at the target
-    public float targetRadius = 1;
+    public float targetRadius;
     // Holds the radius for beginning to slow down
-    public float slowRadius = 90;
+    public float slowRadius;
     // Holds the time over which to achieve target speed
     public float timeToTarget = 0.1f;
 
@@ -32,7 +31,7 @@ public class Align : SteeringBehaviour
     override public Steering GetSteering(AgentNPC agent)
     {
         // ???:FIXME
-        targetRadius = agent.interiorAngle;
+        targetRadius = agent.interiorAngle; // 1
         slowRadius = agent.exteriorAngle;
 
         // Create the structure to hold our output
@@ -46,7 +45,7 @@ public class Align : SteeringBehaviour
         float rotationSize = Mathf.Abs(rotation);
         
         // Check if we are there, return no steering 
-        if (rotationSize < targetRadius)
+        if (rotationSize <= targetRadius)
             return null;
         
         float targetRotation;

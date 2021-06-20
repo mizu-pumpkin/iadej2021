@@ -28,6 +28,10 @@ public class AntiAlign : SteeringBehaviour
 
     override public Steering GetSteering(AgentNPC agent)
     {
+        // ???:FIXME
+        targetRadius = agent.interiorAngle; // 1
+        slowRadius = agent.exteriorAngle;
+
         // Create the structure to hold our output
         Steering steer = new Steering();
 
@@ -35,11 +39,11 @@ public class AntiAlign : SteeringBehaviour
         float rotation = target.orientation - agent.orientation + 180;
 
         // Map the result to the (-pi, pi) interval
-        rotation = MapToRange(rotation);
+        rotation = Utils.MapToRange(rotation);
         float rotationSize = Mathf.Abs(rotation);
         
         // Check if we are there, return no steering 
-        if (rotationSize < targetRadius)
+        if (rotationSize <= targetRadius)
             return null;
         
         float targetRotation;
@@ -67,19 +71,6 @@ public class AntiAlign : SteeringBehaviour
         // Output the steering
         steer.linear = Vector3.zero;
         return steer;
-    }
-
-    // This function helps in finding the actual direction of rotation
-    // after two orientation values are subtracted
-    public float MapToRange(float rotation) {
-        rotation %= 360;
-        if (Mathf.Abs(rotation) > 180) {
-            if (rotation < 0)
-                rotation += 360;
-            else
-                rotation -= 360;
-        }
-        return rotation;
     }
 
 }

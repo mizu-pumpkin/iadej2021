@@ -35,9 +35,10 @@ public class Face : Align
 
         // Work out the direction to target
         Vector3 direction = targetAux.position - agent.position;
+        float distance = direction.magnitude;
 
         // Check for a zero direction, and make no change if so
-        if (direction.magnitude == 0.0f)
+        if (distance == 0.0f)
             return null;
         
         // Put the target together

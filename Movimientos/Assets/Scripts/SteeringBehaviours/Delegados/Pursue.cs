@@ -52,7 +52,7 @@ public class Pursue : Seek
 
         // Put the target together
         target.position = targetAux.position;
-        target.position += targetAgent.velocity * prediction;
+        target.position += targetAgent.velocity * prediction; // FIXME
 
         // 2. Delegate to seek
         return base.GetSteering(agent);

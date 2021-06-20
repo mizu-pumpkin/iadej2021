@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// FIXME: sigue teniendo algo raro
 public class Alignment : Align
 {
     /*
@@ -39,7 +40,7 @@ public class Alignment : Align
             Agent targetAgent = target.GetComponent<Agent>();
 
             direction = targetAgent.position - agent.position;
-            distance = Mathf.Abs(direction.magnitude); // abs(direction)
+            distance = direction.magnitude; // abs(direction)
 
             if (distance > threshold)
                 continue;

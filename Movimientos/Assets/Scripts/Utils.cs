@@ -8,14 +8,14 @@ public class Utils
     public static Vector3 OrientationToVector(float orientation)
     {
         Vector3 vector = Vector3.zero;
-        vector.x = Mathf.Sin(orientation * Mathf.Deg2Rad) * 1.0f;
-        vector.z = Mathf.Cos(orientation * Mathf.Deg2Rad) * 1.0f;
+        vector.x = Mathf.Sin(orientation * Mathf.Deg2Rad) * 1.0f; // ???: cos?
+        vector.z = Mathf.Cos(orientation * Mathf.Deg2Rad) * 1.0f; // ???: sin?
         return vector;
     }
 
     public static float PositionToAngle(Vector3 position)
     {
-        return Mathf.Atan2(position.x, position.z) * Mathf.Rad2Deg; //(x,z)
+        return Mathf.Atan2(position.x, position.z) * Mathf.Rad2Deg;
     }
 
     // This function helps in finding the actual direction of rotation

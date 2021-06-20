@@ -60,14 +60,7 @@ public abstract class Bodi : MonoBehaviour
     public float LookAt(Vector3 targetPosition)
     {
         Vector3 direction = targetPosition - position;
-        //return PositionToAngle(direction);
-        // TODO: esto hay que cambiarlo porque es "ilegal" usar el transform.rotation
-        // Usar OrientationToVector()
-        //Vector3 forward = transform.rotation * Vector3.forward; // !!!: no se puede usar transform.forward
-        Vector3 forward = OrientationToVector();
-        //probar la posicion actual
-        float angle = Vector3.SignedAngle(forward, direction, Vector3.up);
-        return angle;
+        return Utils.PositionToAngle(direction);
     }
 
     // Añade cuantos métodos te sean necesarios, y relacionado solo

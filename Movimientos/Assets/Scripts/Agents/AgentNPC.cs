@@ -93,14 +93,15 @@ public class AgentNPC : Agent
     // a = F/masa. Ejecuta el programa cambiando en tiempo de ejecución la masa.
     public virtual void ApplySteering(Steering steer)
     {
-        //this.acceleration = steer.linear * Time.deltaTime;
+        // FIXME: this.acceleration = steer.linear / this.mass;
+        // FIXME: this.velocity += this.acceleration * Time.deltaTime;
         this.velocity += steer.linear * Time.deltaTime;
         //this.rotation += steer.angular;
         this.rotation += steer.angular * Time.deltaTime;
         
         // ???: necesito esto?
-        //if (this.rotation > this.maxRotation)
-        //    this.rotation = this.maxRotation;
+        if (this.rotation > this.maxRotation)
+            this.rotation = this.maxRotation;
 
         if (this.velocity.magnitude > this.maxSpeed)
             this.velocity = this.velocity.normalized * this.maxSpeed;
@@ -124,7 +125,7 @@ public class AgentNPC : Agent
 
         // Pasar los valores position y orientation a Unity
         transform.rotation = new Quaternion(); // Quaternion.identity;
-        transform.Rotate(Vector3.up, this.orientation);//transform.Rotate(0, this.orientation, 0);
+        transform.Rotate(Vector3.up, this.orientation);
     }
 
 }

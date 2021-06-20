@@ -1044,7 +1044,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &527139478
 Transform:
   m_ObjectHideFlags: 0
@@ -2151,10 +2151,10 @@ MonoBehaviour:
   target: {fileID: 0}
   priority: 0
   weight: 1
-  threshold: 5
   targetRadius: 1
   slowRadius: 90
   timeToTarget: 0.1
+  threshold: 5
 --- !u!1001 &886881956
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2727,10 +2727,10 @@ MonoBehaviour:
   target: {fileID: 0}
   priority: 0
   weight: 1
-  threshold: 5
   targetRadius: 1
   slowRadius: 90
   timeToTarget: 0.1
+  threshold: 5
 --- !u!1 &1261840972 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8957869804740303796, guid: c275acd848d104541952ccbb69af467b,
@@ -3005,10 +3005,10 @@ MonoBehaviour:
   target: {fileID: 0}
   priority: 0
   weight: 1
-  threshold: 5
   targetRadius: 1
   slowRadius: 90
   timeToTarget: 0.1
+  threshold: 5
 --- !u!1001 &1465511887
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3628,7 +3628,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1591217750
 Transform:
   m_ObjectHideFlags: 0
@@ -4161,10 +4161,10 @@ MonoBehaviour:
   target: {fileID: 0}
   priority: 0
   weight: 1
-  threshold: 5
   targetRadius: 1
   slowRadius: 90
   timeToTarget: 0.1
+  threshold: 5
 --- !u!1 &1705412980 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8957869804740303796, guid: c275acd848d104541952ccbb69af467b,
@@ -4192,10 +4192,10 @@ MonoBehaviour:
   target: {fileID: 0}
   priority: 0
   weight: 1
-  threshold: 5
   targetRadius: 1
   slowRadius: 90
   timeToTarget: 0.1
+  threshold: 5
 --- !u!1001 &1706516146
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4297,10 +4297,10 @@ MonoBehaviour:
   target: {fileID: 0}
   priority: 0
   weight: 1
-  threshold: 5
   targetRadius: 1
   slowRadius: 90
   timeToTarget: 0.1
+  threshold: 5
 --- !u!1001 &1755563027
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4885,10 +4885,10 @@ MonoBehaviour:
   target: {fileID: 0}
   priority: 0
   weight: 1
-  threshold: 5
   targetRadius: 1
   slowRadius: 90
   timeToTarget: 0.1
+  threshold: 5
 --- !u!1001 &1863433358
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5451,10 +5451,10 @@ MonoBehaviour:
   target: {fileID: 0}
   priority: 0
   weight: 1
-  threshold: 5
   targetRadius: 1
   slowRadius: 90
   timeToTarget: 0.1
+  threshold: 5
 --- !u!1001 &2045026078
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5635,10 +5635,10 @@ MonoBehaviour:
   target: {fileID: 0}
   priority: 0
   weight: 1
-  threshold: 5
   targetRadius: 1
   slowRadius: 90
   timeToTarget: 0.1
+  threshold: 5
 --- !u!1001 &2878542378284390357
 PrefabInstance:
   m_ObjectHideFlags: 0

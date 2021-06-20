@@ -40,6 +40,15 @@ public class Agent : Bodi
         
         if (this.interiorRadius > this.exteriorRadius)
             this.interiorRadius = this.exteriorRadius;
+        
+        if (this.exteriorAngle < 0)
+            this.exteriorAngle = 0;
+        
+        if (this.interiorAngle < 0)
+            this.interiorAngle = 0;
+        
+        if (this.interiorAngle > this.exteriorAngle)
+            this.interiorAngle = this.exteriorAngle;
     }
 
     /*
@@ -55,23 +64,24 @@ public class Agent : Bodi
     {
         if (debug == true)
         {
-            string text =
-                "\nRadio interior: " + this.interiorRadius +
-                "\nRadio exterior: " + this.exteriorRadius +
-                "\nAngulo interior: " + this.interiorAngle +
-                "\nAngulo exterior: " + this.exteriorAngle;
-            Handles.Label(transform.position, text);
-            // TODO: cambiar lo de arriba por lo de abajo cuando se implemente
-            //DrawGizmoInteriorRadius();
-            //DrawGizmoExteriorRadius();
-            //DrawGizmoInteriorAngle();
-            //DrawGizmoExteriorAngle();
+            DrawRadius(this.interiorRadius, Color.red);
+            DrawRadius(this.exteriorRadius, Color.green);
+            DrawAngle(this.interiorAngle, Color.blue);
+            DrawAngle(this.exteriorAngle, Color.yellow);
         }
     }
 
-    void DrawGizmoInteriorRadius() { }
-    void DrawGizmoExteriorRadius() { }
-    void DrawGizmoInteriorAngle() { }
-    void DrawGizmoExteriorAngle() { }
+    void DrawRadius(float radius, Color color) {
+        Gizmos.color = color;
+        Gizmos.DrawWireSphere(position, radius);
+    }
+
+    void DrawAngle(float angle, Color color) {
+        Gizmos.color = color;
+        float degree_angle = angle*Mathf.Rad2Deg; // ???: está bien así?
+        Vector3 fwd = transform.forward; // ???: puedo usarlo aquí?
+        Gizmos.DrawLine(position, position + Quaternion.Euler(0, degree_angle, 0) * fwd);
+        Gizmos.DrawLine(position, position + Quaternion.Euler(0, -degree_angle, 0) * fwd);
+    }
 
 }

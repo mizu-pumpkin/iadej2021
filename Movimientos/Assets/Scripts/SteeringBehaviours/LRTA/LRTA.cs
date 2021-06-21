@@ -38,7 +38,7 @@ public class LRTA : MonoBehaviour
         return path;
     }
 
-    public List<Node> pathLRTA(Node initialNode, Node goal, Grid grid, int option)
+    public List<Node> pathLRTA( Grid grid, Node start, Node end, int heuristic)
     {
         // Hacer comproación en otro sitio
         //if (grid.Nodos == null)
@@ -47,17 +47,17 @@ public class LRTA : MonoBehaviour
         // Initialize the closed lists 
         List<Node> closed = new List<Node>();
 
-        Node current = initialNode;
-        current.goalDistance = getDistance(current, goal, option);
+        Node current = start;
+        current.goalDistance = getDistance(current, end, heuristic);
 
         // While it is not the goal node
-        while (current != goal)
+        while (current != end)
         {
             List<Node> connections = grid.GetConnections(current);
 
             // Get its outgoing connections
             foreach (Node connection in connections)
-                current.goalDistance = getDistance(connection, goal, option);
+                current.goalDistance = getDistance(connection, end, heuristic);
 
             float min = Mathf.Infinity;
 
@@ -84,7 +84,7 @@ public class LRTA : MonoBehaviour
         return closed;
     }
 
-    public List<Node> pathA(Node initialNode, Node goal, Grid grid, int option)
+    public List<Node> pathfindAStar(Grid grid, Node start, Node end, int heuristic)
     {
         // Hacer comproación en otro sitio
         //if (grid.Nodos == null)
@@ -92,7 +92,7 @@ public class LRTA : MonoBehaviour
 
         // Initialize the open and closed lists 
         List<Node> open = new List<Node>();
-        open.Add(initialNode);
+        open.Add(start);
         List<Node> closed = new List<Node>();
 
         // Iterate through processing each finalNode
@@ -103,8 +103,8 @@ public class LRTA : MonoBehaviour
 
             for (int i = 1; i < open.Count; i++)
             {
-                current.goalDistance = getDistance(current, goal, option);
-                open[i].goalDistance = getDistance(open[i], goal, option);
+                current.goalDistance = getDistance(current, end, heuristic);
+                open[i].goalDistance = getDistance(open[i], end, heuristic);
                 
                 if (open[i].cost() < current.cost() ||
                     (open[i].cost() == current.cost() && open[i].goalDistance < current.goalDistance))
@@ -115,8 +115,8 @@ public class LRTA : MonoBehaviour
             open.Remove(current);
 
             // If it is the goal node
-            if (current == goal)
-                return newPath(initialNode, goal);
+            if (current == end)
+                return newPath(start, end);
 
             // Otherwise get its outgoing connections
             List<Node> connections = grid.GetConnections(current);
@@ -126,7 +126,7 @@ public class LRTA : MonoBehaviour
                 
                 // Skip if the node is closed
                 if ((closed.Contains(connection))) continue;
-                float distance = getDistance(current, connection, option);
+                float distance = getDistance(current, connection, heuristic);
 
                 // TODO: Terreno
                 //float connectionCost = 0;
@@ -149,7 +149,7 @@ public class LRTA : MonoBehaviour
                 //}            
             }
         }
-        return newPath(initialNode, goal);
+        return newPath(start, end);
     }
 
     // TODO: Mirar según terreno

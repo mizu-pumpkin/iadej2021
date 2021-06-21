@@ -39,5 +39,21 @@ public class Utils
         
         return orientation;
     }
+
+    public static Vector3 getPosition(float theta, Vector3 rs)
+    // rs       localización de la ranura S en el juego con respecto al leader
+    // theta    orientación del leader
+    {
+        // Get the orientation of the anchor point as a matrix
+        float[] Rtheta = new float[4] {
+            Mathf.Cos(theta), -Mathf.Sin(theta),
+            Mathf.Sin(theta), Mathf.Cos(theta)
+        };
+
+        float x = Rtheta[0] * rs.x + Rtheta[1] * rs.z;
+        float z = Rtheta[2] * rs.x + Rtheta[3] * rs.z;
+
+        return new Vector3(x, 0, z);
+    }
     
 }

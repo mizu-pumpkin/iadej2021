@@ -21,6 +21,7 @@ public class UnitsController : MonoBehaviour
 {
 
     public static List<GameObject> selectedUnits;
+    public static Vector3 clickedPoint;
     Agent target;
     Arrive steer;
 
@@ -56,13 +57,17 @@ public class UnitsController : MonoBehaviour
                 if (hitInfo.collider.CompareTag("Terrain"))
                 {
                     // Asigna al target la posición del punto del terreno
+                    clickedPoint = hitInfo.point;
                     target.position = hitInfo.point;
 
                     // Llama al método denominado "NewTarget" en todas las unidades seleccionadas
                     for (int i = 0; i < selectedUnits.Count; i++) {
-                        selectedUnits[i].SendMessage("RemoveTarget", steer);
-                        selectedUnits[i].SendMessage("AddTarget", steer);
-                        //selectedUnits[i].SendMessage("SetTarget", new Steering(0, hitInfo.point));
+                        //selectedUnits[i].SendMessage("RemoveTarget", steer);
+                        //selectedUnits[i].SendMessage("AddTarget", steer);
+                        selectedUnits[i].SendMessage(
+                            "SetTarget",
+                            new Steering(Utils.PositionToAngle(clickedPoint), clickedPoint)
+                        );
                     }
                 }
 

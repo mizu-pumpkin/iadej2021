@@ -27,7 +27,7 @@ public class AgentNPC : Agent
 
     Agent target;
     Arrive arrive;
-    Face face;
+    Align align;
 
     /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
@@ -45,8 +45,8 @@ public class AgentNPC : Agent
         arrive.targetRadius = target.interiorRadius;
         arrive.slowRadius = target.exteriorRadius;
 
-        face = new GameObject("FormationFace").AddComponent<Face>();
-        face.target = target;
+        align = new GameObject("FormationAlign").AddComponent<Align>();
+        align.target = target;
     }
     
     public virtual void SetTarget(Steering location)
@@ -56,11 +56,10 @@ public class AgentNPC : Agent
         
         if (!steeringBehaviours.Contains(arrive)) {
             AddTarget(arrive);
-            AddTarget(face);
+            AddTarget(align);
         }
         target.position = location.linear;
-        target.orientation = location.angular;
-        print(target.orientation);
+        target.Orientation = location.angular;
     }
     
     // Vacía la lista de SteeringBehaviour del NPC, que ahora solo tendrá sb

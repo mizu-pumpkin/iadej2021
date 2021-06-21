@@ -10,7 +10,7 @@ public class Pursue : Seek
      */
     
     // Holds the maximum prediction time
-    public float maxPrediction;
+    public float maxPrediction = 10;
 
     protected Agent targetAgent, targetAux;
 

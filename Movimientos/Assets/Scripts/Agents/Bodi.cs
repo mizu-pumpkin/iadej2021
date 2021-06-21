@@ -21,6 +21,16 @@ public abstract class Bodi : MonoBehaviour
     // Escalares
     public float mass = 60;
     public float orientation;
+    public float Orientation
+    {
+        get { return orientation; }
+        set
+        {
+            orientation = value;
+            transform.rotation = new Quaternion(); // Quaternion.identity;
+            transform.Rotate(Vector3.up, value);
+        }
+    }
     public float rotation;
     public float maxSpeed = 4;
     public float maxAcceleration = 8;

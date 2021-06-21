@@ -5,6 +5,13 @@ using UnityEngine;
 public class Face : Align
 {
     /*
+        █▀█ █▀█ █▀█ █▀█ █▀▀ █▀█ ▀█▀ █ █▀▀ █▀
+        █▀▀ █▀▄ █▄█ █▀▀ ██▄ █▀▄ ░█░ █ ██▄ ▄█
+     */
+
+    protected Agent targetAux;
+
+    /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
@@ -12,6 +19,13 @@ public class Face : Align
     public override void Awake() {
         base.Awake();
         priority = 2;
+        targetAux = target;
+        target = new GameObject("FaceTarget").AddComponent<Agent>();
+    }
+
+    void OnDestroy()
+    {
+        Destroy(target);
     }
     
     // Implemented as it was in Pursue
@@ -20,7 +34,7 @@ public class Face : Align
         // 1. Calculate the target to delegate to align
 
         // Work out the direction to target
-        Vector3 direction = target.position - agent.position;
+        Vector3 direction = targetAux.position - agent.position;
         float distance = direction.magnitude;
 
         // Check for a zero direction, and make no change if so

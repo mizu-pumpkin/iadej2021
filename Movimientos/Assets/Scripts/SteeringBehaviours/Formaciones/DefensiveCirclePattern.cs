@@ -12,7 +12,7 @@ public class DefensiveCirclePattern : FormationPattern
     // assignment data. This is not part of the formation
     // pattern interface
     public int calculateNumberOfSlots(List<SlotAssignment> slotAssignments)
-    {
+    { // FIXME: borrar esta función porque no se usa nunca
         // Find the number of filled slots: it will be the
         // highest slot number in the assignments
         int filledSlots = 0;
@@ -64,7 +64,8 @@ public class DefensiveCirclePattern : FormationPattern
         // The radius depends on the radius of the character,
         // and the number of characters in the circle:
         // we want there to be no gap between character's shoulders.
-        float radius = characterRadius / Mathf.Sin(Mathf.PI / (float)numberOfSlots);
+        float radius = (2*numberOfSlots-1) * characterRadius / (Mathf.PI * 2); // r = (2n-1)d / 2PI
+        //float radius = characterRadius / Mathf.Sin(Mathf.PI / (float)numberOfSlots);
     
         // Create a location, and fill its components based
         // on the angle around circle.
@@ -73,7 +74,7 @@ public class DefensiveCirclePattern : FormationPattern
         location.position.z = radius * Mathf.Sin(angleAroundCircle);
         
         // The characters should be facing out
-        location.orientation = angleAroundCircle - Mathf.PI/2;
+        location.orientation = (Mathf.PI / 2) - angleAroundCircle;
 
         // Return the slot location
         return location;
@@ -84,14 +85,6 @@ public class DefensiveCirclePattern : FormationPattern
     public override bool supportsSlots(int slotCount)
     {
         return true;
-    }
-
-    public override AgentNPC getAnchorPoint(List<SlotAssignment> slotAssignments)
-    {
-        if (slotAssignments.Count > 0)
-            return slotAssignments[0].character;
-        else
-            return null;
     }
 
 }

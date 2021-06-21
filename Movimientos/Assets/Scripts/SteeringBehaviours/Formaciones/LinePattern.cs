@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LineFixed : FormationPattern
+public class LinePattern : FormationPattern
 {
     public AgentNPC leader;
     
@@ -32,9 +32,5 @@ public class LineFixed : FormationPattern
     {
         return true;
     }
-
-    public override AgentNPC getAnchorPoint(List<SlotAssignment> slotAssignments)
-    {
-        return leader;
-    }
+    
 }

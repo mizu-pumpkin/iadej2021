@@ -43,8 +43,7 @@ public class FormationManager : MonoBehaviour
 
     public void Update()
     {
-        if (Input.GetKeyDown("u")) // HACK
-            updateSlots();
+        updateSlots();
     }
     
     // Updates the assignment of characters to slot
@@ -109,36 +108,31 @@ public class FormationManager : MonoBehaviour
     public void updateSlots()
     {
         //Find the anchor point
-        AgentNPC anchor = pattern.getAnchorPoint(slotAssignments);
-        if (anchor == null)
-            return;
-
-        // Get the orientation of the anchor point as a matrix
-        float[] orientationMatrix = new float[4] {
-            Mathf.Cos(anchor.orientation), -Mathf.Sin(anchor.orientation),
-            Mathf.Sin(anchor.orientation), Mathf.Cos(anchor.orientation)
-        };
+        DriftOffset anchor = getAnchorPoint();
 
         // Go through each character in turn
         for (int i = 0; i < slotAssignments.Count; i++)
         {
-            //Ask for the location of the slot relative to the
-            //anchor point. This should be a Static structure
+            // Ask for the location of the slot relative to the
+            // anchor point. This should be a Static structure
             DriftOffset relativeLoc = pattern.getSlotLocation(slotAssignments[i].slotNumber);
 
-            //Transform it by the anchor point’s position and
-            //orientation
+            // Transform it by the anchor point’s position and orientation
             DriftOffset location = new DriftOffset();
-            location.position = MatrixProduct(relativeLoc.position, orientationMatrix) + anchor.position;
+            location.position = anchor.position + Utils.getPosition(-anchor.orientation, relativeLoc.position);
             location.orientation = anchor.orientation + relativeLoc.orientation;
-
-            //And add the drift component
-            location.position -= driftOffset.position;
-            location.orientation -= driftOffset.orientation;
             
-            //Write the static to the character
+            // HACK: Comentado porque ya se ha tenido en cuenta en el cálculo del anchor
+            // And add the drift component
+            //location.position -= driftOffset.position;
+            //location.orientation -= driftOffset.orientation;
+
+            // HACK: Si se rompe el Circle, descomentar:
+            //location.orientation -= Mathf.PI * 2 / (float)slotAssignments.Count;
+            
+            // Write the static to the character
             slotAssignments[i].character.SetTarget(//location);
-                new Steering(location.orientation, location.position)
+                new Steering(location.orientation * Mathf.Rad2Deg, location.position)
             );
         }
 
@@ -148,6 +142,14 @@ public class FormationManager : MonoBehaviour
         ▄▀█ █░█ ▀▄▀
         █▀█ █▄█ █░█
      */
+    
+    public DriftOffset getAnchorPoint()
+    {
+        DriftOffset anchor = new DriftOffset();
+        anchor.position = UnitsController.clickedPoint + driftOffset.position;
+        anchor.orientation = Utils.PositionToAngle(anchor.position) * Mathf.Deg2Rad + driftOffset.orientation;
+        return anchor;
+    }
 
     SlotAssignment findSlot(AgentNPC npc)
     { // FIXME
@@ -155,15 +157,6 @@ public class FormationManager : MonoBehaviour
             if (sa.character == npc)
                 return sa;
         return null;
-    }
-
-    public Vector3 MatrixProduct(Vector3 relativeLocPosition, float[] orientationMatix)
-    { // FIXME
-        return new Vector3(
-            orientationMatix[0] * relativeLocPosition.x + orientationMatix[2] * relativeLocPosition.z,
-            0,
-            orientationMatix[1] * relativeLocPosition.x + orientationMatix[3] * relativeLocPosition.z
-        );
     }
 
 }

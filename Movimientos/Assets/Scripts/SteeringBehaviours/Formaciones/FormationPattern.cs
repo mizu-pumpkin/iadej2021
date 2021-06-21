@@ -22,6 +22,4 @@ public abstract class FormationPattern : MonoBehaviour
     // number of slots
     public abstract bool supportsSlots(int slotCount);
 
-    public abstract AgentNPC getAnchorPoint(List<SlotAssignment> slotAssignments);
-
 }

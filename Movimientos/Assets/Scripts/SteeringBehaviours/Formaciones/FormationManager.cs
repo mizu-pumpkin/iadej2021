@@ -132,7 +132,7 @@ public class FormationManager : MonoBehaviour
             
             // Write the static to the character
             slotAssignments[i].character.SetTarget(//location);
-                new Steering(location.orientation * Mathf.Rad2Deg, location.position)
+                location.position, location.orientation * Mathf.Rad2Deg
             );
         }
 

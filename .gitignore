@@ -5,3 +5,4 @@ Movimientos/Packages/*
 Movimientos/ProjectSettings/*
 Movimientos/UserSettings/*
 Movimientos/Temp/*
+*.vscode*

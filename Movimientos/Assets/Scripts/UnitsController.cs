@@ -20,24 +20,8 @@ using UnityEngine;
 public class UnitsController : MonoBehaviour
 {
 
-    public static List<GameObject> selectedUnits;
+    public static List<GameObject> selectedUnits = new List<GameObject>();
     public static Vector3 clickedPoint;
-    Agent target;
-    Arrive steer;
-
-    void Awake()
-    {
-        selectedUnits = new List<GameObject>();
-
-        target = new GameObject("UnitsControllerTarget").AddComponent<Agent>();
-        target.interiorRadius = 0.1f;
-        target.exteriorRadius = 2;
-
-        steer = new GameObject("UnitsControllerArrive").AddComponent<Arrive>();
-        steer.target = target;
-        steer.targetRadius = target.interiorRadius;
-        steer.slowRadius = target.exteriorRadius;
-    }
 
     void Update()
     {
@@ -58,16 +42,11 @@ public class UnitsController : MonoBehaviour
                 {
                     // Asigna al target la posición del punto del terreno
                     clickedPoint = hitInfo.point;
-                    target.position = hitInfo.point;
 
-                    // Llama al método denominado "NewTarget" en todas las unidades seleccionadas
+                    // Llama al método denominado "SetTarget" en todas las unidades seleccionadas
                     for (int i = 0; i < selectedUnits.Count; i++) {
-                        //selectedUnits[i].SendMessage("RemoveTarget", steer);
-                        //selectedUnits[i].SendMessage("AddTarget", steer);
-                        selectedUnits[i].SendMessage(
-                            "SetTarget",
-                            new Steering(Utils.PositionToAngle(clickedPoint), clickedPoint)
-                        );
+                        object[] args = new object[] { clickedPoint, Utils.PositionToAngle(clickedPoint) };
+                        selectedUnits[i].SendMessage("SetTarget", args);
                     }
                 }
 
@@ -81,7 +60,7 @@ public class UnitsController : MonoBehaviour
                     // Si ya está en la lista, lo deselecciona
                     if (selectedUnits.Contains(npc)) {
                         selectedUnits.Remove(npc);
-                        npc.SendMessage("RemoveTarget", steer);//.SendMessage("InitializeSteerings");
+                        npc.SendMessage("InitializeSteerings");
                         print(npc.name+" deselected");
                     }
                     // Si no estaba en la lista, lo selecciona
@@ -100,7 +79,7 @@ public class UnitsController : MonoBehaviour
             List<GameObject> aux = new List<GameObject>(selectedUnits);
             foreach (GameObject npc in aux) {
                 selectedUnits.Remove(npc);
-                npc.SendMessage("RemoveTarget", steer);//.SendMessage("InitializeSteerings");
+                npc.SendMessage("InitializeSteerings");
             }
             print("NPCs deselected");
         }

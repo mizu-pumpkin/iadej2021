@@ -36,7 +36,7 @@ public abstract class Fixed : MonoBehaviour
             
             // Write the static to the character
             agentes[i].SetTarget(//location);
-                new Steering(location.orientation, location.position)
+                location.position, location.orientation
             );
         }
     }

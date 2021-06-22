@@ -35,21 +35,26 @@ public class AgentNPC : Agent
      */
 
     public void CreateTargetSteering() {
-        target = new GameObject("FormationTarget").AddComponent<Agent>();
+        target = new GameObject("PointedTarget").AddComponent<Agent>();
         target.interiorRadius = 0.1f;
         target.exteriorRadius = 2;
         target.debug = true;
         
-        arrive = new GameObject("FormationArrive").AddComponent<Arrive>();
+        arrive = new GameObject("PointedArrive").AddComponent<Arrive>();
         arrive.target = target;
         arrive.targetRadius = target.interiorRadius;
         arrive.slowRadius = target.exteriorRadius;
 
-        align = new GameObject("FormationAlign").AddComponent<Align>();
+        align = new GameObject("PointedAlign").AddComponent<Align>();
         align.target = target;
     }
+
+    public void SetTarget(object[] args)
+    { // Para poder usar SendMessage() desde UnitsController
+        SetTarget((Vector3) args[0], (float) args[1]);
+    }
     
-    public virtual void SetTarget(Steering location)
+    public virtual void SetTarget(Vector3 position, float orientation)
     {   
         if (target == null)
             CreateTargetSteering();
@@ -58,8 +63,8 @@ public class AgentNPC : Agent
             AddTarget(arrive);
             AddTarget(align);
         }
-        target.position = location.linear;
-        target.Orientation = location.angular;
+        target.position = position;
+        target.Orientation = orientation;
     }
     
     // Vacía la lista de SteeringBehaviour del NPC, que ahora solo tendrá sb

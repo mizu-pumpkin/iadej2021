@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PathFinding : MonoBehaviour
-{/*
-    public Grid grid;
-    public LRTA lRTA;
+
+{
+    //public Grid grid;
+    public LRTA lrta;
 
     private void Start()
     {
-        grid = grid.GetComponent<Grid>();
+        
+        //grid = grid.GetComponent<Grid>();
         lrta = new LRTA();
     }
-    
+
+
+    /*
     public LRTA lrta =  new LRTA();
 
     public void pathFinding(Vector3 initialNodePosition, Vector3 finalNodePosition)

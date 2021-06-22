@@ -6,16 +6,16 @@ public class Node : MonoBehaviour
 {
     public Node parent;
 
-    public Vector3 position;
+    public Vector2 position;
     public float nodeDistance; // Distancia que hay hasta el siguiente nodo
     public float goalDistance; // Distancia hasta el objetivo
 
     public int x;
     public int y;
 
-    public Node(Vector3 position, int x, int y)
+    public Node(int x, int y)
     {
-        this.position = position;
+        position = new Vector2(x,y);
         this.x = x;
         this.y = y;
     }

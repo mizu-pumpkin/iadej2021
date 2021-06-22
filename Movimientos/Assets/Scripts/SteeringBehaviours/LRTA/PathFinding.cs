@@ -4,6 +4,15 @@ using UnityEngine;
 
 public class PathFinding : MonoBehaviour
 {/*
+    public Grid grid;
+    public LRTA lRTA;
+
+    private void Start()
+    {
+        grid = grid.GetComponent<Grid>();
+        lrta = new LRTA();
+    }
+    
     public LRTA lrta =  new LRTA();
 
     public void pathFinding(Vector3 initialNodePosition, Vector3 finalNodePosition)

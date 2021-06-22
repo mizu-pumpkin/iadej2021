@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Grid : MonoBehaviour
-{
+{/*
     public int tamGridRows;
     public int tamGridColumns;
     public int tamNodo; 
@@ -20,12 +20,9 @@ public class Grid : MonoBehaviour
 
     public Vector3 esquinaInferiorIzquierda; //Cuando esté el mapa, poner valores
     public Vector3 esquinaSuperiorIzquierda;
+    public Vector3 esquinaInferiorDerecha;
     public Vector3 esquinaSuperiorDerecha;
-    public Vector3 esquinaSuperiorDeerecha;
 
-    //public InfluenceMapControl mapaInfluencia;      //mapa de influencias del grid????
-
-    /*
     public void Start()
     {
         tamGridRows = Mathf.RoundToInt(tamGrid.x / (nodeRadius*2));
@@ -78,9 +75,6 @@ public class Grid : MonoBehaviour
                 minZ = esquinaSuperiorDerecha.z;
             }
 
-            // Esto sí es necesario
-            influenceMap.Initialize( Mathf.RoundToInt((maxX - minX) / radioNodo * 2) + 1, Mathf.RoundToInt((maxZ - minZ) / radioNodo * 2) + 1);
-            influenceMap.Initialize();
         }
 
     }
@@ -108,13 +102,12 @@ public class Grid : MonoBehaviour
             }
         }
         return costMap;
-    }*/
+    }
 
     // Función para obtener la lista de nodos adyacentes dado un nodo
      public List<Node> GetConnections(Node node)
     {
         List<Node> connections = new List<Node>();
-/*
         // Nodo izquierdo
         if ((node.x-1 >= 0 && node.x-1 < tamGridRows) && (node.y >= 0 && node.y < tamGridColumns))
                 connections.Add(Nodos[node.x-1, node.y]);
@@ -130,7 +123,7 @@ public class Grid : MonoBehaviour
         // Nodo abajo
         if ((node.x >= 0 && node.x < tamGridRows) && (node.y-1 >= 0 && node.y-1 < tamGridColumns))
                 connections.Add(Nodes[node.x, node.y-1]);
-    */
+    
         return connections; // Devuelve la lista con los nodos
-    }
+    }*/
 }

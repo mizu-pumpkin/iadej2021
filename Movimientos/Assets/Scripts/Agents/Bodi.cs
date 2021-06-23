@@ -54,7 +54,7 @@ public abstract class Bodi : MonoBehaviour
     public virtual void Awake() { }
 
     // Convertir la posición del personaje en un angulo
-    float PositionToAngle()
+    public float PositionToAngle()
     {
         return Utils.PositionToAngle(this.position);
     }

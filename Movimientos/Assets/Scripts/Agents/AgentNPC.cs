@@ -25,7 +25,7 @@ public class AgentNPC : Agent
     
     // ???: blendWeight/blendPriority
 
-    Agent target;
+    Agent pointedTarget, target;
     Arrive arrive;
     Align align;
 
@@ -34,18 +34,22 @@ public class AgentNPC : Agent
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
 
-    public void CreateTargetSteering() {
-        target = new GameObject("PointedTarget").AddComponent<Agent>();
-        target.interiorRadius = 0.1f;
-        target.exteriorRadius = 2;
-        target.debug = true;
-        
-        arrive = new GameObject("PointedArrive").AddComponent<Arrive>();
+    public void CreatePointedTarget()
+    {
+        pointedTarget = new GameObject("PointedTarget").AddComponent<Agent>();
+        pointedTarget.interiorRadius = 0.1f;
+        pointedTarget.exteriorRadius = 2;
+        pointedTarget.debug = true;
+    }
+
+    public void ChangeTarget(Agent npc)
+    {
+        target = npc;
+
         arrive.target = target;
         arrive.targetRadius = target.interiorRadius;
         arrive.slowRadius = target.exteriorRadius;
 
-        align = new GameObject("PointedAlign").AddComponent<Align>();
         align.target = target;
     }
 
@@ -53,18 +57,29 @@ public class AgentNPC : Agent
     { // Para poder usar SendMessage() desde UnitsController
         SetTarget((Vector3) args[0], (float) args[1]);
     }
+
+    public virtual void SetTarget(Vector3 position)
+    {
+        SetTarget(position, Utils.PositionToAngle(position));
+    }
     
     public virtual void SetTarget(Vector3 position, float orientation)
     {   
-        if (target == null)
-            CreateTargetSteering();
-        
+        if (pointedTarget == null)
+            CreatePointedTarget();
+
+        pointedTarget.position = position;
+        pointedTarget.Orientation = orientation;
+        SetTarget(pointedTarget);
+    }
+
+    public void SetTarget(Agent npc)
+    {
+        ChangeTarget(npc);
         if (!steeringBehaviours.Contains(arrive)) {
-            AddTarget(arrive);
+            NewTarget(arrive);
             AddTarget(align);
         }
-        target.position = position;
-        target.Orientation = orientation;
     }
     
     // Vacía la lista de SteeringBehaviour del NPC, que ahora solo tendrá sb
@@ -97,6 +112,16 @@ public class AgentNPC : Agent
     {
         base.Awake();
         InitializeSteerings();
+        arrive = new GameObject("TargetArrive").AddComponent<Arrive>();
+        align = new GameObject("TargetAlign").AddComponent<Align>();
+    }
+
+    protected virtual void OnDestroy()
+    {
+        if (arrive != null)
+            Destroy(arrive.gameObject);
+        if (align != null)
+            Destroy(align.gameObject);
     }
 
     // Recorre la lista construida en Awake() y calcula cada uno
@@ -126,6 +151,10 @@ public class AgentNPC : Agent
     {
         foreach (Steering steer in this.steerings)
             ApplySteering(steer);
+        
+        if (steeringBehaviours.Contains(arrive) && arrive.target == null) {
+            ChangeTarget(pointedTarget);
+        }
     }
 
     // TODO: Modifica el método para que la aceleración lineal del Steering se

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using UnityEditor; // Handles
-
 /*
     Agent::Bodi Una componente sensorial que determina los márgenes de
     reacción del agente

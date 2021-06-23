@@ -10,6 +10,18 @@ public class ActionSequence : Action
     // Holds the index of the currently executing sub-action
     public int activeIndex = 0;
 
+    public ActionSequence(AgentUnit unit) : base(unit) {}
+
+    public override void Execute()
+    {
+        // Execute our current action
+        actions[activeIndex].Execute();
+
+        // If our current action is complete, go to the next
+        if (actions[activeIndex].IsComplete())
+            activeIndex++;
+    }
+
     public override bool CanInterrupt()
     {
         // We can interrupt if out first sub-action can
@@ -32,16 +44,6 @@ public class ActionSequence : Action
     {
         // We are complete if all of our sub-actions are
         return activeIndex >= actions.Count;
-    }
-
-    public override void Execute()
-    {
-        // Execute our current action
-        actions[activeIndex].Execute();
-
-        // If our current action is complete, go to the next
-        if (actions[activeIndex].IsComplete())
-            activeIndex++;
     }
 
 }

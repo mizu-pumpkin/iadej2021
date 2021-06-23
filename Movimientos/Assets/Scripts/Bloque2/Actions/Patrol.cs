@@ -4,23 +4,9 @@ using UnityEngine;
 
 public class Patrol : Action
 {
-    public override bool CanInterrupt()
-    {
-        return false;
-    }
+    public Patrol(AgentUnit unit) : base(unit) {}
 
-    public override bool CanDoBoth(Action other)
-    {
-        return false;
-    }
+    public override void Execute() {}
 
-    public override bool IsComplete()
-    {
-        return false;
-    }
-
-    public override void Execute()
-    {
-        
-    }
+    public override string ToString() => "PATROL";
 }

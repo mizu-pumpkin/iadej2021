@@ -28,7 +28,8 @@ public class Pursue : Seek
 
     void OnDestroy ()
     {
-        Destroy(targetAux);
+        if (targetAux != null)
+            Destroy(targetAux);
     }
 
     override public Steering GetSteering(AgentNPC agent)

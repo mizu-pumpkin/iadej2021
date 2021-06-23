@@ -25,7 +25,8 @@ public class Face : Align
 
     void OnDestroy()
     {
-        Destroy(target);
+        if (target != null)
+            Destroy(target);
     }
     
     // Implemented as it was in Pursue

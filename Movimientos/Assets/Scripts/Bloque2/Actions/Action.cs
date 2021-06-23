@@ -6,11 +6,19 @@ public abstract class Action
 {
     public int priority;
     public int expiryTime;
-    // The unit that performs the action
-    public AgentUnit unit;
+    
+    protected AgentUnit unit; // The unit that performs the action
+    protected bool isComplete; // If the action is complete
 
-    public abstract bool CanInterrupt();
-    public abstract bool CanDoBoth(Action other);
-    public abstract bool IsComplete();
+    public Action(AgentUnit unit)
+    {
+        this.unit = unit;
+        this.isComplete = false;
+    }
+
     public abstract void Execute();
+    public virtual bool IsComplete() => isComplete;
+
+    public virtual bool CanInterrupt() => false;
+    public virtual bool CanDoBoth(Action other) => false;
 }

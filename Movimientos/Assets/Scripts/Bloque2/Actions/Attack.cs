@@ -4,36 +4,37 @@ using UnityEngine;
 
 public class Attack : Action
 {
-    public AgentUnit enemyUnit;
+    private AgentUnit enemyUnit;
+    private float time = -1;
 
-    public override bool CanInterrupt()
+    public Attack(AgentUnit unit, AgentUnit enemyUnit) : base(unit)
     {
-        return false;
-    }
-
-    public override bool CanDoBoth(Action other)
-    {
-        return false;
-    }
-
-    public override bool IsComplete()
-    {
-        return false;
+        this.enemyUnit = enemyUnit;
     }
 
     public override void Execute()
     {
-        unit.SetTarget(enemyUnit.position, enemyUnit.orientation);
-
+        if (time == -1)
+            time = Time.time;
+        
         float distance = (unit.position - enemyUnit.position).magnitude;
 
+        // If it's in range, attack
         if (distance <= unit.attackRange)
         {
-            int damage = CombatSystem.Damage(unit, enemyUnit);
-            enemyUnit.hp -= damage;
-
-            if (enemyUnit.hp <= 0) 
-                unit.InitializeSteerings();
+            unit.canMove = false;
+            if (Time.time - time >= unit.attackSpeed) {
+                time = -1;
+                int damage = CombatSystem.Damage(unit, enemyUnit);
+                bool dead = enemyUnit.TakeDamage(damage, unit);
+                if (dead) isComplete = true;
+            }
+        }
+        // If it's not in range, move closer
+        else {
+            unit.canMove = true;
         }
     }
+
+    public override string ToString() => "ATTACK";
 }

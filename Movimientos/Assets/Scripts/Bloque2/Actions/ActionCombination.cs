@@ -7,6 +7,15 @@ public class ActionCombination : Action
     // Holds the sub-actions
     public List<Action> actions;
 
+    public ActionCombination(AgentUnit unit) : base(unit) {}
+
+    public override void Execute()
+    {
+        // Execute all of our sub-actions
+        foreach (Action action in actions)
+            action.Execute();
+    }
+
     public override bool CanInterrupt()
     {
         // We can interrupt if any of our sub-actions can
@@ -32,13 +41,6 @@ public class ActionCombination : Action
             if (!action.IsComplete())
                 return false;
         return true;
-    }
-
-    public override void Execute()
-    {
-        // Execute all of our sub-actions
-        foreach (Action action in actions)
-            action.Execute();
     }
 
 }

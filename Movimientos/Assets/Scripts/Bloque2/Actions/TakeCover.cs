@@ -4,23 +4,12 @@ using UnityEngine;
 
 public class TakeCover : Action
 {
-    public override bool CanInterrupt()
-    {
-        return false;
-    }
-
-    public override bool CanDoBoth(Action other)
-    {
-        return false;
-    }
-
-    public override bool IsComplete()
-    {
-        return false;
-    }
+    public TakeCover(AgentUnit unit) : base(unit) {}
 
     public override void Execute()
     {
         
     }
+
+    public override string ToString()=> "HIDE";
 }

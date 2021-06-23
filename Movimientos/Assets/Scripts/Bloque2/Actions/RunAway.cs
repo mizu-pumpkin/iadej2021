@@ -4,23 +4,22 @@ using UnityEngine;
 
 public class RunAway : Action
 {
-    public override bool CanInterrupt()
-    {
-        return false;
-    }
+    private AgentUnit enemyUnit;
 
-    public override bool CanDoBoth(Action other)
+    public RunAway(AgentUnit unit, AgentUnit enemyUnit) : base(unit)
     {
-        return false;
-    }
-
-    public override bool IsComplete()
-    {
-        return false;
+        this.enemyUnit = enemyUnit;
     }
 
     public override void Execute()
     {
-        
+        unit.canMove = true;
+
+        float distance = (unit.position - enemyUnit.position).magnitude;
+
+        if (distance > enemyUnit.attackRange * 3)
+            isComplete = true;
     }
+
+    public override string ToString() => "FLEE";
 }

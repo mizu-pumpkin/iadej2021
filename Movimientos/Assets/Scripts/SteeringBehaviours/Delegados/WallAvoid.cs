@@ -27,7 +27,8 @@ public class WallAvoid : Seek
 
     void OnDestroy ()
     {
-        Destroy(target);
+        if (target != null)
+            Destroy(target);
     }
 
     override public Steering GetSteering(AgentNPC agent)

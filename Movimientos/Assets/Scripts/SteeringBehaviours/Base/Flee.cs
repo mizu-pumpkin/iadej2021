@@ -25,7 +25,7 @@ public class Flee : SteeringBehaviour
         float distance = direction.magnitude;
 
         // HACK: Si la distancia es mayor que el limite, deja de huir
-        if (distance > agent.exteriorRadius * 3)
+        if (distance > target.exteriorRadius * 3)
             return null;
 
         // Get the direction to the target

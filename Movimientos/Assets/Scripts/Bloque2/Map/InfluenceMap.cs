@@ -19,8 +19,8 @@ public class InfluenceMap : MonoBehaviour
         return influence;
     }
 
-    // Si gana teamA, devuelve un número positivo
-    // Si gana teamB, devuelve un número negativo
+    // If teamA wins, returns a positive number
+    // If teamB wins, returns a negative number
     public float ControlOverLocation(List<AgentUnit> teamA, List<AgentUnit> teamB, Vector3 location)
     {
         float influenceA = InfluenceOverLocation(teamA, location);

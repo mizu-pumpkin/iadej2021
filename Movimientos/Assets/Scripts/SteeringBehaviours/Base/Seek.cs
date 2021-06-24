@@ -19,7 +19,7 @@ public class Seek : SteeringBehaviour
         Vector3 direction = target.position - agent.position;
         float distance = direction.magnitude;
 
-        if (distance <= target.interiorRadius)
+        if (distance <= agent.interiorRadius)
             return null;
         
         // Get the direction to the target

@@ -10,12 +10,15 @@ public class PathFollowing : Seek
      */
     
     // Holds the path to follow
-    public List<Vector3> path;
-
+    [SerializeField] private List<Vector3> path;
     // Holds the current position on the path
-    public int currentNode = 0;
+    [SerializeField] private int currentNode;
+    // The direction in which we are going in the path
+    private int pathDir = 1;
 
-    int pathDir = 1;
+    public enum Mode { stay, patrol, stop };
+    public Mode mode;
+
 
     /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
@@ -35,9 +38,13 @@ public class PathFollowing : Seek
 
     override public Steering GetSteering(AgentNPC agent)
     {
-        path = agent.path; // FIXME
-
-        if (path.Count > 0) { // Comprueba si el personaje sigue algún camino
+        //if (path != agent.path) {
+        //    path = agent.path;
+        //    currentNode = 0;
+        //}
+        
+        // Comprueba si el personaje sigue algún camino
+        if (path.Count > 0) { 
             List<Vector3> nodes = path;
 
             // Buscar objetivo actual
@@ -49,22 +56,24 @@ public class PathFollowing : Seek
             {
                 currentNode += pathDir; // Siguiente objetivo
 
-                // Opción 1. Me quedo en el final
-                if (currentNode >= nodes.Count) {
-                    currentNode = nodes.Count - 1;
+                switch (mode)
+                {
+                    case Mode.stay: // Opción 1. Me quedo en el final
+                        if (currentNode >= nodes.Count)
+                            currentNode = nodes.Count - 1;
+                        break;
+                    case Mode.patrol: // Opción 2. Hago vigilancia (Vuelvo atrás)
+                        if (currentNode >= nodes.Count || currentNode < 0)
+                        {
+                            pathDir *= -1;
+                            currentNode += pathDir;
+                        }
+                        break;
+                    case Mode.stop: // Opción 3. Nuevo estado (steering)
+                        if (currentNode >= nodes.Count)
+                            currentNode = nodes.Count - 1;
+                        return null;
                 }
-
-                // Opción 2. Hago vigilancia (Vuelvo atrás)
-                //if (currentNode >= nodes.Count || currentNode < 0)
-                //{
-                //    pathDir *= -1;
-                //    currentNode += pathDir;
-                //}
-
-                // Opción 3. Nuevo estado (steering)
-                //if (currentNode >= nodes.Count || currentNode < 0) {
-                //    return null;
-                //}
             }
 
             return base.GetSteering(agent);

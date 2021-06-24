@@ -62,10 +62,7 @@ public class MyGrid : MonoBehaviour
                 bool isWall = Physics.CheckSphere(position, cubeSize / 2, WallMask);
 
                 if (tag == "Rio" || tag == "Muro")
-                {
-                    print("Rio:"+x+" "+y);
                     isWall = true;
-                }
 
                 NodeArray[x, y] = new Node(x, y, cubeSize, isWall);
             }
@@ -120,8 +117,6 @@ public class MyGrid : MonoBehaviour
     {
         float x = npcPos.x / cubeSize;
         float y = npcPos.z / cubeSize;
-
-        print(x+" "+y);
 
         return NodeArray[(int)x, (int)y];
     }

@@ -23,6 +23,10 @@ public class AgentNPC : Agent
     public List<SteeringBehaviour> steeringBehaviours;
     public List<Steering> steerings = new List<Steering>();
     
+    public PathFinding pathFinding;
+    public int heuristic = 1;
+    //public List<Vector3> path = new List<Vector3>();
+    
     // ???: blendWeight/blendPriority
 
     Agent pointedTarget, target;
@@ -124,12 +128,26 @@ public class AgentNPC : Agent
             Destroy(align.gameObject);
     }
 
+    void FindPath()
+    {
+        if (Input.GetKey(KeyCode.Keypad1))
+            heuristic = 1;
+        if (Input.GetKey(KeyCode.Keypad2))
+            heuristic = 2;
+        if (Input.GetKey(KeyCode.Keypad3))
+            heuristic = 3;
+        
+        if (Input.GetMouseButtonDown(0))
+            pathFinding.LRTA(this);
+    }
+
     // Recorre la lista construida en Awake() y calcula cada uno
     // de los Steering que calcula cada SteeringBehaviour
     // TODO: En este punto puedes aplicar un árbitro o dejarlo para el método Update()
     public virtual void LateUpdate()
     {
-        foo(); // HACK 
+        if (pathFinding != null)
+            FindPath();
 
         steerings = new List<Steering>();
         foreach (SteeringBehaviour sb in this.steeringBehaviours) {
@@ -197,59 +215,6 @@ public class AgentNPC : Agent
         // Pasar los valores position y orientation a Unity
         transform.rotation = new Quaternion(); // Quaternion.identity;
         transform.Rotate(Vector3.up, this.orientation);
-    }
-
-
-    public PathFinding controlador;
-    public int heuristic = 1;
-    public List<Vector3> path = new List<Vector3>();
-    List<GameObject> camino;
-
-    void foo()
-    {
-        if (Input.GetKey(KeyCode.Keypad1))
-            heuristic = 1;
-        if (Input.GetKey(KeyCode.Keypad2))
-            heuristic = 2;
-        if (Input.GetKey(KeyCode.Keypad3))
-            heuristic = 3;
-        if (Input.GetMouseButtonDown(0))
-        {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, 1000.0f))
-            {
-                if (hit.transform != null && hit.transform.tag != "Muro" && hit.transform.tag != "Rio")
-                {
-                    path = controlador.FindFinalNode(this);
-                    DrawPath();
-                }
-            }
-        }
-    }
-
-    void DrawPath()
-    {
-        if (path.Count != 0)
-        {
-            if (camino != null)
-            {
-                foreach (GameObject g in camino)
-                    Destroy(g);
-            }
-            
-            camino = new List<GameObject>();
-            GameObject aux;
-            foreach(Vector3 v in path)
-            {
-                aux = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                aux.transform.localScale = new Vector3(5, 2, 5);
-                aux.transform.position = v;
-                aux.GetComponent<Renderer>().material.color = new Color(0, 0, 0);
-                camino.Add(aux);
-            }
-            
-        }
     }
 
 }

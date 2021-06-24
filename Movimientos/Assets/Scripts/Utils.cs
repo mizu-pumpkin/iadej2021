@@ -20,7 +20,8 @@ public class Utils
 
     // This function helps in finding the actual direction of rotation
     // after two orientation values are subtracted
-    public static float MapToRange(float rotation) {
+    public static float MapToRange(float rotation)
+    {
         rotation %= 360;
         if (Mathf.Abs(rotation) > 180) {
             if (rotation < 0)
@@ -31,7 +32,8 @@ public class Utils
         return rotation;
     }
 
-    public static float rango360(float orientation) {
+    public static float rango360(float orientation)
+    {
         if (orientation < 0)
             orientation += 360;
         else if (orientation > 360)

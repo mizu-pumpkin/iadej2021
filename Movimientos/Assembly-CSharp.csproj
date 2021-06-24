@@ -55,7 +55,6 @@
      <Compile Include="Assets\Scripts\PrioritySteering.cs" />
      <Compile Include="Assets\Scripts\SteeringBehaviours\Delegados\Pursue.cs" />
      <Compile Include="Assets\Scripts\SteeringBehaviours\Base\Align.cs" />
-     <Compile Include="Assets\Scripts\SteeringBehaviours\LRTA\PathFindingNPC.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Actions\Heal.cs" />
      <Compile Include="Assets\Scripts\SteeringBehaviours\Formaciones\FormacionesFijas.cs" />
      <Compile Include="Assets\Scripts\Agents\SlowAgentNPC.cs" />
@@ -63,6 +62,7 @@
      <Compile Include="Assets\Scripts\SteeringBehaviours\Base\AntiAlign.cs" />
      <Compile Include="Assets\Scripts\SteeringBehaviours\Grupo\Flocking.cs" />
      <Compile Include="Assets\Scripts\SteeringBehaviours\Base\Arrive.cs" />
+     <Compile Include="Assets\Scripts\Bloque2\GameManager.cs" />
      <Compile Include="Assets\Scripts\SteeringBehaviours\Base\Flee.cs" />
      <Compile Include="Assets\Scripts\SteeringBehaviours\Formaciones\DefensiveCirclePattern.cs" />
      <Compile Include="Assets\Scripts\Agents\FastAgentNPC.cs" />
@@ -83,9 +83,7 @@
      <Compile Include="Assets\Scripts\Bloque2\Map\Waypoint.cs" />
      <Compile Include="Assets\Scripts\SteeringBehaviours\Delegados\Face.cs" />
      <Compile Include="Assets\Scripts\Agents\JumpAgentNPC.cs" />
-     <Compile Include="Assets\Scripts\SteeringBehaviours\LRTA\LRTA.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Actions\ActionSequence.cs" />
-     <Compile Include="Assets\Scripts\SteeringBehaviours\LRTA\Grid.cs" />
      <Compile Include="Assets\Scripts\SteeringBehaviours\Formaciones\DriftOffset.cs" />
      <Compile Include="Assets\Scripts\SteeringBehaviours\Delegados\WallAvoid.cs" />
      <Compile Include="Assets\Scripts\SteeringBehaviours\Formaciones\Fijas\LineFixed.cs" />
@@ -96,12 +94,13 @@
      <Compile Include="Assets\Scripts\SteeringBehaviours\Base\Leave.cs" />
      <Compile Include="Assets\Scripts\Bloque2\CombatSystem.cs" />
      <Compile Include="Assets\Scripts\SteeringBehaviours\Formaciones\FormationManager.cs" />
-     <Compile Include="Assets\Scripts\SteeringBehaviours\LRTA\PathFinding.cs" />
      <Compile Include="Assets\Scripts\SteeringBehaviours\Formaciones\Fijas\SquareFixed.cs" />
      <Compile Include="Assets\Scripts\SteeringBehaviours\Formaciones\FormationPattern.cs" />
      <Compile Include="Assets\Scripts\SteeringBehaviours\Base\Parabolico.cs" />
      <Compile Include="Assets\Scripts\SteeringBehaviours\Delegados\PathFollowing.cs" />
-     <Compile Include="Assets\Scripts\Bloque2\GameManager.cs" />
+     <Compile Include="Assets\Scripts\SteeringBehaviours\LRTA\LRTAstar.cs" />
+     <Compile Include="Assets\Scripts\SteeringBehaviours\LRTA\MyGrid.cs" />
+     <Compile Include="Assets\Scripts\SteeringBehaviours\LRTA\PathFinding.cs" />
     <Reference Include="UnityEngine">
         <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

@@ -35,6 +35,8 @@ public class PathFollowing : Seek
 
     override public Steering GetSteering(AgentNPC agent)
     {
+        path = agent.path; // FIXME
+
         if (path.Count > 0) { // Comprueba si el personaje sigue algún camino
             List<Vector3> nodes = path;
 
@@ -43,24 +45,25 @@ public class PathFollowing : Seek
 
             // Si he “llegado” al target, pasar al siguiente target
             float distance = Mathf.Abs((target.position - agent.position).magnitude);
-            if (distance <= agent.interiorRadius) {
+            if (distance <= agent.exteriorRadius)
+            {
                 currentNode += pathDir; // Siguiente objetivo
 
                 // Opción 1. Me quedo en el final
-                //if (currentNode >= nodes.length) {
-                //    currentNode = nodes.length - 1;
-                //}
-
-                // Opción 2. Hago vigilancia (Vuelvo atrás)
-                if (currentNode >= nodes.Count || currentNode < 0)
-                {
-                    pathDir *= -1;
-                    currentNode += pathDir;
+                if (currentNode >= nodes.Count) {
+                    currentNode = nodes.Count - 1;
                 }
 
+                // Opción 2. Hago vigilancia (Vuelvo atrás)
+                //if (currentNode >= nodes.Count || currentNode < 0)
+                //{
+                //    pathDir *= -1;
+                //    currentNode += pathDir;
+                //}
+
                 // Opción 3. Nuevo estado (steering)
-                //if (currentNode >= nodes.length || currentNode < 0) {
-                //    null;
+                //if (currentNode >= nodes.Count || currentNode < 0) {
+                //    return null;
                 //}
             }
 

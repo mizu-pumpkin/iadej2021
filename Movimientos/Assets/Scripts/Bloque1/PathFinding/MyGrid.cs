@@ -5,7 +5,7 @@ using UnityEngine;
 public class MyGrid : MonoBehaviour
 {
     //This is the mask that the program will look for when trying to find obstructions to the path.
-    public LayerMask WallMask;
+    public LayerMask WallMask; // FIXME: de momento no se usa realmente
     
     // Cada casilla del mapa
     public GameObject casillas; 
@@ -16,7 +16,7 @@ public class MyGrid : MonoBehaviour
     // Número de casillas columna
     public int colMap;
 
-    // The array of Node
+    // The array of Node that we'll use to find a path
     Node[,] NodeArray;
 
 
@@ -41,7 +41,7 @@ public class MyGrid : MonoBehaviour
                 
                 Vector3 position = new Vector3( (x + 0.5f) * cubeSize, 0, (y + 0.5f) * cubeSize );
                 // Check if the node is obstructed
-                bool isWall = Physics.CheckSphere(position, cubeSize / 2, WallMask);
+                bool isWall = Physics.CheckSphere(position, cubeSize / 2, WallMask); // FIXME
 
                 if (tag == "Water" || tag == "Wall")
                     isWall = true;
@@ -101,184 +101,6 @@ public class MyGrid : MonoBehaviour
         float y = npcPos.z / cubeSize;
 
         return NodeArray[(int)x, (int)y];
-    }
-
-    float NodeCostUnit(Transform nodo, string tagNPC)
-    {
-        string zona = nodo.tag;
-        switch (tagNPC)
-        {
-            case "SoldadoLigeroAzul":
-                switch (zona)
-                {
-                    case "Hierba":
-                        return 2;
-                    case "Carretera":
-                        return 1;
-                    case "Puente":
-                        return 1;
-                    case "Bosque":
-                        return 3;
-                    case "BaseAzul":
-                        return 1;
-                    case "BaseRoja":
-                        return 1;
-                    case "ZonaSeguraAzul":
-                        return 1;
-                    case "ZonaSeguraRoja":
-                        return 500;
-                }
-                break;
-            case "SoldadoLigeroRojo":
-                switch (zona)
-                {
-                    case "Hierba":
-                        return 2;
-                    case "Carretera":
-                        return 1;
-                    case "Puente":
-                        return 1;
-                    case "Bosque":
-                        return 3;
-                    case "BaseAzul":
-                        return 1;
-                    case "BaseRoja":
-                        return 1;
-                    case "ZonaSeguraAzul":
-                        return 500;
-                    case "ZonaSeguraRoja":
-                        return 1;
-                }
-                break;
-            case "SoldadoPesadoAzul":
-                switch (zona)
-                {
-                    case "Hierba":
-                        return 1.25f;
-                    case "Carretera":
-                        return 1.25f;
-                    case "Puente":
-                        return 1.25f;
-                    case "Bosque":
-                        return 4;
-                    case "BaseAzul":
-                        return 1;
-                    case "BaseRoja":
-                        return 1;
-                    case "ZonaSeguraAzul":
-                        return 1;
-                    case "ZonaSeguraRoja":
-                        return 500;
-                }
-                break;
-            case "SoldadoPesadoRojo":
-                switch (zona)
-                {
-                    case "Hierba":
-                        return 1.25f;
-                    case "Carretera":
-                        return 1.25f;
-                    case "Puente":
-                        return 1.25f;
-                    case "Bosque":
-                        return 4;
-                    case "BaseAzul":
-                        return 1;
-                    case "BaseRoja":
-                        return 1;
-                    case "ZonaSeguraAzul":
-                        return 500;
-                    case "ZonaSeguraRoja":
-                        return 1;
-                }
-                break;
-            case "ExploradorAzul":
-                switch (zona)
-                {
-                    case "Hierba":
-                        return 1;
-                    case "Carretera":
-                        return 2;
-                    case "Puente":
-                        return 1;
-                    case "Bosque":
-                        return 0.75f;
-                    case "BaseAzul":
-                        return 1;
-                    case "BaseRoja":
-                        return 1;
-                    case "ZonaSeguraAzul":
-                        return 1;
-                    case "ZonaSeguraRoja":
-                        return 500;
-                }
-                break;
-            case "ExploradorRojo":
-                switch (zona)
-                {
-                    case "Hierba":
-                        return 1;
-                    case "Carretera":
-                        return 2;
-                    case "Puente":
-                        return 1;
-                    case "Bosque":
-                        return 0.75f;
-                    case "BaseAzul":
-                        return 1;
-                    case "BaseRoja":
-                        return 1;
-                    case "ZonaSeguraAzul":
-                        return 500;
-                    case "ZonaSeguraRoja":
-                        return 1;
-                }
-                break;
-            case "ArqueroAzul":
-                switch (zona)
-                {
-                    case "Hierba":
-                        return 1;
-                    case "Carretera":
-                        return 0.75f;
-                    case "Puente":
-                        return 0.75f;
-                    case "Bosque":
-                        return 3;
-                    case "BaseAzul":
-                        return 1;
-                    case "BaseRoja":
-                        return 1;
-                    case "ZonaSeguraAzul":
-                        return 1;
-                    case "ZonaSeguraRoja":
-                        return 500;
-                }
-                break;
-            case "ArqueroRojo":
-                switch (zona)
-                {
-                    case "Hierba":
-                        return 1;
-                    case "Carretera":
-                        return 0.75f;
-                    case "Puente":
-                        return 0.75f;
-                    case "Bosque":
-                        return 3;
-                    case "BaseAzul":
-                        return 1;
-                    case "BaseRoja":
-                        return 1;
-                    case "ZonaSeguraAzul":
-                        return 500;
-                    case "ZonaSeguraRoja":
-                        return 1;
-                }
-                break;
-        }
-
-        return 1;
     }
 
     //Get the map cost from a specific target

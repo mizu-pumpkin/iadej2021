@@ -4,26 +4,22 @@ using UnityEngine;
 
 public class PathFinding : MonoBehaviour
 {
-    Node startNode;
-    Node targetNode;
-    GameObject GoalNode;
-
     public LRTAStar lrtaStar;
     private MyGrid grid;
-    float[,] costMap;
+
+    GameObject TargetPoint;
 
     private void Awake()
     {
         grid = GetComponent<MyGrid>();
-        //lrtaStar = GetComponent<LRTAstar>();
-    }
-    
-    private void Start()
-    {
-        costMap = grid.GetMatrixCost("standarValue");//valores normales
     }
 
-    public void LRTA(AgentNPC npc)
+    public void A_star(AgentNPC npc, string value)
+    {
+        float[,] costMap = grid.GetMatrixCost(value);
+    }
+
+    public void LRTA_star(AgentNPC npc)
     {
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -33,19 +29,19 @@ public class PathFinding : MonoBehaviour
             if (hit.transform != null && hit.transform.tag != "Wall" && hit.transform.tag != "Water")
             {
                 // Convierte a nodo el punto real inicial
-                startNode = grid.NodeFromWorldPoint(npc.position);
+                Node startNode = grid.NodeFromWorldPoint(npc.position);
                 // Dibuja el punto destino
-                if (GoalNode != null) Destroy(GoalNode);
-                GoalNode = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                GoalNode.GetComponent<Renderer>().material.color = Color.red;
-                GoalNode.transform.localScale = Vector3.one * startNode.nodeSize;
-                GoalNode.transform.position = new Vector3(
+                if (TargetPoint != null) Destroy(TargetPoint);
+                TargetPoint = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                TargetPoint.GetComponent<Renderer>().material.color = Color.red;
+                TargetPoint.transform.localScale = Vector3.one * startNode.nodeSize;
+                TargetPoint.transform.position = new Vector3(
                     hit.transform.position.x,
                     hit.transform.position.y + 1,
                     hit.transform.position.z
                 );
                 // Convierte a nodo el punto real destino
-                targetNode = grid.NodeFromWorldPoint(GoalNode.transform.position);
+                Node targetNode = grid.NodeFromWorldPoint(TargetPoint.transform.position);
                 // Llama a LRTA*
                 lrtaStar.FindPath(npc, startNode, targetNode, npc.heuristic, grid);
             }

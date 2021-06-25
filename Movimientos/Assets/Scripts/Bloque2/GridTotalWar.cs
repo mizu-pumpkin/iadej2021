@@ -16,23 +16,22 @@ public class GridTotalWar : MonoBehaviour
     // Número de casillas columna
     public int colMap;
 
-    //The array of Node that the A Star algorithm uses.
+    //The array of Node that we'll use to find a path
     Node[,] NodeArray;
-    public Transform[,] map;
-    //The completed path that the red line will be drawn along
-    public List<Node> FinalPath;
+
+    public Transform[,] influenceMap;
 
 
     private void Awake()
     {
-        map = new Transform[rowMap, colMap];
+        influenceMap = new Transform[rowMap, colMap];
         for (int y = 0; y < rowMap; y++)
         {
             Transform cubeRow = casillas.transform.GetChild(y);
             for (int x = 0; x < colMap; x++)
             {
                 Transform cube = cubeRow.transform.GetChild(x);
-                map[x, y] = cube;
+                influenceMap[x, y] = cube;
             }
         }
     }
@@ -121,8 +120,23 @@ public class GridTotalWar : MonoBehaviour
         return NodeArray[(int)x, (int)y];
     }
 
-    float NodeCostUnit(Transform nodo, string tagNPC)
+    //Get the map cost from a specific target
+    public float[,] GetMatrixCost(string tagNPC)
     {
+        float[,] costMap = new float[rowMap, colMap];
+        for (int x = 0; x < rowMap; x++)
+        {
+            for (int y = 0; y < colMap; y++)
+            {
+                costMap[x, y] = NodeCostUnit(influenceMap[x, y], tagNPC);
+            }
+        }
+        return costMap;
+    }
+
+    float NodeCostUnit(Transform nodo, string tagNPC)
+    { // TODO
+/*
         string zona = nodo.tag;
         switch (tagNPC)
         {
@@ -295,29 +309,15 @@ public class GridTotalWar : MonoBehaviour
                 }
                 break;
         }
-
+*/
         return 1;
-    }
-
-    //Get the map cost from a specific target
-    public float[,] GetMatrixCost(string tagNPC)
-    {
-        float[,] mapCost = new float[rowMap, colMap];
-        for (int x = 0; x < rowMap; x++)
-        {
-            for (int y = 0; y < colMap; y++)
-            {
-                mapCost[x, y] = 1;//NodeCostUnit(map[x, y], tagNPC);
-            }
-        }
-        return mapCost;
     }
     
     //return the tag of a specific point in the map
     public string GetTagFromPoint(int x, int y)
     {
-        if (map[x, y].tag == null) return null;
-        return map[x, y].tag;
+        //if (influenceMap[x, y].tag == null) return null;
+        return influenceMap[x, y].tag;
     }
     
 }

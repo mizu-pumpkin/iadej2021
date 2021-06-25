@@ -138,7 +138,7 @@ public class AgentNPC : Agent
             heuristic = 3;
         
         if (Input.GetMouseButtonDown(0))
-            pathFinding.LRTA(this);
+            pathFinding.LRTA_star(this);
     }
 
     // Recorre la lista construida en Awake() y calcula cada uno

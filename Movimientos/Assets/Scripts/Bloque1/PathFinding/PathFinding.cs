@@ -30,7 +30,7 @@ public class PathFinding : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, 1000.0f))
         {
-            if (hit.transform != null && hit.transform.tag != "Muro" && hit.transform.tag != "Rio")
+            if (hit.transform != null && hit.transform.tag != "Wall" && hit.transform.tag != "Water")
             {
                 // Convierte a nodo el punto real inicial
                 startNode = grid.NodeFromWorldPoint(npc.position);

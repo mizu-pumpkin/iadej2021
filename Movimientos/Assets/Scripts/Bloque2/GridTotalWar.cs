@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MyGrid : MonoBehaviour
+public class GridTotalWar : MonoBehaviour
 {
     //This is the mask that the program will look for when trying to find obstructions to the path.
     public LayerMask WallMask;
@@ -16,8 +16,26 @@ public class MyGrid : MonoBehaviour
     // Número de casillas columna
     public int colMap;
 
-    // The array of Node
+    //The array of Node that the A Star algorithm uses.
     Node[,] NodeArray;
+    public Transform[,] map;
+    //The completed path that the red line will be drawn along
+    public List<Node> FinalPath;
+
+
+    private void Awake()
+    {
+        map = new Transform[rowMap, colMap];
+        for (int y = 0; y < rowMap; y++)
+        {
+            Transform cubeRow = casillas.transform.GetChild(y);
+            for (int x = 0; x < colMap; x++)
+            {
+                Transform cube = cubeRow.transform.GetChild(x);
+                map[x, y] = cube;
+            }
+        }
+    }
 
 
     private void Start()
@@ -289,10 +307,17 @@ public class MyGrid : MonoBehaviour
         {
             for (int y = 0; y < colMap; y++)
             {
-                mapCost[x, y] = 1;
+                mapCost[x, y] = 1;//NodeCostUnit(map[x, y], tagNPC);
             }
         }
         return mapCost;
+    }
+    
+    //return the tag of a specific point in the map
+    public string GetTagFromPoint(int x, int y)
+    {
+        if (map[x, y].tag == null) return null;
+        return map[x, y].tag;
     }
     
 }

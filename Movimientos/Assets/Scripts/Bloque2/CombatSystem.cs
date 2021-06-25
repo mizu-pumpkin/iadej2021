@@ -14,11 +14,11 @@ public class CombatSystem
     // Tipos de unidades
     public enum UnitType { tanker, healer, ranged };
     public static float[] MaxHP = { 4000, 2000, 1000 };
-    public static float[] MaxSpeed = { 3, 5, 4 };
-    public static float[] MaxAcceleration = { 6, 10, 8 };
+    public static float[] MaxSpeed = { 30, 50, 40 };
+    public static float[] MaxAcceleration = { 60, 100, 80 };
     public static float[] Strength = { 200, 100, 70 };
     public static float[] HealStrength = { 0, 100, 0 };
-    public static float[] AtkRange = { 1.5f, 1.5f, 10 };
+    public static float[] AtkRange = { 7.5f, 7.5f, 20 };
     public static float[] AtkSpeed = { 2, 1, 0.5f };
     public static float[] Influence = { 4, 2, 1 };
     public static float[] Radius = { 4, 2, 1 };

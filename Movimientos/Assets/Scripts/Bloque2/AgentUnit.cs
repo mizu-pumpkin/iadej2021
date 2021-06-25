@@ -12,7 +12,7 @@ public class AgentUnit : AgentNPC
 
     public int team;
     public Vector3 respawnPos = Vector3.zero;
-    public Vector3 deathPos = Vector3.zero;
+    private Vector3 deathPos = Vector3.zero;
     public CombatSystem.UnitType unitType;
     public CombatSystem.TerrainType terrain;
     public float influence; // the intrinsic military power of the unit
@@ -41,6 +41,7 @@ public class AgentUnit : AgentNPC
 
         attackRange = CombatSystem.AtkRange[(int)unitType];
         exteriorRadius = attackRange * 2;
+        interiorRadius = gameObject.transform.localScale.x;
 
         attackSpeed = CombatSystem.AtkSpeed[(int)unitType];
         healStrength = CombatSystem.HealStrength[(int)unitType];

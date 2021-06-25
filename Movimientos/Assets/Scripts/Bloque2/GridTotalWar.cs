@@ -319,5 +319,11 @@ public class GridTotalWar : MonoBehaviour
         //if (influenceMap[x, y].tag == null) return null;
         return influenceMap[x, y].tag;
     }
+
+    public float getNodeInfluence(Node n)
+    {
+        //TODO
+        return 0;
+    }
     
 }

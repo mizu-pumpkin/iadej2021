@@ -81,7 +81,6 @@
      <Compile Include="Assets\Scripts\Bloque2\Actions\Die.cs" />
      <Compile Include="Assets\Scripts\Bloque1\Formations\Fixed\Fixed.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Grupo\Alignment.cs" />
-     <Compile Include="Assets\Scripts\Bloque2\Actions\RunAway.cs" />
      <Compile Include="Assets\Scripts\Bloque1\Formations\Patterns\LinePattern.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Map\Waypoint.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Delegados\Face.cs" />
@@ -101,8 +100,9 @@
      <Compile Include="Assets\Scripts\Bloque1\Formations\Patterns\FormationPattern.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Base\Parabolico.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Delegados\PathFollowing.cs" />
-     <Compile Include="Assets\Scripts\Bloque2\AStar.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Actions\Move.cs" />
+     <Compile Include="Assets\Scripts\Bloque2\AStar\AStar.cs" />
+     <Compile Include="Assets\Scripts\Bloque2\AStar\PathFindingAStar.cs" />
     <Reference Include="UnityEngine">
         <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

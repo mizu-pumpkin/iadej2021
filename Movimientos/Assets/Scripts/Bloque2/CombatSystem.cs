@@ -10,15 +10,16 @@ public class CombatSystem
     // Constante de impacto. Depende de la vida que se les ponga a las unidades
     // y de lo rápido que se quiera que maten unas unidades a otras.
     public static float CteImpacto = 200;
+    public static float HealSpeed = 1;
+    public static float HealPower = CteImpacto;
 
     // Tipos de unidades
-    public enum UnitType { tanker, healer, ranged };
+    public enum UnitType { tanker, infantry, ranged };
     public static float[] MaxHP = { 4000, 2000, 1000 };
     public static float[] MaxSpeed = { 30, 50, 40 };
     public static float[] MaxAcceleration = { 60, 100, 80 };
-    public static float[] Strength = { 200, 100, 70 };
-    public static float[] HealStrength = { 0, 100, 0 };
-    public static float[] AtkRange = { 7.5f, 7.5f, 20 };
+    public static float[] Strength = { 200, 100, 50 };
+    public static float[] AtkRange = { 15, 20, 40 };
     public static float[] AtkSpeed = { 2, 1, 0.5f };
     public static float[] Influence = { 4, 2, 1 };
     public static float[] Radius = { 4, 2, 1 };
@@ -38,15 +39,15 @@ public class CombatSystem
 
     // Factor de tipo de atacante/defensor
     public static float[,] FAD = {
-        // tanker, healer, ranged
+        // tanker, infantry, ranged
         { 1.00f, 1.50f, 1.75f }, // tanker
-        { 0.25f, 1.00f, 1.75f }, // healer
+        { 0.25f, 1.00f, 1.75f }, // infantry
         { 1.00f, 1.50f, 1.00f }  // ranged
     };
 
     // Factor por terreno del atacante
     public static float[,] FTA = {
-        // tanker, healer, ranged
+        // tanker, infantry, ranged
         { 1.00f, 1.00f, 2.00f }, // street
         { 0.25f, 0.75f, 0.10f }, // forest
         { 1.00f, 1.00f, 2.00f }  // plains
@@ -54,7 +55,7 @@ public class CombatSystem
 
     // Factor por terreno del defensor
     public static float[,] FTD = {
-        // tanker, healer, ranged
+        // tanker, infantry, ranged
         { 1.00f, 0.75f, 0.75f }, // street
         { 0.50f, 1.25f, 1.25f }, // forest
         { 1.00f, 1.00f, 0.75f }  // plains

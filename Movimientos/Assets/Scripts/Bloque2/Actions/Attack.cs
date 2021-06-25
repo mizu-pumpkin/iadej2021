@@ -30,11 +30,17 @@ public class Attack : Action
                 if (dead) isComplete = true;
             }
         }
+        // If the target moved away, complete action
+        //else if (unit.pathFollowing.arrived) { // SUPER HACK
+        //    if (unit.pathFollowing.path[unit.pathFollowing.path.Count-1] != enemyUnit.position)
+        //        isComplete = true;
+        //    unit.canMove = true;
+        //}
         // If it's not in range, move closer
         else {
             unit.canMove = true;
         }
     }
 
-    public override string ToString() => "ATTACK";
+    public override string ToString() => "ATTACKING "+enemyUnit.gameObject.name;
 }

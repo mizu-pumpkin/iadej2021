@@ -6,17 +6,11 @@ public class PathFinding : MonoBehaviour
 {
     public LRTAStar lrtaStar;
     private MyGrid grid;
-
-    GameObject TargetPoint;
+    private GameObject TargetPoint;
 
     private void Awake()
     {
         grid = GetComponent<MyGrid>();
-    }
-
-    public void A_star(AgentUnit npc)
-    {
-        float[,] costMap = grid.GetMatrixCost(npc.unitType.ToString());
     }
 
     public void LRTA_star(AgentNPC npc)

@@ -19,6 +19,8 @@ public class PathFollowing : Seek
     public enum Mode { stay, patrol, stop };
     public Mode mode;
 
+    public bool arrived;
+
     /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
@@ -43,7 +45,8 @@ public class PathFollowing : Seek
         //}
         
         // Comprueba si el personaje sigue algún camino
-        if (path.Count > 0) { 
+        if (path != null && path.Count > 0)
+        {
             List<Vector3> nodes = path;
 
             // Buscar objetivo actual
@@ -51,7 +54,7 @@ public class PathFollowing : Seek
 
             // Si he “llegado” al target, pasar al siguiente target
             float distance = Mathf.Abs((target.position - agent.position).magnitude);
-            if (distance <= agent.exteriorRadius)
+            if (distance <= agent.interiorRadius)
             {
                 currentNode += pathDir; // Siguiente objetivo
 
@@ -59,7 +62,10 @@ public class PathFollowing : Seek
                 {
                     case Mode.stay: // Opción 1. Me quedo en el final
                         if (currentNode >= nodes.Count)
+                        {
+                            arrived = true;
                             currentNode = nodes.Count - 1;
+                        }
                         break;
                     case Mode.patrol: // Opción 2. Hago vigilancia (Vuelvo atrás)
                         if (currentNode >= nodes.Count || currentNode < 0)
@@ -70,7 +76,10 @@ public class PathFollowing : Seek
                         break;
                     case Mode.stop: // Opción 3. Nuevo estado (steering)
                         if (currentNode >= nodes.Count)
+                        {
+                            arrived = true;
                             currentNode = nodes.Count - 1;
+                        }
                         return null;
                 }
             }

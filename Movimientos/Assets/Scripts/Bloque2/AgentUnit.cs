@@ -6,7 +6,7 @@ using UnityEditor; // Handles
 
 public class AgentUnit : AgentNPC
 {
-    public AStar controlador;
+    [SerializeField] private PathFindingAStar pathFinder;
 
     /*
         █▀█ █▀█ █▀█ █▀█ █▀▀ █▀█ ▀█▀ █ █▀▀ █▀
@@ -14,30 +14,30 @@ public class AgentUnit : AgentNPC
     */
     
     // Estado en el que se encuentra la unidad
-    public enum State { none, attacking, defending, fleeing, dying, healing, routed };
+    public enum State { none, patrolling, attacking, defending, routed, dying, healing };
     [SerializeField] private State state;
 
-    // Modo de estrategia del equipo
-    public enum StrategyMode { NEUTRAL, ATTACK, DEFEND, TOTALWAR }; // FIXME: ATTACK == TOTALWAR ?
-    [SerializeField] private StrategyMode strategyMode;
+    // Modo de estrategia del team
+    public GameManager.StrategyMode strategyMode;
 
     // Posiciones de interés para PathFollowing
-    [SerializeField] private PathFollowing pathFollowing;
+    public PathFollowing pathFollowing;
     [SerializeField] private List<Vector3> patrolPath;
     public Vector3 teamBasePosition;
     [SerializeField] private Vector3 enemyBasePosition;
-    [SerializeField] private Vector3 healingZonePosition;
+    public Vector3 healingZonePosition;
     [SerializeField] private Vector3 initialPosition;
     [SerializeField] private Vector3 deathPosition;
 
     // Atributos de la unidad
     public CombatSystem.UnitType unitType;
-    [SerializeField] private int team;
+    public int team;
     public float influence; // the intrinsic military power of the unit
     public float effectRadius; // the radius of effect of the influence
     public float attackRange;
     public float attackSpeed;
-    public float healStrength;
+    public float healSpeed;
+    public float healPower;
     [SerializeField] private float maxHP;
     [SerializeField] private float hp;
 
@@ -61,21 +61,270 @@ public class AgentUnit : AgentNPC
 
     private void InitializeUnit()
     {
+        initialPosition = this.position;
+
         maxSpeed = CombatSystem.MaxSpeed[(int)unitType];
         maxAcceleration = CombatSystem.MaxAcceleration[(int)unitType];
 
+        attackSpeed = CombatSystem.AtkSpeed[(int)unitType];
         attackRange = CombatSystem.AtkRange[(int)unitType];
         exteriorRadius = attackRange * 2;
         interiorRadius = gameObject.transform.localScale.x;
 
-        attackSpeed = CombatSystem.AtkSpeed[(int)unitType];
-        healStrength = CombatSystem.HealStrength[(int)unitType];
-
         maxHP = CombatSystem.MaxHP[(int)unitType];
         hp = maxHP;
+        healSpeed = CombatSystem.HealSpeed;
+        healPower = CombatSystem.HealPower;
 
         influence = CombatSystem.Influence[(int)unitType];
         effectRadius = CombatSystem.Radius[(int)unitType];
+
+        // HACK
+        patrolPath = new List<Vector3>();
+        patrolPath.Add(initialPosition);
+        patrolPath.Add(teamBasePosition);
+        patrolPath.Add(healingZonePosition);
+    }
+
+    public override void Update()
+    {
+        if (!GameManager.CheckVictory()) {
+            if (canMove)
+                base.Update();
+            ChooseAction();
+            ExecuteAction();
+        }
+    }
+
+    /*
+        █▀ ▀█▀ █▀█ ▄▀█ ▀█▀ █▀▀ █▀▀ █▄█
+        ▄█ ░█░ █▀▄ █▀█ ░█░ ██▄ █▄█ ░█░
+    */
+
+    AgentUnit FindEnemyNear()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, attackRange*5);
+
+        foreach (Collider collider in hitColliders)
+        {
+            AgentUnit agentUnit = collider.gameObject.GetComponent<AgentUnit>();
+            if (agentUnit != null && team != agentUnit.team)
+                return agentUnit;
+        }
+
+        return null;
+    }
+
+    void ChooseAction()
+    {
+        if (state != State.dying && state != State.healing && state != State.routed)
+        {
+            AgentUnit enemy = FindEnemyNear();//pathFinder.FindEnemy(this);
+            // If there is an enemy in sight, attack it
+            if (enemy != null) {
+                if (state != State.attacking)
+                    Attack(enemy);
+            }
+            // If there is no enemy near, do what the strategy demands
+            else {
+                switch (strategyMode)
+                {
+                    case GameManager.StrategyMode.ATTACK:
+                    case GameManager.StrategyMode.TOTALWAR:
+                        // Move to enemy base
+                        Move(enemyBasePosition, State.none);
+                        break;
+                    case GameManager.StrategyMode.DEFEND:
+                        // Go back to defend team base
+                        if (state != State.defending)
+                        {
+                           float distance = (this.position - teamBasePosition).magnitude;
+                           if (distance > this.exteriorRadius)
+                               Move(teamBasePosition);
+                           else
+                               Defend();
+                        }
+                        break;
+                    default:
+                        // Patrol your zone
+                        if (state != State.patrolling) {
+                            float distance = (this.position - initialPosition).magnitude;
+                            if (distance > this.exteriorRadius)
+                                Move(initialPosition);
+                            else
+                                Patrol();
+                        }
+                        break;
+                }
+            }
+        }
+    }
+
+    public void ExecuteAction()
+    {
+        if (action != null)
+        {
+            action.Execute();
+            if (action.IsComplete()) {
+                action = null;
+                canMove = true;
+                InitializeSteerings(); // HACK
+                // Si ha terminado de hacer respawn, vuelve a la posición donde murió
+                if (state == State.dying) {
+                    Move(deathPosition, State.none);
+                }
+                else {
+                    state = State.none;
+                }
+            }
+        }
+    }
+
+    public bool TakeDamage(int damage, AgentUnit attacker)
+    {
+        if (damage > 0) {
+            hp -= damage;
+            // If health is 0, die
+            if (hp <= 0) {
+                print(attacker.gameObject.name+" killed "+this.gameObject.name);
+                Die();
+                return true;
+            }
+            // If attacked, respond to attack
+            else if (state != State.attacking) {
+                Attack(attacker);
+            }
+            // If health is low and speed is high, run away
+            else if (hp < (maxHP / 2) && hp < attacker.hp && maxSpeed >= attacker.maxSpeed && state != State.healing) {
+                print(this.gameObject.name+"'s HP is low");
+                Heal();
+            }
+        }
+        return false;
+    }
+    
+    public bool TakeHeal(float heal)
+    {
+        if (heal > 0)
+        {
+            hp += heal;
+            if (hp >= maxHP) {
+                hp = maxHP;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /*
+        ▄▀█ █▀▀ ▀█▀ █ █▀█ █▄░█ █▀
+        █▀█ █▄▄ ░█░ █ █▄█ █░▀█ ▄█
+    */
+
+    public void Attack(AgentUnit enemyUnit)
+    {
+        action = new Attack(this, enemyUnit);
+        state = State.attacking;
+
+        // TODO:HACK
+        //SetTarget(enemyUnit);
+        FollowPathAndStop(enemyUnit.position);
+    }
+    
+    public void Defend()
+    {
+        action = new Defend(this);
+        state = State.defending;
+        if (pathFollowing != null) Destroy(pathFollowing);
+        pathFollowing = null;
+    }
+
+    public void Die()
+    {
+        action = new Die(this);
+        state = State.dying;
+        // Respawn
+        deathPosition = this.position;
+        this.position = teamBasePosition;
+        hp = maxHP;
+    }
+    
+    public void Heal()
+    {
+        action = new Heal(this);
+        state = State.healing;
+        FollowPathAndStop(healingZonePosition);
+    }
+    
+    //public void Hide(Vector3 targetPoint)
+    //{
+    //    action = new TakeCover(this, targetPoint);
+    //    state = State.fleeing;
+    //    FollowPathAndStop(targetPoint);
+    //}
+
+    public void Move(Vector3 targetPoint, State s = State.routed)
+    {
+        action = new Move(this, targetPoint);
+        state = s;
+        FollowPathAndStop(targetPoint);
+    }
+    
+    public void Patrol()
+    {
+        action = new Patrol(this);
+        state = State.patrolling;
+        
+        if (pathFollowing != null) Destroy(pathFollowing);
+        pathFollowing = new GameObject("PathFollowing").AddComponent<PathFollowing>();
+        pathFollowing.path = patrolPath;
+        pathFollowing.mode = PathFollowing.Mode.patrol;
+        NewTarget(pathFollowing);
+    }
+
+    // AUX
+
+    private void FollowPathAndStop(Vector3 target)
+    {
+        List<Vector3> path = pathFinder.FindPathA_star(this, target);
+        // TODO: borrar del Agent el PathFollowing anterior
+        if (pathFollowing != null) Destroy(pathFollowing);
+        pathFollowing = new GameObject("PathFollowing").AddComponent<PathFollowing>();
+        pathFollowing.path = path;
+        pathFollowing.mode = PathFollowing.Mode.stay;
+        NewTarget(pathFollowing);
+    }
+
+    /*
+        █▀▀ █ ▀█ █▀▄▀█ █▀█ █▀
+        █▄█ █ █▄ █░▀░█ █▄█ ▄█
+    */
+
+    public void OnDrawGizmos()
+    {
+        string text = unitType.ToString()+" / "+terrain.ToString();
+        text += "\nHP: "+hp.ToString();
+        if (selected)
+            text += "\nSELECTED";
+        if (action != null)
+            text += "\n"+action.ToString();
+        
+        Handles.Label(transform.position, text);
+    }
+
+    private bool selected;
+    public LayerMask hitLayers;
+
+    void OnMouseOver()
+    {
+        // Left click
+        if (Input.GetMouseButtonDown(0)) {
+            selected = !selected;
+        }
+        // Right click
+        if (Input.GetMouseButtonDown(1)) {
+            selected = false;
+        }
     }
 
     protected override void FindPath()
@@ -86,208 +335,37 @@ public class AgentUnit : AgentNPC
             heuristic = 2;
         if (Input.GetKey(KeyCode.Keypad3))
             heuristic = 3;
-        
-        if (Input.GetMouseButtonDown(0))
-            pathFinding.A_star(this);
-    }
 
-    public override void Update()
-    {
-        if (canMove)
-            base.Update();
-        ExecuteAction();
-    }
-
-    public void OnDrawGizmos()
-    {
-        string text = unitType.ToString()+" / "+terrain.ToString();
-        text += "\nHP: "+hp.ToString();
-        if (action != null)
-            text += "\n"+action.ToString();
-        
-        Handles.Label(transform.position, text);
-
-        // Draw a yellow sphere at the transform's position
-        // if (disparoLejano) {
-        //     Gizmos.color = Color.yellow;
-        //     Gizmos.DrawSphere(transform.position, 40);
-        // }
-    }
-
-    /*
-        ▄▀█ █▀▀ ▀█▀ █ █▀█ █▄░█ █▀
-        █▀█ █▄▄ ░█░ █ █▄█ █░▀█ ▄█
-    */
-    public void ExecuteAction()
-    {
-        if (action != null)
-        {
-            action.Execute();
-            if (action.IsComplete()) {
-                action = null;
-                canMove = true;
-                InitializeSteerings(); // HACK
-                if (state == State.dying) SetTarget(deathPosition, 0); // HACK
-                state = State.none;
-            }
-        }
-    }
-
-    public void Attack(AgentUnit enemyUnit)
-    {
-        action = new Attack(this, enemyUnit);
-        state = State.attacking;
-
-        SetTarget(enemyUnit); // HACK
-    }
-    
-    public void Defend()
-    {
-        action = new Defend(this, teamBasePosition);
-        state = State.defending;
-
-        List<Vector3> path = controlador.FindPath(this, teamBasePosition);
-        FollowPathAndStop(path);
-    }
-
-    public void Die()
-    {
-        action = new Die(this);
-        state = State.dying;
-
-        // Respawn
-        hp = maxHP;//InitializeUnit();
-        deathPosition = this.position;
-        this.position = teamBasePosition;
-    }
-    
-    public void Heal(AgentUnit allyUnit)
-    {
-        if (healStrength > 0) {
-            action = new Heal(this, allyUnit);
-            state = State.healing;
-
-            SetTarget(allyUnit); // HACK
-        }
-    }
-    
-    public void Hide(Vector3 targetPoint)
-    {
-        action = new TakeCover(this, targetPoint);
-        state = State.fleeing;
-
-        List<Vector3> path = controlador.FindPath(this, targetPoint);
-        FollowPathAndStop(path);
-    }
-
-    public void Move(Vector3 targetPoint)
-    {
-        action = new Move(this, targetPoint);
-        state = State.routed;
-
-        List<Vector3> path = controlador.FindPath(this, targetPoint);
-        FollowPathAndStop(path);
-    }
-    
-    public void Patrol()
-    {
-        action = new Patrol(this);
-        state = State.none;
-        
-        pathFollowing = new GameObject("PathFollowing").AddComponent<PathFollowing>();
-        pathFollowing.path = patrolPath;
-        pathFollowing.mode = PathFollowing.Mode.patrol;
-        NewTarget(pathFollowing);
-    }
-    
-    public void RunAway()
-    {
-        action = new RunAway(this, healingZonePosition);
-        state = State.fleeing;
-
-        List<Vector3> path = controlador.FindPath(this, healingZonePosition);
-        FollowPathAndStop(path);
-    }
-
-    public void FollowPathAndStop(List<Vector3> route)
-    {
-        // TODO: borrar del Agent el PathFollowing anterior
-        pathFollowing = new GameObject("PathFollowing").AddComponent<PathFollowing>();
-        pathFollowing.path = route;
-        pathFollowing.mode = PathFollowing.Mode.stop;
-        NewTarget(pathFollowing);
-    }
-
-    public bool TakeDamage(int damage, AgentUnit attacker)
-    {
-        hp -= damage;
-        // If health is 0, die
-        if (hp <= 0) {
-            Die();
-            return true;
-        }
-        // If attacked, respond to attack
-        else if (state != State.attacking) {
-            Attack(attacker);
-        }
-        // If health is low and speed is high, run away
-        else if (hp < (maxHP / 2) && hp < attacker.hp && maxSpeed >= attacker.maxSpeed && state != State.fleeing) {
-            RunAway();
-        }
-        return false;
-    }
-
-    public bool TakeHeal(float heal)
-    {
-        hp += heal;
-        if (hp >= maxHP) {
-            hp = maxHP;
-            return true;
-        }
-        return false;
-    }
-
-    /*
-        █▀ ▀█▀ █▀█ ▄▀█ ▀█▀ █▀▀ █▀▀ █▄█
-        ▄█ ░█░ █▀▄ █▀█ ░█░ ██▄ █▄█ ░█░
-    */
-
-    void Strategy()
-    {
-        if (state == State.none)
-        {
-            AgentUnit enemy = controlador.FindEnemy(this);
-            // If there is an enemy in sight, attack it
-            if (enemy != null) {
-                Attack(enemy);
-            }
-            // If there is no enemy near, do what the strategy demands
-            else {
-                switch (strategyMode)
+        if (selected) {
+            // Left click
+            if (Input.GetMouseButtonDown(0))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+                //Si el raycast no golpea en una pared o en el agua
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity, hitLayers))
                 {
-                    case StrategyMode.ATTACK:
-                    case StrategyMode.TOTALWAR:
-                        // Find path to enemy base
-                        Move(enemyBasePosition);
-                        break;
-                    case StrategyMode.DEFEND:
-                        Defend();
-                        break;
-                    default:
-                        Patrol();
-                        break;
+                    if (hit.transform != null && hit.transform.tag != "Wall" && hit.transform.tag != "Water")
+                        if (hit.transform != this.transform)
+                        {
+                            FollowPathAndStop(hit.transform.position);
+                            selected = false;
+                        }
                 }
             }
+            // Right click
+            if (Input.GetMouseButtonDown(1)) {
+                selected = false;
+            }
         }
     }
-
 
 
     // public Material materialOriginal;
     // public Material materialElegido;
     // //Renderer renderer;
 
-    // public LayerMask hitLayers;
+
     // public Transform target;
     // Vector3 targetPosicion; //Variable para si el objetivo se ha movido, cambiar el pathfinding
 
@@ -314,9 +392,6 @@ public class AgentUnit : AgentNPC
     //     if ((!esperando) && (!finJuego))
     //     {
     //         comprobarVictoria();
-    //         StartCoroutine(comprobarVida());
-    //         if (seleccionado) buscarNuevoTarget();
-    //         StartCoroutine(detectarObjetivo());
             
     //         if (!quieto)
     //         {
@@ -336,121 +411,6 @@ public class AgentUnit : AgentNPC
     //             }
     //         }
     //     }
-    // }
-
-    // void comprobarVictoria()
-    // {
-    //     string tagBase = (nodoActual == null) ? tagZona : controlador.getTagNode(nodoActual);
-    //     int baseTeam = (tagBase == "BaseRoja") ? 0 : 1;
-
-    //     if (team != baseTeam)
-    //         controlador.ganar(team.ToString());
-    // }
-
-    // private void OnMouseOver()
-    // {
-    //     if ((!controlador.ocupadoSeleccionando) && (!finJuego))//Con esto evitamos que más de un NPC esté seleccionado
-    //     {
-    //         if (!esperando)
-    //         {
-    //             if (!patrulla)  //Si es una patrulla, no podrá ser seleccionado
-    //             {
-    //                 if (Input.GetMouseButtonDown(0))
-    //                 {
-    //                     //renderer.sharedMaterial = materialElegido;
-    //                     controlador.ocupadoSeleccionando = true;
-    //                     seleccionado = true;
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-    
-    // void buscarNuevoTarget()
-    // {
-    //     if (Input.GetMouseButtonDown(0)) // Left click
-    //     {
-    //         Ray castPoint = Camera.main.ScreenPointToRay(Input.mousePosition);
-    //         RaycastHit hit;
-    //         if (Physics.Raycast(castPoint, out hit, Mathf.Infinity, hitLayers)) //Si el raycast no golpea en una pared o en el agua
-    //         {
-    //             if (hit.transform != this.transform) //Para evitar ser autoseleccionado
-    //             {
-    //                 target = hit.transform;
-    //                 cambio = true;
-    //                 // renderer.sharedMaterial = materialOriginal;
-    //                 controlador.ocupadoSeleccionando = false;
-    //                 seleccionado = false;
-    //             }
-    //         }
-    //     }
-    //     if (Input.GetMouseButtonDown(1)) // Right click
-    //     {
-    //         // renderer.sharedMaterial = materialOriginal;
-    //         controlador.ocupadoSeleccionando = false;
-    //         seleccionado = false;
-    //     }
-    // }
-
-    // IEnumerator detectarObjetivo()
-    // {
-    //     // Collider[] hitColliders = Physics.OverlapSphere(transform.position, attackRange);
-    //     // int i = 0;
-    //     // bool detectado = false;
-    //     // foreach (Collider collider in hitColliders)
-    //     // {
-    //     //     if (team != collider.team)
-    //     //     {
-    //     //         NPC enemigo = controlador.devolverEnemigo(collider.transform);
-    //     //         if (enemigo.vida > 0)
-    //     //         {
-    //     //             quieto = true;
-    //     //             atacar(enemigo);
-    //     //             esperando = true;
-    //     //             detectado = true;
-    //     //             if (seleccionado)
-    //     //             {
-    //     //                 renderer.sharedMaterial = materialOriginal;
-    //     //                 controlador.ocupadoSeleccionando = false;
-    //     //                 seleccionado = false;
-    //     //             }
-    //     //             renderer.sharedMaterial = materialElegido;
-    //     //             yield return new WaitForSeconds(2);
-    //     //             renderer.sharedMaterial = materialOriginal;
-    //     //             esperando = false;
-    //     //         }
-    //     //     }
-    //     // }
-    //     // if (!detectado) quieto = false; //Si no se ha detectado a nadie, entonces por si se estaba quieto, que ya no lo este
-    // }
-
-    // void detectarEnemigoPatrulla()
-    // {
-    //     // Collider[] hitColliders = Physics.OverlapSphere(transform.position, attackRange);
-    //     // int i = 0;
-    //     // bool detectado = false;
-    //     // foreach (Collider collider in hitColliders)
-    //     // {
-    //     //     if (team != collider.team)
-    //     //     {
-    //     //         detectado = true;
-    //     //         NPC enemigo = controlador.devolverEnemigo(collider.transform);
-    //     //         if (target != enemigo.transform)
-    //     //         {
-    //     //             target = enemigo.transform;
-    //     //             targetPosicion = enemigo.transform.position;
-    //     //             nodoActual = null;
-    //     //         }
-    //     //         pausarPatrulla = true;
-    //     //         break;    //El primero que encuentre será su objetivo
-    //     //     }
-    //     // }
-    //     // if (!detectado && pausarPatrulla)
-    //     // {
-    //     //     pausarPatrulla = false; //Si no se ha detectado a nadie, entonces por si se estaba quieto, que ya no lo este
-    //     //     nodoActual = null;
-    //     //     numCaminoPatrulla = 0;
-    //     // }
     // }
 
     // public void AccionPatrulla()

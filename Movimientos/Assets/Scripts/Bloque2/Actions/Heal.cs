@@ -4,27 +4,25 @@ using UnityEngine;
 
 public class Heal : Action
 {
-    public AgentUnit allyUnit;
     private float time = -1;
 
-    public Heal(AgentUnit unit, AgentUnit allyUnit) : base(unit) {
-        this.allyUnit = allyUnit;
-    }
+    public Heal(AgentUnit unit) : base(unit) {}
 
     public override void Execute()
     {
         if (time == -1)
             time = Time.time;
         
-        float distance = (unit.position - allyUnit.position).magnitude;
+        float distance = (unit.position - unit.healingZonePosition).magnitude;
 
         // If it's in range, heal
-        if (distance <= unit.attackRange)
+        // TODO: if (unit.terrain == TerrainType.heal)
+        if (distance <= unit.interiorRadius*2)
         {
             unit.canMove = false;
-            if (Time.time - time >= unit.attackSpeed) {
+            if (Time.time - time >= unit.healSpeed) {
                 time = -1;
-                bool healed = allyUnit.TakeHeal(unit.healStrength);
+                bool healed = unit.TakeHeal(unit.healPower);
                 if (healed) isComplete = true;
             }
         }

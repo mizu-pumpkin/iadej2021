@@ -2,15 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Defend : Action
+public class Defend : Move
 {
-    public Defend(AgentUnit unit) : base(unit) {}
-
-    public override void Execute()
-    {
-        if (unit.position == unit.respawnPos)
-            isComplete = true;
-    }
+    public Defend(AgentUnit unit, Vector3 target) : base(unit, target) {}
 
     public override string ToString() => "DEFEND";
 }

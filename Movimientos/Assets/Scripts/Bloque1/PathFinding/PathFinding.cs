@@ -14,9 +14,9 @@ public class PathFinding : MonoBehaviour
         grid = GetComponent<MyGrid>();
     }
 
-    public void A_star(AgentNPC npc, string value)
+    public void A_star(AgentUnit npc)
     {
-        float[,] costMap = grid.GetMatrixCost(value);
+        float[,] costMap = grid.GetMatrixCost(npc.unitType.ToString());
     }
 
     public void LRTA_star(AgentNPC npc)

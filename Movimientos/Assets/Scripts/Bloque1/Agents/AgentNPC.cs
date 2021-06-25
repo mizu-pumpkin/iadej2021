@@ -128,7 +128,7 @@ public class AgentNPC : Agent
             Destroy(align.gameObject);
     }
 
-    void FindPath()
+    protected virtual void FindPath()
     {
         if (Input.GetKey(KeyCode.Keypad1))
             heuristic = 1;

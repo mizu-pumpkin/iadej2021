@@ -70,6 +70,7 @@
      <Compile Include="Assets\Scripts\Bloque1\Agents\FastAgentNPC.cs" />
      <Compile Include="Assets\Scripts\Bloque1\Agents\Bodi.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Actions\Action.cs" />
+     <Compile Include="Assets\Scripts\Bloque2\GridTotalWar.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Map\StrategyManager.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Actions\Attack.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Steering.cs" />
@@ -100,7 +101,8 @@
      <Compile Include="Assets\Scripts\Bloque1\Formations\Patterns\FormationPattern.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Base\Parabolico.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Delegados\PathFollowing.cs" />
-     <Compile Include="Assets\Scripts\Bloque2\GridTotalWar.cs" />
+     <Compile Include="Assets\Scripts\Bloque2\AStar.cs" />
+     <Compile Include="Assets\Scripts\Bloque2\Actions\Move.cs" />
     <Reference Include="UnityEngine">
         <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

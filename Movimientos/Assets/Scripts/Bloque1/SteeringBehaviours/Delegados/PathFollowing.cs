@@ -10,7 +10,7 @@ public class PathFollowing : Seek
      */
     
     // Holds the path to follow
-    [SerializeField] private List<Vector3> path;
+    public List<Vector3> path;
     // Holds the current position on the path
     [SerializeField] private int currentNode;
     // The direction in which we are going in the path
@@ -18,7 +18,6 @@ public class PathFollowing : Seek
 
     public enum Mode { stay, patrol, stop };
     public Mode mode;
-
 
     /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀

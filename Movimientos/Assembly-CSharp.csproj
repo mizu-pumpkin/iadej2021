@@ -70,7 +70,7 @@
      <Compile Include="Assets\Scripts\Bloque1\Agents\FastAgentNPC.cs" />
      <Compile Include="Assets\Scripts\Bloque1\Agents\Bodi.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Actions\Action.cs" />
-     <Compile Include="Assets\Scripts\Bloque2\GridTotalWar.cs" />
+     <Compile Include="Assets\Scripts\Bloque2\AStar\GridTotalWar.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Map\StrategyManager.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Actions\Attack.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Steering.cs" />

@@ -10,11 +10,6 @@ public class PathFindingAStar : MonoBehaviour
         grid = GetComponent<GridTotalWar>();
     }
 
-    private void Start()
-    {
-        costMap = grid.GetMatrixCost("standarValue");//valores normales
-    }
-
     /*
         ▄▀█   █▀ ▀█▀ ▄▀█ █▀█
         █▀█   ▄█ ░█░ █▀█ █▀▄
@@ -27,6 +22,8 @@ public class PathFindingAStar : MonoBehaviour
 
     public List<Vector3> AStar(AgentUnit npc)
     {
+        costMap = grid.GetMatrixCost(npc);
+
         List<Vector3> path = null;
 
         RaycastHit hit;
@@ -50,7 +47,7 @@ public class PathFindingAStar : MonoBehaviour
                 // Convierte a nodo el punto real destino
                 Node targetNode = grid.NodeFromWorldPoint(TargetPoint.transform.position);
                 // Llama a A*
-                List<Node> nodePath = aStar.FindAStar(npc, startNode, targetNode, npc.heuristic, grid);
+                List<Node> nodePath = aStar.FindAStar(npc, startNode, targetNode, npc.heuristic, grid, costMap);
 
                 foreach (Node n in nodePath)
                     path.Add(n.position);
@@ -60,11 +57,12 @@ public class PathFindingAStar : MonoBehaviour
         return path;
     }
 
+    // HACK
     public List<Vector3> FindPathA_star(AgentUnit npc, Vector3 position)
     {
         List<Vector3> path = new List<Vector3>();
         path.Add(position);
-        float[,] costMap = grid.GetMatrixCost(npc.unitType.ToString());
+        float[,] costMap = grid.GetMatrixCost(npc);
         // TODO
         //return aStar.FindPath(npc, position);//npc, startNode, targetNode, npc.heuristic, grid);
         return path;

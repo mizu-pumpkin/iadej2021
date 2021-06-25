@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class AStar : MonoBehaviour
 {
-
-
     public static int GetHeuristicDistance(Node p, Node q, int heuristic)
     {
         // El orden de los nodos no importa porque se van a
@@ -52,7 +50,7 @@ public class AStar : MonoBehaviour
 
     // TODO:He utilizado 
     //pseudo del libro (quitar esto obviamente)
-    public List<Node> FindAStar(AgentUnit npc, Node startNode, Node targetNode, int heuristic, GridTotalWar grid)
+    public List<Node> FindAStar(AgentUnit npc, Node startNode, Node targetNode, int heuristic, GridTotalWar grid,float[,] costMap)
     {
         // Camino a devolver
         List<Node> path = new List<Node>();
@@ -95,14 +93,14 @@ public class AStar : MonoBehaviour
             foreach (Node connection in connections)
             {
                 //  If the node is closed we may have to
-                // skipt.
+                // skip.
                 if (!connection.isWall || closed.Contains(connection))
                 {
                     continue;
                 }
 
-                // Coste táctico
-                float moveCost = tacticalCost(actualNode, connection, grid, npc);
+                // Nuevo insertado
+                float moveCost = costMap[connection.x,connection.y];
 
                 if (moveCost < connection.gCost || !open.Contains(connection))
                 {
@@ -136,57 +134,4 @@ public class AStar : MonoBehaviour
         
     }
 
-    float tacticalCost(Node actualNode, Node connection, GridTotalWar grid, AgentUnit npc)
-    {
-        float actualI;
-        float connectionI;
-        //Sacar influencia para el nodo actual
-        float actualNodeInfluence = grid.getNodeInfluence(actualNode); // Cómo saco la influencia ????????
-        float connectionNodeInfluence = grid.getNodeInfluence(connection);
-
-        switch (npc.team)
-        {
-            case 0:
-                // Influencias del equipo contrario
-                if (actualNodeInfluence > 0)
-                    actualI = 0;
-                else
-                    actualI = Mathf.Abs(actualNodeInfluence);
-
-                if (connectionNodeInfluence > 0)
-                    connectionI = 0;
-                else
-                    connectionI = Mathf.Abs(actualNodeInfluence);
-                break;
-
-            case 1:
-
-                // Influencias del equipo contrario
-                if (actualNodeInfluence < 0)
-                    actualI = 0;
-                else
-                    actualI = actualNodeInfluence;
-
-                if (connectionNodeInfluence < 0)
-                    connectionI = 0;
-                else
-                    connectionI = connectionNodeInfluence;
-                break;
-
-        }
-
-        //float terrain = multiplicadorTerreno * (grid.costeNodoTactico(actualNode, npc.unitType, npc.team) + grid.costeNodoTactico(connection, npc.unitType, npc.team)) / 2;
-        // TODO: Tengo que ver cómo sacar el multiplicador: Usar de combatSystem la matriz fad para sacar el valor multiplicador
-        //float influence = multiplicadorInfluencia * (actualI + connectionI) / 2; // TODO: Mirar según Anpeher
-        //float mulTerreno = mulTerreno(AgentUnit actual, AgentUnit connection); //Según nodos o según personajes?
-
-        return 0;//terrain + influence;
-    }
-
-    /* Función para sacar el multiplicador del terreno.
-    public float mulTerreno(AgentUnit )
-    {
-
-    }
-    */
 }

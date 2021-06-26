@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PathFollowing : Seek
+public class PathFollowingPredict : Seek
 {
     /*
         █▀█ █▀█ █▀█ █▀█ █▀▀ █▀█ ▀█▀ █ █▀▀ █▀
         █▀▀ █▀▄ █▄█ █▀▀ ██▄ █▀▄ ░█░ █ ██▄ ▄█
      */
     
-    public GameObject pathObject;
+    public GameObject pathObject;  
     // Holds the path to follow
     public List<Vector3> path;
     // Holds the current position on the path
@@ -22,14 +22,19 @@ public class PathFollowing : Seek
 
     public bool arrived;
 
+    public float predictTime = 0.1f;
+    public int offset = 1;
+
     /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
-    
-    public override void Awake() {
+
+    public override void Awake()
+    {
         base.Awake();
-        target = new GameObject("PathFollowingTarget").AddComponent<Agent>();
+
+        target = new GameObject("PathFollowingPredictTarget").AddComponent<Agent>();
 
         if (pathObject != null) {
             path = new List<Vector3>();
@@ -47,58 +52,58 @@ public class PathFollowing : Seek
         }
     }
 
-    void OnDestroy ()
-    {
-        if (target != null)
-            Destroy(target);
-    }
-
     override public Steering GetSteering(AgentNPC agent)
-    {   
+    {        
         // Comprueba si el personaje sigue algún camino
         if (path != null && path.Count > 0)
         {
-            List<Vector3> nodes = path;
+            // 1. Calculate the target to delegate to face
 
-            // Buscar objetivo actual
-            target.position = nodes[currentNode];
+            // Find the predicted future location
+            Vector3 futurePosition = agent.position + agent.velocity * predictTime;
 
-            // Si he “llegado” al target, pasar al siguiente target
-            float distance = Mathf.Abs((target.position - agent.position).magnitude);
+            float distance = Mathf.Abs((target.position - futurePosition).magnitude);
             if (distance <= agent.exteriorRadius)
             {
-                currentNode += pathDir; // Siguiente objetivo
+                // Find the current position on the path
+                // Offset it
+                currentNode += pathDir * offset; // Siguiente objetivo
 
                 switch (mode)
                 {
                     case Mode.stay: // Opción 1. Me quedo en el final
-                        if (currentNode >= nodes.Count)
+                        if (currentNode >= path.Count)
                         {
                             arrived = true;
-                            currentNode = nodes.Count - 1;
+                            currentNode = path.Count - 1;
                         }
                         break;
                     case Mode.patrol: // Opción 2. Hago vigilancia (Vuelvo atrás)
-                        if (currentNode >= nodes.Count || currentNode < 0)
+                        if (currentNode >= path.Count || currentNode < 0)
                         {
+                            if (currentNode >= path.Count)
+                                currentNode = path.Count;
+                            if (currentNode < 0)
+                                currentNode = -1;
                             pathDir *= -1;
-                            currentNode += pathDir;
+                            currentNode += pathDir * offset;
                         }
                         break;
                     case Mode.stop: // Opción 3. Nuevo estado (steering)
-                        if (currentNode >= nodes.Count)
+                        if (currentNode >= path.Count)
                         {
                             arrived = true;
-                            currentNode = nodes.Count - 1;
+                            currentNode = path.Count - 1;
                         }
                         return null;
                 }
             }
+            // Get the target position
+            target.position = path[currentNode];
 
             return base.GetSteering(agent);
         } else {
             return null;
         }
     }
-
 }

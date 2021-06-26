@@ -22,6 +22,8 @@ public abstract class SteeringBehaviour : MonoBehaviour
     public int priority;
     public float weight = 1.0f;
 
+    public bool debug = false;
+
     /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
@@ -29,6 +31,7 @@ public abstract class SteeringBehaviour : MonoBehaviour
     
     public virtual void Awake() {
         priority = 3;
+        if (target != null) target.debug = debug;
     }
 
     // Calcular el Steering para el agente dado en función del comportamiento deseado

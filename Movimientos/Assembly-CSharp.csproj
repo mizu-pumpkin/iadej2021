@@ -37,10 +37,11 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Base\VelocityMatching.cs" />
+     <Compile Include="Assets\Scripts\Bloque2\Actions\Move.cs" />
      <Compile Include="Assets\Scripts\Bloque1\Agents\AgentPlayer.cs" />
      <Compile Include="Assets\Scripts\Bloque1\PathFinding\LRTAStar.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Grupo\Separation.cs" />
-     <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Delegados\CollisionAvoidance.cs" />
+     <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Opcionales\CollisionAvoidance.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Map\InfluenceMap.cs" />
      <Compile Include="Assets\Scripts\SimpleCameraController.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Grupo\Cohesion.cs" />
@@ -59,6 +60,7 @@
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Base\Align.cs" />
      <Compile Include="Assets\Scripts\Bloque1\PathFinding\MyGrid.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Actions\Heal.cs" />
+     <Compile Include="Assets\Scripts\Bloque2\AStar\AStar.cs" />
      <Compile Include="Assets\Scripts\Bloque1\Agents\SlowAgentNPC.cs" />
      <Compile Include="Assets\Scripts\Bloque1\PathFinding\Node.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Base\AntiAlign.cs" />
@@ -81,6 +83,7 @@
      <Compile Include="Assets\Scripts\Bloque2\Actions\Die.cs" />
      <Compile Include="Assets\Scripts\Bloque1\Formations\Fixed\Fixed.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Grupo\Alignment.cs" />
+     <Compile Include="Assets\Scripts\Bloque2\AStar\PathFindingAStar.cs" />
      <Compile Include="Assets\Scripts\Bloque1\Formations\Patterns\LinePattern.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Map\Waypoint.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Delegados\Face.cs" />
@@ -100,9 +103,10 @@
      <Compile Include="Assets\Scripts\Bloque1\Formations\Patterns\FormationPattern.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Base\Parabolico.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Delegados\PathFollowing.cs" />
-     <Compile Include="Assets\Scripts\Bloque2\Actions\Move.cs" />
-     <Compile Include="Assets\Scripts\Bloque2\AStar\AStar.cs" />
-     <Compile Include="Assets\Scripts\Bloque2\AStar\PathFindingAStar.cs" />
+     <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Delegados\OffsetPursuit.cs" />
+     <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Opcionales\Interpose.cs" />
+     <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Opcionales\WallFollowing.cs" />
+     <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Opcionales\PathFollowingPredict.cs" />
     <Reference Include="UnityEngine">
         <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

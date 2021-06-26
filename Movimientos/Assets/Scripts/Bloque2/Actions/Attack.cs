@@ -5,27 +5,25 @@ using UnityEngine;
 public class Attack : Action
 {
     private AgentUnit enemyUnit;
+    private Vector3 targetPosition;
     private float time = -1;
 
     public Attack(AgentUnit unit, AgentUnit enemyUnit) : base(unit)
     {
         this.enemyUnit = enemyUnit;
+        this.targetPosition = enemyUnit.position;
     }
 
     public override void Execute()
     {
         if (time == -1)
             time = Time.time;
-
-        // if (enemyUnit.position != unit.pathFollowing.path[unit.pathFollowing.path.Count -1])
-        // {
-        //     unit.Attack(enemyUnit);
-        // }
         
-        float distance = (unit.position - enemyUnit.position).magnitude;
+        float d1 = (unit.position - enemyUnit.position).magnitude;
+        float d2 = (unit.position - targetPosition).magnitude;
 
         // If it's in range, attack
-        if (distance <= unit.attackRange)
+        if (d1 <= unit.attackRange)
         {
             unit.canMove = false;
             if (Time.time - time >= unit.attackSpeed) {
@@ -36,6 +34,12 @@ public class Attack : Action
                 unit.color = unit.colorAttack;
             }
             else unit.color = unit.colorOriginal;
+        }
+        // The enemy moved away, find it again
+        else if (d2 <= unit.attackRange) {
+            unit.canMove = true;
+            unit.color = unit.colorOriginal;
+            unit.Attack(enemyUnit);
         }
         // If it's not in range, move closer
         else {

@@ -12,8 +12,6 @@ public class WallAvoid : Seek
     // Holds the distance to look ahead for a collision
     public float lookAhead = 10;
 
-    public bool debug = false;
-
     /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█

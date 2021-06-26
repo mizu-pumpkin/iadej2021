@@ -7,6 +7,7 @@ using UnityEditor; // Handles
 public class AgentUnit : AgentNPC
 {
     [SerializeField] private PathFindingAStar pathFinder;
+    AgentUnit targetedEnemy;
 
     /*
         █▀█ █▀█ █▀█ █▀█ █▀▀ █▀█ ▀█▀ █ █▀▀ █▀
@@ -45,6 +46,12 @@ public class AgentUnit : AgentNPC
     [SerializeField] private Action action = null;
     // Indica si la unidad puede moverse (no puede cuando ataca/cura)
     public bool canMove = true;
+    public bool inEnemyBase {
+        get {
+            return team == 0 && terrain == CombatSystem.TerrainType.BaseB ||
+                   team == 1 && terrain == CombatSystem.TerrainType.BaseA;
+        }
+    }
     // El tipo de terreno en el que se encuentra la unidad
     public CombatSystem.TerrainType terrain => pathFinder.WhereAmI(this);
 
@@ -93,23 +100,27 @@ public class AgentUnit : AgentNPC
 
         colorOriginal = this.color;
 
-        patrolPath = new List<Vector3>();
-        //RightPoint(10);
-        //LeftPoint(10);
-        
+        MakePatrolPath();
+
         ResetPath();
     }
 
-    private void RightPoint(int n)
+    private void MakePatrolPath()
     {
-        for (int i=0; i<n; i++)
-            patrolPath.Add(initialPosition + Vector3.right * 40);
+        patrolPath = new List<Vector3>();
+
+        int steps = 40;
+
+        if (Random.Range(0, 2) == 0) steps *= -1;
+
+        LeftRightPoint(10, steps);
+        LeftRightPoint(10, -steps);
     }
 
-    private void LeftPoint(int n)
+    private void LeftRightPoint(int n, int steps)
     {
         for (int i=0; i<n; i++)
-            patrolPath.Add(initialPosition + Vector3.left * 40);
+            patrolPath.Add(initialPosition + Vector3.left * steps);
     }
 
     private void ResetPath(List<Vector3> path = null, PathFollowing.Mode mode = PathFollowing.Mode.stay)
@@ -120,7 +131,14 @@ public class AgentUnit : AgentNPC
         pathFollowing.currentNode = 0;
         pathFollowing.pathDir = 1;
         pathFollowing.mode = mode;
-        NewTarget(pathFollowing);
+        AddTarget(pathFollowing);
+    }
+
+    public override void AddTarget(SteeringBehaviour sb) {
+        if (this.steeringBehaviours == null)
+            this.steeringBehaviours = new List<SteeringBehaviour>();
+        if (!this.steeringBehaviours.Contains(sb))
+            this.steeringBehaviours.Add(sb);
     }
 
     public override void Update()
@@ -143,87 +161,179 @@ public class AgentUnit : AgentNPC
         ▄█ ░█░ █▀▄ █▀█ ░█░ ██▄ █▄█ ░█░
     */
 
-    AgentUnit FindEnemyNear()
+    AgentUnit FindClosestEnemy()
     {
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, attackRange*5);
+        AgentUnit targetedEnemy = null;
 
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, attackRange*2.5f);
+
+        float minDistance = Mathf.Infinity; 
         foreach (Collider collider in hitColliders)
         {
             AgentUnit agentUnit = collider.gameObject.GetComponent<AgentUnit>();
             if (agentUnit != null && team != agentUnit.team)
-                return agentUnit;
+            {
+                float distance = (position - agentUnit.position).magnitude;
+                if (distance < minDistance) {
+                    targetedEnemy = agentUnit;
+                    minDistance = distance;
+                }
+            }
         }
 
-        return null;
+        return targetedEnemy;
     }
 
     void ChooseAction()
     {
-        if (state != State.dying && state != State.healing && state != State.routed)
+        if (GameManager.IsBaseUnderAttack(team))
         {
-            AgentUnit enemy = FindEnemyNear();//pathFinder.FindEnemy(this);
-            // If there is an enemy in sight, attack it
-            if (enemy != null) {
-                if (state != State.attacking)
-                    Attack(enemy);
-            }
-            // If there is no enemy near, do what the strategy demands
-            else {
-                switch (strategyMode)
-                {
-                    case GameManager.StrategyMode.ATTACK:
-                    case GameManager.StrategyMode.TOTALWAR:
-                        // if (state != State.routed) Move(enemyBasePosition);
-                        // If team is 0, move to enemy base 1
-                        if (team == 0 && terrain != CombatSystem.TerrainType.BaseB)
-                            Move(enemyBasePosition, CombatSystem.TerrainType.BaseB);//, State.none);
-                        // If team is 1, move to enemy base 0
-                        if (team == 1 && terrain != CombatSystem.TerrainType.BaseA)
-                            Move(enemyBasePosition, CombatSystem.TerrainType.BaseA);//, State.none);
-                        break;
-                    case GameManager.StrategyMode.DEFEND:
-                        // Go back to defend team base
-                        if (state != State.defending)
-                        {
-                            // If team is 0, move to base 0
-                            if (team == 0 && terrain != CombatSystem.TerrainType.BaseA)
-                                Move(teamBasePosition, CombatSystem.TerrainType.BaseA);
-                            // If team is 1, move to base 1
-                            else if (team == 1 && terrain != CombatSystem.TerrainType.BaseB)
-                                Move(teamBasePosition, CombatSystem.TerrainType.BaseB);
-                            // If it's already in the base, defend it
-                            else
-                               Defend();
-                        }
-                        break;
-                    default:
-                        // Patrol your zone
-                        if (state != State.patrolling) {
-                            float distance = (this.position - initialPosition).magnitude;
-                            if (distance > this.exteriorRadius)
-                                Move(initialPosition);
-                            else
-                                Patrol();
-                        }
-                        break;
-                }
+            DefendMode();
+        }
+        else if (state != State.dying && state != State.healing)
+        {
+            switch (strategyMode)
+            {
+                case GameManager.StrategyMode.TOTALWAR:
+                    AttackMode();
+                    break;
+                case GameManager.StrategyMode.ATTACK:
+                    if (unitType == CombatSystem.UnitType.Ranged)
+                        NeutralMode();
+                    else
+                        AttackMode();
+                    break;
+                case GameManager.StrategyMode.DEFEND:
+                    DefendMode();
+                    break;
+                default:
+                    NeutralMode();
+                    break;
             }
         }
     }
 
+
+    public void AttackMode()
+    {
+        AgentUnit enemy = FindClosestEnemy();
+        // If there is an enemy in sight, attack it
+        if (enemy != null) {
+            if (targetedEnemy == null) {
+                targetedEnemy = enemy;
+                Attack(enemy);
+            }
+            else {
+                float d1 = (position - targetedEnemy.position).magnitude;
+                float d2 = (position - enemy.position).magnitude;
+                if (d2 < d1) {
+                    targetedEnemy = enemy;
+                    Attack(enemy);
+                }
+            }
+        }
+        // Attack enemy base
+        else {
+            if (state != State.routed) {
+                // If team is 0, move to enemy base 1
+                if (team == 0 && terrain != CombatSystem.TerrainType.BaseB)
+                    Move(enemyBasePosition, CombatSystem.TerrainType.BaseB);
+                // If team is 1, move to enemy base 0
+                if (team == 1 && terrain != CombatSystem.TerrainType.BaseA)
+                    Move(enemyBasePosition, CombatSystem.TerrainType.BaseA);
+            }
+        }
+    }
+
+
+    public void DefendMode()
+    {
+        // If I'm already defending the base, find closest enemy
+        if (state == State.defending)
+        {
+            AgentUnit enemy = FindClosestEnemy();
+            // If there is an enemy in sight, attack it
+            if (enemy != null) {
+                targetedEnemy = enemy;
+                Attack(enemy);
+            }
+            // If no enemy and hp not full, go recharge
+            else if (hp < maxHP) {
+                Heal();
+            }
+        }
+        // Go back to defend team base  
+        else if (state != State.attacking)
+        {
+            if (state != State.routed) {
+                // If team is 0, move to base 0
+                if (team == 0 && terrain != CombatSystem.TerrainType.BaseA)
+                    Move(teamBasePosition, CombatSystem.TerrainType.BaseA);
+                // If team is 1, move to base 1
+                else if (team == 1 && terrain != CombatSystem.TerrainType.BaseB)
+                    Move(teamBasePosition, CombatSystem.TerrainType.BaseB);
+                // If it's already in the base, defend it
+                else
+                    Defend();
+            }
+        }
+    }
+
+
+    public void NeutralMode()
+    {
+        // If I'm already patrolling my zone, find closest enemy
+        if (state == State.patrolling)
+        {
+            AgentUnit enemy = FindClosestEnemy();
+            // If there is an enemy in sight, attack it
+            if (enemy != null) {
+                targetedEnemy = enemy;
+                Attack(enemy);
+            }
+            // If no enemy and hp not full, go recharge
+            else if (hp < maxHP) {
+                Heal();
+            }
+        }
+        // Go back to patrolling
+        else if (state != State.attacking)
+        {
+            if (state != State.routed) {
+                float distance = (this.position - initialPosition).magnitude;
+                if (distance > this.exteriorRadius * 2)
+                    Move(initialPosition);
+                else
+                    Patrol();
+            }
+        }
+    }
+
+    public void ChangeMode(GameManager.StrategyMode mode)
+    {
+        strategyMode = mode;
+        state = State.none;
+        ResetAction();
+
+    }
+
+    public void ResetAction()
+    {
+        action = null;
+        canMove = true;
+        color = colorOriginal;
+        InitializeSteerings(); // HACK
+    }
+
+
     public void ExecuteAction()
     {
-        if (action != null)
-        {
+        if (action != null) {
             action.Execute();
             if (action.IsComplete()) {
-                action = null;
-                canMove = true;
-                color = colorOriginal;
-                InitializeSteerings(); // HACK
-                // Si ha terminado de hacer respawn, vuelve a la posición donde murió
+                ResetAction();
                 if (state == State.dying) {
-                    Move(deathPosition, CombatSystem.TerrainType.Unknown, State.none);
+                    Move(deathPosition);
                 }
                 else {
                     state = State.none;
@@ -240,18 +350,18 @@ public class AgentUnit : AgentNPC
             color = colorDamage;
             // If health is 0, die
             if (hp <= 0) {
-                print(attacker.gameObject.name+" killed "+this.gameObject.name);
+                Debug.Log(attacker.gameObject.name+" killed "+this.gameObject.name);
                 Die();
                 return true;
             }
-            // If attacked, respond to attack
-            else if (state != State.attacking) {
-                Attack(attacker);
-            }
             // If health is low and speed is high, run away
             else if (hp < (maxHP / 2) && hp < attacker.hp && maxSpeed >= attacker.maxSpeed && state != State.healing) {
-                print(this.gameObject.name+"'s HP is low");
                 Heal();
+                return true;
+            }
+            // If attacked, respond to attack
+            else {
+                Attack(attacker);
             }
         }
         return false;
@@ -346,7 +456,6 @@ public class AgentUnit : AgentNPC
     {
         string text = unitType.ToString()+" / "+terrain.ToString();
         text += "\nHP: "+hp.ToString();
-        text += "\nstate: "+state.ToString();
         if (selected)
             text += "\nSELECTED";
         if (action != null)
@@ -402,116 +511,5 @@ public class AgentUnit : AgentNPC
             }
         }
     }
-
-
-    // public void AccionPatrulla()
-    // {
-    //     AgentUnit enemy = FindEnemyNear();
-    //     if (enemy != null)  //Ha detectado a alguien, va a por él
-    //     {
-    //         if ((nodoActual == null) || (target.position != targetPosicion))
-    //         {
-    //             FindPathToTarget(transform.position, target.position, mapaCostes);
-    //         }
-    //         NewMethod();
-    //     }
-    //     else  //No ha detectado a nadie, patrulla
-    //     {
-    //         if (nodoActual == null) //Inicio de la patrulla
-    //         {
-    //             //Debug.Log("kwd " + name);
-    //             FindPathToTarget(transform.position, caminoPatrulla[numCaminoPatrulla].vPosition, mapaCostes);
-    //         }
-    //         NewMethod1();
-    //     }
-    // }
-
-    // private static void FindPathToTarget(Vector3 start, Vector3 end, float[,] mapaCostes)
-    // {
-    //     path = controlador.FindPath(start, end, mapaCostes);
-    //     if (path.Count > 0)
-    //     {
-    //         nodoActual = path[0];
-    //         numeroCamino = 0;
-    //         camino = true;
-    //         targetPosicion = end;
-    //     }
-    //     else
-    //     {
-    //         camino = false;
-    //     }
-    // }
-
-    // private static void NewMethod()
-    // {
-    //     if (camino)
-    //     {
-    //         //Ahora nos movemos por el camino
-    //         Node actual = controlador.GridReference.NodeFromWorldPoint(transform.position);
-    //         if (actual == nodoActual) //Avanzo al siguiente nodo del camino
-    //         {
-    //             numeroCamino++;
-    //             if (numeroCamino == path.Count)
-    //             {
-    //                 //Quedate quieto porque has llegado al final del camino
-    //                 transform.position = transform.position;
-    //                 llego = true;
-    //                 //Debug.Log(actitud);
-    //                 StartCoroutine(buscarNuevoObjetivo());
-    //             }
-    //             else
-    //             {
-    //                 nodoActual = path[numeroCamino];
-    //             }
-    //         }
-    //         if (numeroCamino < path.Count)
-    //         {
-    //             //Muevete al siguiente nodo
-    //             Vector3 direccion = nodoActual.vPosition - transform.position;
-    //             direccion.Normalize();
-    //             //Debug.Log(transform.position + " " + direccion + " " + mapaCostes[nodoActual.iGridX, nodoActual.iGridY]);
-    //             transform.position = transform.position + direccion * vel * Time.deltaTime / mapaCostes[nodoActual.iGridX, nodoActual.iGridY];
-    //         }
-    //     }
-    // }
-
-    // private static void NewMethod1()
-    // {
-    //     if (camino)
-    //     {
-    //         //Ahora nos movemos por el camino
-    //         Node actual = controlador.GridReference.NodeFromWorldPoint(transform.position);
-    //         if (actual == nodoActual) //Avanzo al siguiente nodo del camino
-    //         {
-    //             numeroCamino++;
-    //             if (numeroCamino == path.Count)
-    //             {
-    //                 //Quedate quieto porque has llegado al final del camino
-    //                 transform.position = transform.position;
-    //                 nodoActual = null;
-    //                 numCaminoPatrulla++;
-    //                 if (numCaminoPatrulla == caminoPatrulla.Length) numCaminoPatrulla = 0; //Si he llegado al final, repetimos
-    //             }
-    //             else
-    //             {
-    //                 nodoActual = path[numeroCamino];
-    //             }
-    //         }
-    //         if (numeroCamino < path.Count)
-    //         {
-    //             //Muevete al siguiente nodo
-    //             Vector3 direccion = nodoActual.vPosition - transform.position;
-    //             direccion.Normalize();
-    //             //Debug.Log(transform.position + " " + direccion + " " + mapaCostes[nodoActual.iGridX, nodoActual.iGridY]);
-    //             transform.position = transform.position + direccion * vel * Time.deltaTime / mapaCostes[nodoActual.iGridX, nodoActual.iGridY];
-    //         }
-    //     }
-    // }
-
-    // public void cambioActitud() // TODO: lo llama el A*
-    // {
-    //     target = controlador.buscarNuevoObjetivo(this, mapaCostes);
-    //     cambio = true;
-    // }
 
 }

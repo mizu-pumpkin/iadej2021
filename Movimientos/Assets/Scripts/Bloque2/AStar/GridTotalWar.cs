@@ -81,7 +81,7 @@ public class GridTotalWar : MonoBehaviour
                 PrintInfluenceMap[x, y] = GameObject.CreatePrimitive(PrimitiveType.Quad);
                 PrintInfluenceMap[x, y].GetComponent<Renderer>().material.color = Color.white;
                 PrintInfluenceMap[x, y].transform.localScale = influenceMap[x, y].localScale;
-                PrintInfluenceMap[x, y].transform.position = NodeArray[x, y].position + Vector3.right*400;
+                PrintInfluenceMap[x, y].transform.position = NodeArray[x, y].position + Vector3.right*1000;
                 PrintInfluenceMap[x, y].transform.Rotate(new Vector3(90, 0, 0));
             }
         }
@@ -168,22 +168,23 @@ public class GridTotalWar : MonoBehaviour
         return NodeArray[(int)x, (int)y];
     }
 
-    public float[,] GetMatrixCost(AgentUnit agente)
-    {
-        float[,] costMap = new float[rowMap, colMap];
+    // public float[,] GetMatrixCost(AgentUnit agente)
+    // {
+    //     float[,] costMap = new float[rowMap, colMap];
 
-        for (int x = 0; x < rowMap; x++)
-            for (int y = 0; y < colMap; y++)
-                costMap[x, y] = NodeCostUnit(influenceMap[x, y], agente);
+    //     for (int x = 0; x < rowMap; x++)
+    //         for (int y = 0; y < colMap; y++)
+    //             costMap[x, y] = NodeCostUnit(influenceMap[x, y], agente);
         
-        return costMap;
-    }
+    //     return costMap;
+    // }
 
     public CombatSystem.TerrainType GetNodeTag(Node node)
     {
         string tag = influenceMap[node.x, node.y].tag;
         switch (tag)
         {
+            case "Bridge":
             case "Street": return CombatSystem.TerrainType.Street;
             case "Forest": return CombatSystem.TerrainType.Forest;
             case "Grass": return CombatSystem.TerrainType.Plains;
@@ -233,9 +234,6 @@ public class GridTotalWar : MonoBehaviour
         // red
         if (influenceNodo < 0)   
             PrintInfluenceMap [nodo.x,nodo.y].GetComponent<Renderer>().material.color = new Color(1, 1 + influenceNodo, 1 + influenceNodo);
-        //white
-        if (influenceNodo == 0) 
-            PrintInfluenceMap [nodo.x,nodo.y].GetComponent<Renderer>().material.color = Color.white;
 
         return influenceNodo;
     }
@@ -249,7 +247,7 @@ public class GridTotalWar : MonoBehaviour
             Node AgentPosition = NodeFromWorldPoint(unit.position);
             
             if (Mathf.Abs(nodo.x - AgentPosition.x) > unit.effectRadius ||
-                Mathf.Abs(nodo.y-AgentPosition.y) > unit.effectRadius) continue;
+                Mathf.Abs(nodo.y - AgentPosition.y) > unit.effectRadius) continue;
 
             float distance;
             if (Mathf.Abs(AgentPosition.x - nodo.x) > Mathf.Abs(AgentPosition.y - nodo.y))

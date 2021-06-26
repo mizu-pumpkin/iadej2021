@@ -32,8 +32,8 @@ public abstract class Bodi : MonoBehaviour
         }
     }
     public float rotation;
-    public float maxSpeed = 4;
-    public float maxAcceleration = 8;
+    public float maxSpeed = 6;
+    public float maxAcceleration = 48;
     public float maxRotation = 120; // TODO: investigar esto
     public float maxAngularAcceleration = 60; // TODO: investigar esto
 

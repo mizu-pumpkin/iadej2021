@@ -15,7 +15,7 @@ public class CombatSystem
 
     // Tipos de unidades
     public enum UnitType { Tanker, Infantry, Ranged };
-    public static float[] MaxHP = { 4000, 2000, 1000 };
+    public static float[] MaxHP = { 4000, 2000, 1500 };
     public static float[] MaxSpeed = { 30, 50, 40 };
     public static float[] MaxAcceleration = { 60, 100, 80 };
     public static float[] Strength = { 200, 100, 50 };

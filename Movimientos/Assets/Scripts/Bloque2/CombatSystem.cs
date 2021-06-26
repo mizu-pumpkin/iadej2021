@@ -5,7 +5,7 @@ using UnityEngine;
 public class CombatSystem
 {
     // Tipos de terrenos
-    public enum TerrainType { street, forest, plains };
+    public enum TerrainType { Street, Forest, Plains, Heal, BaseA, BaseB, Water, Unknown };
 
     // Constante de impacto. Depende de la vida que se les ponga a las unidades
     // y de lo rápido que se quiera que maten unas unidades a otras.
@@ -14,7 +14,7 @@ public class CombatSystem
     public static float HealPower = CteImpacto;
 
     // Tipos de unidades
-    public enum UnitType { tanker, infantry, ranged };
+    public enum UnitType { Tanker, Infantry, Ranged };
     public static float[] MaxHP = { 4000, 2000, 1000 };
     public static float[] MaxSpeed = { 30, 50, 40 };
     public static float[] MaxAcceleration = { 60, 100, 80 };
@@ -39,26 +39,36 @@ public class CombatSystem
 
     // Factor de tipo de atacante/defensor
     public static float[,] FAD = {
-        // tanker, infantry, ranged
-        { 1.00f, 1.50f, 1.75f }, // tanker
-        { 0.25f, 1.00f, 1.75f }, // infantry
-        { 1.00f, 1.50f, 1.00f }  // ranged
+        // Tanker, Infantry, Ranged
+        { 1.00f, 0.50f, 0.50f }, // Tanker
+        { 1.50f, 1.00f, 1.50f }, // Infantry
+        { 0.50f, 1.50f, 1.00f }  // Ranged
     };
 
     // Factor por terreno del atacante
     public static float[,] FTA = {
-        // tanker, infantry, ranged
-        { 1.00f, 1.00f, 2.00f }, // street
-        { 0.25f, 0.75f, 0.10f }, // forest
-        { 1.00f, 1.00f, 2.00f }  // plains
+        // Tanker, Infantry, Ranged
+        { 1.50f, 1.00f, 1.00f }, // Street
+        { 0.50f, 1.00f, 0.50f }, // Forest
+        { 1.00f, 1.00f, 1.50f }, // Plains
+        { 1, 1, 1 }, // Heal
+        { 1, 1, 1 }, // BaseA
+        { 1, 1, 1 }, // BaseB
+        { 1, 1, 1 }, // Water
+        { 1, 1, 1 }, // Unknown
     };
 
     // Factor por terreno del defensor
     public static float[,] FTD = {
-        // tanker, infantry, ranged
-        { 1.00f, 0.75f, 0.75f }, // street
-        { 0.50f, 1.25f, 1.25f }, // forest
-        { 1.00f, 1.00f, 0.75f }  // plains
+        // Tanker, Infantry, Ranged
+        { 1.50f, 1.00f, 1.00f }, // Street
+        { 0.50f, 1.00f, 1.50f }, // Forest
+        { 1.00f, 1.00f, 0.50f }, // Plains
+        { 1, 1, 1 }, // Heal
+        { 1, 1, 1 }, // BaseA
+        { 1, 1, 1 }, // BaseB
+        { 1, 1, 1 }, // Water
+        { 1, 1, 1 }, // Unknown
     };
 
     // Determina la vida que se pierde en cada round

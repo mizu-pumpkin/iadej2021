@@ -16,19 +16,21 @@ public class Heal : Action
         float distance = (unit.position - unit.healingZonePosition).magnitude;
 
         // If it's in range, heal
-        // TODO: if (unit.terrain == TerrainType.heal)
-        if (distance <= unit.interiorRadius*2)
+        if (unit.terrain == CombatSystem.TerrainType.Heal)
         {
             unit.canMove = false;
             if (Time.time - time >= unit.healSpeed) {
                 time = -1;
                 bool healed = unit.TakeHeal(unit.healPower);
                 if (healed) isComplete = true;
+                unit.color = unit.colorHeal;
             }
+            else unit.color = unit.colorOriginal;
         }
         // If it's not in range, move closer
         else {
             unit.canMove = true;
+            unit.color = unit.colorOriginal;
         }
     }
 

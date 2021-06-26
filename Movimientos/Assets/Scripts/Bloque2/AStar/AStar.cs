@@ -4,6 +4,78 @@ using UnityEngine;
 
 public class AStar : MonoBehaviour
 {
+
+    public List<Node> FindAStar(AgentUnit npc, Node startNode, Node targetNode, GridTotalWar grid)
+    {
+        // Initialize the open and closed lists
+        List<Node> open = new List<Node>();
+        open.Add(startNode);
+        List<Node> closed = new List<Node>();
+
+        // Iterate through processing each node
+        while (open.Count > 0)
+        {
+            Node actualNode = open[0];
+
+            // Find the smallest element in the open list
+            // (using the estimatedTotalCost)
+            for (int i = 1; i < open.Count; i++)
+            {
+                actualNode.hCost = GetHeuristicDistance(actualNode, targetNode, npc.heuristic);
+                open[i].hCost = GetHeuristicDistance(open[i], targetNode, npc.heuristic);
+                
+                if (open[i].fCost < actualNode.fCost || open[i].fCost == actualNode.fCost && open[i].hCost < actualNode.hCost)
+                    actualNode = open[i];
+            }
+
+            open.Remove(actualNode);
+            closed.Add(actualNode);
+
+            // If it is the goal node, then terminate
+            if (actualNode == targetNode) break;
+
+            // Otherwise get its outgoing connections
+            List<Node> connections = grid.GetConnectionNodes(actualNode);
+
+            foreach (Node connection in connections)
+            {
+                if (connection.isWall || closed.Contains(connection)) continue;
+                
+                //float connectionCost = actualNode.gCost + GetHeuristicDistance(actualNode, connection, npc.heuristic);
+                float connectionCost = ConnectionTacticalCost(npc, actualNode, connection, grid);
+                
+                if (connectionCost < connection.gCost || !open.Contains(connection))
+                {
+                    connection.gCost = connectionCost;
+                    connection.hCost = GetHeuristicDistance(actualNode, connection, npc.heuristic);
+                    connection.parent = actualNode;
+
+                    if (!open.Contains(connection)) open.Add(connection);
+                }
+            }   
+        }
+
+        return ComputePath(startNode, targetNode);
+    }
+    
+    
+    List<Node> ComputePath(Node startNode, Node targetNode)
+    {
+        List<Node> path = new List<Node>();
+        Node actualNode = targetNode;
+        while (actualNode != startNode)
+        {
+            path.Add(actualNode);
+            if (actualNode.parent != null)
+                actualNode = actualNode.parent;
+            else 
+                break;
+        }
+        path.Reverse();
+        return path;
+    }
+
+
     public static int GetHeuristicDistance(Node p, Node q, int heuristic)
     {
         // El orden de los nodos no importa porque se van a
@@ -30,108 +102,51 @@ public class AStar : MonoBehaviour
         }
     }
 
-    //TODO: revisar
-    public static Node smallestElement(List<Node> open)
+
+    float ConnectionTacticalCost(AgentUnit npc, Node actualNode, Node connection, GridTotalWar grid)
     {
-        float smallestTotalCost = open[0].hCost; // Usa el coste estimado //estimatedCost
-        Node smallest = open[0];
-        for (int i = 0; i < open.Count; i++)
+        float actualNodeInfluence = 0;
+        float connectionInfluence = 0;
+
+        float aci = grid.ControlOverLocation(actualNode);
+        float ci = grid.ControlOverLocation(connection);
+
+        switch (npc.team)
         {
-            if (open[i].hCost < smallestTotalCost)
-            {
-                smallestTotalCost = open[i].hCost;
-                smallest = open[i];
-            }
+            case 0:
+          
+                if (aci > 0)
+                    actualNodeInfluence = 0;
+                else
+                    actualNodeInfluence = Mathf.Abs(aci);
 
-        }
-        return smallest;
-    }
+                if (ci > 0)
+                    connectionInfluence = 0;
+                else
+                    connectionInfluence = Mathf.Abs(aci);
+                break;
 
+            case 1: 
 
-    // TODO:He utilizado 
-    //pseudo del libro (quitar esto obviamente)
-    public List<Node> FindAStar(AgentUnit npc, Node startNode, Node targetNode, int heuristic, GridTotalWar grid,float[,] costMap)
-    {
-        // Camino a devolver
-        List<Node> path = new List<Node>();
-        Node actual;
+                if (aci < 0)
+                    actualNodeInfluence = 0;
+                else
+                    actualNodeInfluence = aci;
 
-        // Initialize the open and closed lists
-        List<Node> open = new List<Node>();
-        open.Add(startNode);
-        List<Node> closed = new List<Node>();
-
-        // Iterate through processing each node
-        while (open.Count > 0)
-        {
-            // Find the smallest element in the open list
-            //  (using the estimatedTotalCost)
-            Node actualNode = smallestElement(open);
-
-            // If it is the goal node, then terminate
-            if (actualNode == targetNode)
-            {
-                actual = targetNode;
-                while (actual != startNode)
-                {
-                    path.Add(actual);
-                    if (actual.parent != null)
-                        actual = actual.parent;
-                    else break;
-                }
-
-                // Reverse the path
-                path.Reverse();
-                return path;
-
-            }
-
-            // Otherwise get its outgoing connections
-            List<Node> connections = grid.GetConnectionNodes(actualNode);
-
-            // Loop through each connection in turn
-            foreach (Node connection in connections)
-            {
-                //  If the node is closed we may have to
-                // skip.
-                if (!connection.isWall || closed.Contains(connection))
-                {
-                    continue;
-                }
-
-                // Nuevo insertado
-                float moveCost = costMap[connection.x,connection.y];
-
-                if (moveCost < connection.gCost || !open.Contains(connection))
-                {
-                    connection.gCost = moveCost;
-                    connection.hCost = GetHeuristicDistance(actualNode, connection, heuristic);
-                    connection.parent = actualNode;
-
-                    if (!open.Contains(connection))
-                    {
-                        open.Add(connection);
-                    }
-                }
-
-            }
-
+                if (ci < 0)
+                    connectionInfluence = 0;
+                else
+                    connectionInfluence = ci;
+                break;
         }
 
-        // Work back along the path, accumulating connections
-        actual = targetNode;
+        float actualCost = grid.NodeCostUnit(actualNode, npc);
+        float connectionCost = grid.NodeCostUnit(connection, npc);
 
-        while (actual != startNode){
-            path.Add(actual);
-            if (actual.parent != null)
-                actual = actual.parent;
-            else break;
-        }
-
-        // Reverse the path
-        path.Reverse();
-        return path;
+        float terrainCost = (actualCost + connectionCost) / 2;
+        float influenceCost = (actualNodeInfluence + connectionInfluence) / 2;
         
+        return terrainCost + influenceCost;
     }
 
 }

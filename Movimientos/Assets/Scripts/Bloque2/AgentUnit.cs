@@ -46,7 +46,18 @@ public class AgentUnit : AgentNPC
     // Indica si la unidad puede moverse (no puede cuando ataca/cura)
     public bool canMove = true;
     // El tipo de terreno en el que se encuentra la unidad
-    public CombatSystem.TerrainType terrain;
+    public CombatSystem.TerrainType terrain => pathFinder.WhereAmI(this);
+
+    public Color colorOriginal;
+    public Color colorAttack = Color.yellow;
+    public Color colorHeal = Color.blue;
+    public Color colorDamage = Color.red;
+    private bool damaged; // para cambiar el color después de ser herido
+
+    public Color color {
+        get { return this.gameObject.GetComponent<Renderer>().material.color; }
+        set { this.gameObject.GetComponent<Renderer>().material.color = value; }
+    }
     
     /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
@@ -64,12 +75,13 @@ public class AgentUnit : AgentNPC
         initialPosition = this.position;
 
         maxSpeed = CombatSystem.MaxSpeed[(int)unitType];
-        maxAcceleration = CombatSystem.MaxAcceleration[(int)unitType];
+        maxAcceleration = maxSpeed * 8;
 
         attackSpeed = CombatSystem.AtkSpeed[(int)unitType];
         attackRange = CombatSystem.AtkRange[(int)unitType];
-        exteriorRadius = attackRange * 2;
+
         interiorRadius = gameObject.transform.localScale.x;
+        exteriorRadius = interiorRadius * 2;
 
         maxHP = CombatSystem.MaxHP[(int)unitType];
         hp = maxHP;
@@ -79,11 +91,36 @@ public class AgentUnit : AgentNPC
         influence = CombatSystem.Influence[(int)unitType];
         effectRadius = CombatSystem.Radius[(int)unitType];
 
-        // HACK
+        colorOriginal = this.color;
+
         patrolPath = new List<Vector3>();
-        patrolPath.Add(initialPosition);
-        patrolPath.Add(teamBasePosition);
-        patrolPath.Add(healingZonePosition);
+        //RightPoint(10);
+        //LeftPoint(10);
+        
+        ResetPath();
+    }
+
+    private void RightPoint(int n)
+    {
+        for (int i=0; i<n; i++)
+            patrolPath.Add(initialPosition + Vector3.right * 40);
+    }
+
+    private void LeftPoint(int n)
+    {
+        for (int i=0; i<n; i++)
+            patrolPath.Add(initialPosition + Vector3.left * 40);
+    }
+
+    private void ResetPath(List<Vector3> path = null, PathFollowing.Mode mode = PathFollowing.Mode.stay)
+    {
+        if (pathFollowing == null)
+            pathFollowing = new GameObject("PathFollowing").AddComponent<PathFollowing>();
+        pathFollowing.path = path;
+        pathFollowing.currentNode = 0;
+        pathFollowing.pathDir = 1;
+        pathFollowing.mode = mode;
+        NewTarget(pathFollowing);
     }
 
     public override void Update()
@@ -93,6 +130,11 @@ public class AgentUnit : AgentNPC
                 base.Update();
             ChooseAction();
             ExecuteAction();
+            if (damaged)
+            {
+                damaged = false;
+                color = colorOriginal;
+            }
         }
     }
 
@@ -131,17 +173,26 @@ public class AgentUnit : AgentNPC
                 {
                     case GameManager.StrategyMode.ATTACK:
                     case GameManager.StrategyMode.TOTALWAR:
-                        // Move to enemy base
-                        Move(enemyBasePosition, State.none);
+                        // if (state != State.routed) Move(enemyBasePosition);
+                        // If team is 0, move to enemy base 1
+                        if (team == 0 && terrain != CombatSystem.TerrainType.BaseB)
+                            Move(enemyBasePosition, CombatSystem.TerrainType.BaseB);//, State.none);
+                        // If team is 1, move to enemy base 0
+                        if (team == 1 && terrain != CombatSystem.TerrainType.BaseA)
+                            Move(enemyBasePosition, CombatSystem.TerrainType.BaseA);//, State.none);
                         break;
                     case GameManager.StrategyMode.DEFEND:
                         // Go back to defend team base
                         if (state != State.defending)
                         {
-                           float distance = (this.position - teamBasePosition).magnitude;
-                           if (distance > this.exteriorRadius)
-                               Move(teamBasePosition);
-                           else
+                            // If team is 0, move to base 0
+                            if (team == 0 && terrain != CombatSystem.TerrainType.BaseA)
+                                Move(teamBasePosition, CombatSystem.TerrainType.BaseA);
+                            // If team is 1, move to base 1
+                            else if (team == 1 && terrain != CombatSystem.TerrainType.BaseB)
+                                Move(teamBasePosition, CombatSystem.TerrainType.BaseB);
+                            // If it's already in the base, defend it
+                            else
                                Defend();
                         }
                         break;
@@ -168,10 +219,11 @@ public class AgentUnit : AgentNPC
             if (action.IsComplete()) {
                 action = null;
                 canMove = true;
+                color = colorOriginal;
                 InitializeSteerings(); // HACK
                 // Si ha terminado de hacer respawn, vuelve a la posición donde murió
                 if (state == State.dying) {
-                    Move(deathPosition, State.none);
+                    Move(deathPosition, CombatSystem.TerrainType.Unknown, State.none);
                 }
                 else {
                     state = State.none;
@@ -184,6 +236,8 @@ public class AgentUnit : AgentNPC
     {
         if (damage > 0) {
             hp -= damage;
+            damaged = true;
+            color = colorDamage;
             // If health is 0, die
             if (hp <= 0) {
                 print(attacker.gameObject.name+" killed "+this.gameObject.name);
@@ -225,18 +279,14 @@ public class AgentUnit : AgentNPC
     {
         action = new Attack(this, enemyUnit);
         state = State.attacking;
-
-        // TODO:HACK
-        //SetTarget(enemyUnit);
-        FollowPathAndStop(enemyUnit.position);
+        FindPathToTarget(enemyUnit.position);
     }
     
     public void Defend()
     {
         action = new Defend(this);
         state = State.defending;
-        if (pathFollowing != null) Destroy(pathFollowing);
-        pathFollowing = null;
+        ResetPath();
     }
 
     public void Die()
@@ -253,46 +303,38 @@ public class AgentUnit : AgentNPC
     {
         action = new Heal(this);
         state = State.healing;
-        FollowPathAndStop(healingZonePosition);
+        FindPathToTarget(healingZonePosition);
     }
     
     //public void Hide(Vector3 targetPoint)
     //{
     //    action = new TakeCover(this, targetPoint);
     //    state = State.fleeing;
-    //    FollowPathAndStop(targetPoint);
+    //    FindPathToTarget(targetPoint);
     //}
 
-    public void Move(Vector3 targetPoint, State s = State.routed)
+    public void Move(Vector3 targetPoint,
+                     CombatSystem.TerrainType terrain = CombatSystem.TerrainType.Unknown,
+                     State state = State.routed)
     {
-        action = new Move(this, targetPoint);
-        state = s;
-        FollowPathAndStop(targetPoint);
+        action = new Move(this, targetPoint, terrain);
+        this.state = state;
+        FindPathToTarget(targetPoint);
     }
     
     public void Patrol()
     {
         action = new Patrol(this);
         state = State.patrolling;
-        
-        if (pathFollowing != null) Destroy(pathFollowing);
-        pathFollowing = new GameObject("PathFollowing").AddComponent<PathFollowing>();
-        pathFollowing.path = patrolPath;
-        pathFollowing.mode = PathFollowing.Mode.patrol;
-        NewTarget(pathFollowing);
+        ResetPath(patrolPath, PathFollowing.Mode.patrol);
     }
 
     // AUX
 
-    private void FollowPathAndStop(Vector3 target)
+    private void FindPathToTarget(Vector3 target)
     {
         List<Vector3> path = pathFinder.FindPathA_star(this, target);
-        // TODO: borrar del Agent el PathFollowing anterior
-        if (pathFollowing != null) Destroy(pathFollowing);
-        pathFollowing = new GameObject("PathFollowing").AddComponent<PathFollowing>();
-        pathFollowing.path = path;
-        pathFollowing.mode = PathFollowing.Mode.stay;
-        NewTarget(pathFollowing);
+        ResetPath(path);
     }
 
     /*
@@ -304,6 +346,7 @@ public class AgentUnit : AgentNPC
     {
         string text = unitType.ToString()+" / "+terrain.ToString();
         text += "\nHP: "+hp.ToString();
+        text += "\nstate: "+state.ToString();
         if (selected)
             text += "\nSELECTED";
         if (action != null)
@@ -348,7 +391,7 @@ public class AgentUnit : AgentNPC
                     if (hit.transform != null && hit.transform.tag != "Wall" && hit.transform.tag != "Water")
                         if (hit.transform != this.transform)
                         {
-                            FollowPathAndStop(hit.transform.position);
+                            FindPathToTarget(hit.transform.position);
                             selected = false;
                         }
                 }
@@ -361,268 +404,114 @@ public class AgentUnit : AgentNPC
     }
 
 
-    // public Material materialOriginal;
-    // public Material materialElegido;
-    // //Renderer renderer;
-
-
-    // public Transform target;
-    // Vector3 targetPosicion; //Variable para si el objetivo se ha movido, cambiar el pathfinding
-
-    // bool llego; //Variable para que se quede quieto
-    // bool camino;
-    // bool seleccionado;
-    // bool quieto; //Si el NPC está atacando, se queda quieto
-    // bool finJuego;
-    // bool esperando;
-    // bool muerto;  //Esta variable nos serivirá para si estamos muertos y nos habian detectados antes de morir, no quite vida
-    // bool curando; //Esta variable nos servirá para saber cuando nos hemos curado y tenemos que espera un tiempo para volver a curarnos
-    // public bool cambio;  //Esta variable me servirá para saber si se ha producido cambio de objetivo/recorrido, cambiar el camino (path)
-    // public bool patrulla;
-    // bool pausarPatrulla;
-    
-    // List<Node> path;
-    // Node nodoActual; //Nodo actual del camino al que sigo
-    // string tagZona; //Esta variable la usaremos cuando estemos quietos para saber donde estamos
-
-    // float[,] mapaCostes;
-
-    // void Update2() // Update
+    // public void AccionPatrulla()
     // {
-    //     if ((!esperando) && (!finJuego))
+    //     AgentUnit enemy = FindEnemyNear();
+    //     if (enemy != null)  //Ha detectado a alguien, va a por él
     //     {
-    //         comprobarVictoria();
-            
-    //         if (!quieto)
+    //         if ((nodoActual == null) || (target.position != targetPosicion))
     //         {
-    //             if (!cambio)
+    //             FindPathToTarget(transform.position, target.position, mapaCostes);
+    //         }
+    //         NewMethod();
+    //     }
+    //     else  //No ha detectado a nadie, patrulla
+    //     {
+    //         if (nodoActual == null) //Inicio de la patrulla
+    //         {
+    //             //Debug.Log("kwd " + name);
+    //             FindPathToTarget(transform.position, caminoPatrulla[numCaminoPatrulla].vPosition, mapaCostes);
+    //         }
+    //         NewMethod1();
+    //     }
+    // }
+
+    // private static void FindPathToTarget(Vector3 start, Vector3 end, float[,] mapaCostes)
+    // {
+    //     path = controlador.FindPath(start, end, mapaCostes);
+    //     if (path.Count > 0)
+    //     {
+    //         nodoActual = path[0];
+    //         numeroCamino = 0;
+    //         camino = true;
+    //         targetPosicion = end;
+    //     }
+    //     else
+    //     {
+    //         camino = false;
+    //     }
+    // }
+
+    // private static void NewMethod()
+    // {
+    //     if (camino)
+    //     {
+    //         //Ahora nos movemos por el camino
+    //         Node actual = controlador.GridReference.NodeFromWorldPoint(transform.position);
+    //         if (actual == nodoActual) //Avanzo al siguiente nodo del camino
+    //         {
+    //             numeroCamino++;
+    //             if (numeroCamino == path.Count)
     //             {
-    //                 if (!llego && patrulla)
-    //                     AccionPatrulla();
+    //                 //Quedate quieto porque has llegado al final del camino
+    //                 transform.position = transform.position;
+    //                 llego = true;
+    //                 //Debug.Log(actitud);
+    //                 StartCoroutine(buscarNuevoObjetivo());
     //             }
     //             else
     //             {
-    //                 nodoActual = null;
-    //                 Node n = controlador.GridReference.NodeFromWorldPoint(transform.position);
-    //                 tagZona = controlador.getTagNode(n);
-    //                 cambio = false;
-    //                 llego = false;
-    //                 camino = false; 
+    //                 nodoActual = path[numeroCamino];
     //             }
+    //         }
+    //         if (numeroCamino < path.Count)
+    //         {
+    //             //Muevete al siguiente nodo
+    //             Vector3 direccion = nodoActual.vPosition - transform.position;
+    //             direccion.Normalize();
+    //             //Debug.Log(transform.position + " " + direccion + " " + mapaCostes[nodoActual.iGridX, nodoActual.iGridY]);
+    //             transform.position = transform.position + direccion * vel * Time.deltaTime / mapaCostes[nodoActual.iGridX, nodoActual.iGridY];
     //         }
     //     }
     // }
 
-    // public void AccionPatrulla()
+    // private static void NewMethod1()
     // {
-    //     // detectarEnemigoPatrulla();
-    //     // if (pausarPatrulla)  //Ha detectado a alguien, va a por él
-    //     // {
-    //     //     if ((nodoActual == null) || (target.position != targetPosicion))
-    //     //     {
-    //     //         path = controlador.FindPath(transform.position, target.position, mapaCostes);//Find a path to the target
-    //     //         if (path.Count > 0)
-    //     //         {
-    //     //             nodoActual = path[0];
-    //     //             numeroCamino = 0;
-    //     //             camino = true;
-    //     //             targetPosicion = target.position;
-    //     //         }
-    //     //         else
-    //     //         {
-    //     //             camino = false;
-    //     //         }
-    //     //     }
-    //     //     if (camino)
-    //     //     {
-    //     //         //Ahora nos movemos por el camino
-    //     //         Node actual = controlador.GridReference.NodeFromWorldPoint(transform.position);
-    //     //         if (actual == nodoActual) //Avanzo al siguiente nodo del camino
-    //     //         {
-    //     //             numeroCamino++;
-    //     //             if (numeroCamino == path.Count)
-    //     //             {
-    //     //                 //Quedate quieto porque has llegado al final del camino
-    //     //                 transform.position = transform.position;
-    //     //                 llego = true;
-    //     //                 //Debug.Log(actitud);
-    //     //                 StartCoroutine(buscarNuevoObjetivo());
-    //     //             }
-    //     //             else
-    //     //             {
-    //     //                 nodoActual = path[numeroCamino];
-    //     //             }
-    //     //         }
-    //     //         if (numeroCamino < path.Count)
-    //     //         {
-    //     //             //Muevete al siguiente nodo
-    //     //             Vector3 direccion = nodoActual.vPosition - transform.position;
-    //     //             direccion.Normalize();
-    //     //             //Debug.Log(transform.position + " " + direccion + " " + mapaCostes[nodoActual.iGridX, nodoActual.iGridY]);
-    //     //             transform.position = transform.position + direccion * vel * Time.deltaTime / mapaCostes[nodoActual.iGridX, nodoActual.iGridY];
-    //     //         }
-    //     //     }
-    //     // }
-    //     // else  //No ha detectado a nadie, patrulla
-    //     // {
-    //     //     if (nodoActual == null) //Inicio de la patrulla
-    //     //     {
-    //     //         //Debug.Log("kwd " + name);
-    //     //         path = controlador.FindPath(transform.position, caminoPatrulla[numCaminoPatrulla].vPosition, mapaCostes);//Find a path to the target
-    //     //         if (path.Count > 0)
-    //     //         {
-    //     //             nodoActual = path[0];
-    //     //             numeroCamino = 0;
-    //     //             camino = true;
-    //     //             targetPosicion = caminoPatrulla[numCaminoPatrulla].vPosition;
-    //     //         }
-    //     //         else
-    //     //         {
-    //     //             camino = false;
-    //     //         }
-    //     //     }
-    //     //     if (camino)
-    //     //     {
-    //     //         //Ahora nos movemos por el camino
-    //     //         Node actual = controlador.GridReference.NodeFromWorldPoint(transform.position);
-    //     //         if (actual == nodoActual) //Avanzo al siguiente nodo del camino
-    //     //         {
-    //     //             numeroCamino++;
-    //     //             if (numeroCamino == path.Count)
-    //     //             {
-    //     //                 //Quedate quieto porque has llegado al final del camino
-    //     //                 transform.position = transform.position;
-    //     //                 nodoActual = null;
-    //     //                 numCaminoPatrulla++;
-    //     //                 if (numCaminoPatrulla == caminoPatrulla.Length) numCaminoPatrulla = 0; //Si he llegado al final, repetimos
-    //     //             }
-    //     //             else
-    //     //             {
-    //     //                 nodoActual = path[numeroCamino];
-    //     //             }
-    //     //         }
-    //     //         if (numeroCamino < path.Count)
-    //     //         {
-    //     //             //Muevete al siguiente nodo
-    //     //             Vector3 direccion = nodoActual.vPosition - transform.position;
-    //     //             direccion.Normalize();
-    //     //             //Debug.Log(transform.position + " " + direccion + " " + mapaCostes[nodoActual.iGridX, nodoActual.iGridY]);
-    //     //             transform.position = transform.position + direccion * vel * Time.deltaTime / mapaCostes[nodoActual.iGridX, nodoActual.iGridY];
-    //     //         }
-    //     //     }
-    //     // }
+    //     if (camino)
+    //     {
+    //         //Ahora nos movemos por el camino
+    //         Node actual = controlador.GridReference.NodeFromWorldPoint(transform.position);
+    //         if (actual == nodoActual) //Avanzo al siguiente nodo del camino
+    //         {
+    //             numeroCamino++;
+    //             if (numeroCamino == path.Count)
+    //             {
+    //                 //Quedate quieto porque has llegado al final del camino
+    //                 transform.position = transform.position;
+    //                 nodoActual = null;
+    //                 numCaminoPatrulla++;
+    //                 if (numCaminoPatrulla == caminoPatrulla.Length) numCaminoPatrulla = 0; //Si he llegado al final, repetimos
+    //             }
+    //             else
+    //             {
+    //                 nodoActual = path[numeroCamino];
+    //             }
+    //         }
+    //         if (numeroCamino < path.Count)
+    //         {
+    //             //Muevete al siguiente nodo
+    //             Vector3 direccion = nodoActual.vPosition - transform.position;
+    //             direccion.Normalize();
+    //             //Debug.Log(transform.position + " " + direccion + " " + mapaCostes[nodoActual.iGridX, nodoActual.iGridY]);
+    //             transform.position = transform.position + direccion * vel * Time.deltaTime / mapaCostes[nodoActual.iGridX, nodoActual.iGridY];
+    //         }
+    //     }
     // }
 
-    // IEnumerator buscarNuevoObjetivo()
-    // {
-    //     yield return new WaitForSeconds(4);
-    //     //Buscar nuevo objetivo
-    //     target = controlador.buscarNuevoObjetivo(this, mapaCostes);
-    //     cambio = true;
-    // }
-    
     // public void cambioActitud() // TODO: lo llama el A*
     // {
     //     target = controlador.buscarNuevoObjetivo(this, mapaCostes);
     //     cambio = true;
-    // }
-
-    // public void quedarseQuietoFinJuego()
-    // {
-    //     quieto = true;
-    //     finJuego = true;
-    // }
-
-    // IEnumerator comprobarVida()
-    // {
-    //     // if (vida <= 0)
-    //     // {
-    //     //     Transform m = new GameObject().transform;
-    //     //     m.position = transform.position;
-    //     //     target = m; //Su objetivo será ir a donde a muerto
-    //     //     controlador.moverHaciaSpawn(this);
-    //     //     cambio = false;
-    //     //     llego = false;
-    //     //     camino = true;
-    //     //     seleccionado = false;
-    //     //     quieto = false;
-    //     //     muerto = true;
-    //     //     esperando = true;
-    //     //     vida = vidaInicial;
-    //     //     healthBar.fillAmount = 1;
-    //     //     yield return new WaitForSeconds(4);
-    //     //     esperando = false;
-    //     //     muerto = false;
-    //     // }
-    //     // else
-    //     // {
-    //     //     if (vida / vidaInicial <= 0.15f) //Que su objetivo sea una zona segura para curarse
-    //     //     {
-    //     //         if ((actitud == 2) && (!quieto) && ((target.tag != "ZonaSeguraAzul") || (target.tag != "ZonaSeguraRojo")))
-    //     //         {
-    //     //             Debug.Log("Soy " + name + " y voy a una zona segura");
-    //     //             target = controlador.buscarZonaSegura(this, mapaCostes);
-    //     //         }
-    //     //     }
-    //     //     if (!curando)
-    //     //     {
-    //     //         if (team == "ROJO")
-    //     //         {
-    //     //             if (nodoActual != null)
-    //     //             {
-    //     //                 if (controlador.getTagNode(nodoActual) == "ZonaSeguraRojo")
-    //     //                 {
-    //     //                     vida += 20;
-    //     //                     if (vida > vidaInicial) vida = vidaInicial;
-    //     //                     healthBar.fillAmount = vida / vidaInicial;
-    //     //                     curando = true;
-    //     //                     yield return new WaitForSeconds(2);
-    //     //                     curando = false;
-    //     //                 }
-    //     //             }
-    //     //             else
-    //     //             {
-    //     //                 if (tagZona == "ZonaSeguraRojo")
-    //     //                 {
-    //     //                     vida += 20;
-    //     //                     if (vida > vidaInicial) vida = vidaInicial;
-    //     //                     healthBar.fillAmount = vida / vidaInicial;
-    //     //                     curando = true;
-    //     //                     yield return new WaitForSeconds(2);
-    //     //                     curando = false;
-    //     //                 }
-    //     //             }
-
-    //     //         }
-    //     //         else
-    //     //         {
-    //     //             if (nodoActual != null)
-    //     //             {
-    //     //                 if (controlador.getTagNode(nodoActual) == "ZonaSeguraAzul")
-    //     //                 {
-    //     //                     vida += 20;
-    //     //                     if (vida > vidaInicial) vida = vidaInicial;
-    //     //                     healthBar.fillAmount = vida / vidaInicial;
-    //     //                     curando = true;
-    //     //                     yield return new WaitForSeconds(2);
-    //     //                     curando = false;
-    //     //                 }
-    //     //             }
-    //     //             else
-    //     //             {
-    //     //                 if (tagZona == "ZonaSeguraAzul")
-    //     //                 {
-    //     //                     vida += 20;
-    //     //                     if (vida > vidaInicial) vida = vidaInicial;
-    //     //                     healthBar.fillAmount = vida / vidaInicial;
-    //     //                     curando = true;
-    //     //                     yield return new WaitForSeconds(2);
-    //     //                     curando = false;
-    //     //                 }
-    //     //             }
-    //     //         }
-    //     //     }
-    //     // }
     // }
 
 }

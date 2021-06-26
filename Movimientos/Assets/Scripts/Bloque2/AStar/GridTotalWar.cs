@@ -19,14 +19,21 @@ public class GridTotalWar : MonoBehaviour
     //The array of Node that we'll use to find a path
     Node[,] NodeArray;
 
+    GameObject[,] PrintInfluenceMap;
+
     public Transform[,] influenceMap;
     public float[,] CostInfluenceMap;
 
     public static float[,] CosteUnidad = {
-        // bush, forest, grass, base, bridge
-        { 3.00f, 2.00f, 1.00f, 1.00f, 1.00f }, // tanker
-        { 2.00f, 2.00f, 1.00f, 1.00f, 1.00f }, // healer
-        { 0.50f, 0.75f, 1.00f, 1.00f, 1.25f }  // ranged
+        // Tanker, Healer, Ranged
+        { 1.00f, 1.00f, 2.00f }, // Street
+        { 3.00f, 2.00f, 0.75f }, // Forest
+        { 1.00f, 1.00f, 1.00f }, // Plains
+        { 1, 1, 1 },             // Heal
+        { 1, 1, 1 },             // BaseA
+        { 1, 1, 1 },             // BaseB
+        { 100, 100, 100 },       // Water
+        { 100, 100, 100 },       // Unknown
     };
 
 
@@ -43,12 +50,41 @@ public class GridTotalWar : MonoBehaviour
             }
         }
         CostInfluenceMap = new float[rowMap,colMap];
+        PrintInfluenceMap = new GameObject[rowMap, colMap];
     }
 
 
     private void Start()
     {
         CreateGrid();
+        CreatePrintInfluenceMap();
+    }
+
+    void Update()
+    {
+        StartCoroutine("UpdateInfluenceMap");
+    }
+    
+
+    IEnumerator UpdateInfluenceMap()
+    {
+        GetCostInfluenceMap();
+        yield return new WaitForSeconds(20);
+    }
+
+    public void CreatePrintInfluenceMap()
+    {
+        for (int x = 0; x < rowMap; x++)
+        {
+            for (int y = 0; y < colMap; y++)
+            {
+                PrintInfluenceMap[x, y] = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                PrintInfluenceMap[x, y].GetComponent<Renderer>().material.color = Color.white;
+                PrintInfluenceMap[x, y].transform.localScale = influenceMap[x, y].localScale;
+                PrintInfluenceMap[x, y].transform.position = NodeArray[x, y].position + Vector3.right*400;
+                PrintInfluenceMap[x, y].transform.Rotate(new Vector3(90, 0, 0));
+            }
+        }
     }
 
 
@@ -63,14 +99,12 @@ public class GridTotalWar : MonoBehaviour
             // Loop through the array of Node
             for (int x = 0; x < colMap; x++)
             {
-                string tag = cubeRow.transform.GetChild(x).transform.tag;
-                
                 Vector3 position = new Vector3( (x + 0.5f) * cubeSize, 0, (y + 0.5f) * cubeSize );
+
                 // Check if the node is obstructed
                 bool isWall = Physics.CheckSphere(position, cubeSize / 2, WallMask);
-
-                if (tag == "Water" || tag == "Wall")
-                    isWall = true;
+                string tag = cubeRow.transform.GetChild(x).transform.tag;
+                if (tag == "Water" || tag == "Wall") isWall = true;
 
                 NodeArray[x, y] = new Node(x, y, cubeSize, isWall);
             }
@@ -126,105 +160,113 @@ public class GridTotalWar : MonoBehaviour
         float x = npcPos.x / cubeSize;
         float y = npcPos.z / cubeSize;
 
+        if (x > colMap-1) x = colMap-1;
+        if (y > rowMap-1) y = rowMap-1;
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
+
         return NodeArray[(int)x, (int)y];
     }
 
-    //Get the map cost from a specific target
     public float[,] GetMatrixCost(AgentUnit agente)
     {
         float[,] costMap = new float[rowMap, colMap];
+
         for (int x = 0; x < rowMap; x++)
-        {
             for (int y = 0; y < colMap; y++)
-            {
                 costMap[x, y] = NodeCostUnit(influenceMap[x, y], agente);
-            }
-        }
+        
         return costMap;
     }
 
-    float NodeCostUnit(Transform nodo, AgentUnit npc)
-    { 
-        int terrainId;
-
-        // ???: por qué los números no coinciden con la matriz definida arriba?
-        switch(nodo.tag)
+    public CombatSystem.TerrainType GetNodeTag(Node node)
+    {
+        string tag = influenceMap[node.x, node.y].tag;
+        switch (tag)
         {
-            case "BaseA":
-                terrainId = 3;
-                break;
-            case "BaseB":
-                terrainId = 3;
-                break;
-            case "Grass":
-                terrainId = 2;
-                break;
-            case "Bridge":
-                terrainId = 0; 
-                break;
-            default:
-                terrainId = 1;
-                break;       
+            case "Street": return CombatSystem.TerrainType.Street;
+            case "Forest": return CombatSystem.TerrainType.Forest;
+            case "Grass": return CombatSystem.TerrainType.Plains;
+            case "Heal": return CombatSystem.TerrainType.Heal;
+            case "BaseA": return CombatSystem.TerrainType.BaseA;
+            case "BaseB": return CombatSystem.TerrainType.BaseB;
+            case "Water": return CombatSystem.TerrainType.Water;
+            default: return CombatSystem.TerrainType.Unknown;
         }
+    }
 
-        return CosteUnidad[terrainId,((int)npc.unitType)];
+    public CombatSystem.TerrainType GetNodeTag(Vector3 position)
+    {
+        return GetNodeTag( NodeFromWorldPoint(position) );
     }
     
-    public float[,] CompleteInfluenceMap(List<AgentUnit> teamA, List<AgentUnit> teamB)
+    public float NodeCostUnit(Node node, AgentUnit npc)
+    {
+        int terrainId = (int) GetNodeTag(node);
+        return CosteUnidad[terrainId, (int) npc.unitType];
+    }
+
+    float NodeCostUnit(Transform nodo, AgentUnit npc)
+    {
+        int terrainId = (int) GetNodeTag(nodo.position);
+        return CosteUnidad[terrainId, (int) npc.unitType];
+    }
+
+    public float[,] GetCostInfluenceMap()
     {
         for (int x = 0; x < rowMap; x++)
             for (int y = 0; y < colMap; y++)
-                CostInfluenceMap[x, y] = ControlOverLocation(teamA, teamB, NodeArray[x,y]);
+                CostInfluenceMap[x, y] = ControlOverLocation(NodeArray[x,y]);
         
         return CostInfluenceMap;
     }
-    
-    //return the tag of a specific point in the map
-    public string GetTagFromPoint(int x, int y)
+
+    public float ControlOverLocation(Node nodo)
     {
-        //if (influenceMap[x, y].tag == null) return null;
-        return influenceMap[x, y].tag;
+        List<AgentUnit> teamA = GameManager.GetTeamA();
+        List<AgentUnit> teamB = GameManager.GetTeamB();
+
+        float influenceNodo = InfluenceOverLocation(teamA, nodo) - InfluenceOverLocation(teamB, nodo);
+        // blue 
+        if (influenceNodo > 0)   
+            PrintInfluenceMap [nodo.x,nodo.y].GetComponent<Renderer>().material.color = new Color(1 - influenceNodo, 1 - influenceNodo, 1);
+        // red
+        if (influenceNodo < 0)   
+            PrintInfluenceMap [nodo.x,nodo.y].GetComponent<Renderer>().material.color = new Color(1, 1 + influenceNodo, 1 + influenceNodo);
+        //white
+        if (influenceNodo == 0) 
+            PrintInfluenceMap [nodo.x,nodo.y].GetComponent<Renderer>().material.color = Color.white;
+
+        return influenceNodo;
     }
     
     public float InfluenceOverLocation(List<AgentUnit> team, Node nodo)
     {
         float influence = 0;
-        foreach(AgentUnit unit in team) {
-            Node AgentPosition = NodeFromWorldPoint(unit.position);
-            //print("entramos con " + unit.team);
-            if (Mathf.Abs(nodo.x - AgentPosition.x) > unit.effectRadius || (nodo.y-AgentPosition.y) > unit.effectRadius)
-                continue;
-            //print("entramos con " + unit.team);
-            float distance;
-            if (nodo.x > nodo.y)
-                distance = unit.effectRadius - nodo.x;
-            else
-                distance = unit.effectRadius - nodo.y;
-            // FIXME: elige uno de estos dos
-            // rapid initial drop off, but with a longer range of influence
-            influence += unit.influence / Mathf.Sqrt(1 + distance);
-            
-            // plateaus first before rapidly tailing off at a distance
-            //influence += unit.influence / Mathf.Pow(1 + distance);
-        }
 
-        if (influence > 1)
-            return 1;
-        
-        if (influence < -1)
-            return -1;
+        foreach(AgentUnit unit in team)
+        {    
+            Node AgentPosition = NodeFromWorldPoint(unit.position);
+            
+            if (Mathf.Abs(nodo.x - AgentPosition.x) > unit.effectRadius ||
+                Mathf.Abs(nodo.y-AgentPosition.y) > unit.effectRadius) continue;
+
+            float distance;
+            if (Mathf.Abs(AgentPosition.x - nodo.x) > Mathf.Abs(AgentPosition.y - nodo.y))
+                distance = Mathf.Abs(AgentPosition.x - nodo.x);
+            else
+                distance = Mathf.Abs(AgentPosition.y - nodo.y);
+            
+            // FIXME: elige uno de estos tres
+            influence += unit.influence / (1 + distance);
+            //influence += unit.influence / Mathf.Sqrt(1 + distance); // rapid initial drop off, but with a longer range of influence
+            //influence += unit.influence / Mathf.Pow(1 + distance); // plateaus first before rapidly tailing off at a distance
+        }
+       
+        if (influence > 1) return 1;
+        if (influence < -1) return -1; 
             
         return influence;
-    }
-
-    // If teamA wins, returns a positive number
-    // If teamB wins, returns a negative number
-    public float ControlOverLocation(List<AgentUnit> teamA, List<AgentUnit> teamB, Node nodo)
-    {
-        float influenceA = InfluenceOverLocation(teamA, nodo);
-        float influenceB = InfluenceOverLocation(teamB, nodo);
-
-        return influenceA - influenceB;
     }
     
 }

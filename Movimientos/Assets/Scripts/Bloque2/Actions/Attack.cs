@@ -16,6 +16,11 @@ public class Attack : Action
     {
         if (time == -1)
             time = Time.time;
+
+        // if (enemyUnit.position != unit.pathFollowing.path[unit.pathFollowing.path.Count -1])
+        // {
+        //     unit.Attack(enemyUnit);
+        // }
         
         float distance = (unit.position - enemyUnit.position).magnitude;
 
@@ -28,17 +33,14 @@ public class Attack : Action
                 int damage = CombatSystem.Damage(unit, enemyUnit);
                 bool dead = enemyUnit.TakeDamage(damage, unit);
                 if (dead) isComplete = true;
+                unit.color = unit.colorAttack;
             }
+            else unit.color = unit.colorOriginal;
         }
-        // If the target moved away, complete action
-        //else if (unit.pathFollowing.arrived) { // SUPER HACK
-        //    if (unit.pathFollowing.path[unit.pathFollowing.path.Count-1] != enemyUnit.position)
-        //        isComplete = true;
-        //    unit.canMove = true;
-        //}
         // If it's not in range, move closer
         else {
             unit.canMove = true;
+            unit.color = unit.colorOriginal;
         }
     }
 

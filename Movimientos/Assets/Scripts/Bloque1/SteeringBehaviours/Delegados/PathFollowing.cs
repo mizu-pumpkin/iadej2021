@@ -12,9 +12,9 @@ public class PathFollowing : Seek
     // Holds the path to follow
     public List<Vector3> path;
     // Holds the current position on the path
-    [SerializeField] private int currentNode;
+    public int currentNode;
     // The direction in which we are going in the path
-    private int pathDir = 1;
+    public int pathDir = 1;
 
     public enum Mode { stay, patrol, stop };
     public Mode mode;
@@ -54,7 +54,7 @@ public class PathFollowing : Seek
 
             // Si he “llegado” al target, pasar al siguiente target
             float distance = Mathf.Abs((target.position - agent.position).magnitude);
-            if (distance <= agent.interiorRadius)
+            if (distance <= agent.exteriorRadius)
             {
                 currentNode += pathDir; // Siguiente objetivo
 

@@ -415,13 +415,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
+      propertyPath: maxSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
       propertyPath: exteriorRadius
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
       propertyPath: interiorRadius
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: maxAcceleration
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 8957869804740303796, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
@@ -499,13 +509,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
+      propertyPath: maxSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
       propertyPath: exteriorRadius
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
       propertyPath: interiorRadius
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: maxAcceleration
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 8957869804740303796, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
@@ -583,13 +603,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
+      propertyPath: maxSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
       propertyPath: exteriorRadius
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
       propertyPath: interiorRadius
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: maxAcceleration
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 8957869804740303796, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
@@ -755,13 +785,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
+      propertyPath: maxSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
       propertyPath: exteriorRadius
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
       propertyPath: interiorRadius
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: maxAcceleration
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 8957869804740303796, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
@@ -980,13 +1020,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
+      propertyPath: maxSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
       propertyPath: exteriorRadius
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
       propertyPath: interiorRadius
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: maxAcceleration
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 8957869804740303796, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
@@ -1064,13 +1114,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
+      propertyPath: maxSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
       propertyPath: exteriorRadius
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
       propertyPath: interiorRadius
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: maxAcceleration
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 8957869804740303796, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
@@ -1148,13 +1208,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
+      propertyPath: maxSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
       propertyPath: exteriorRadius
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
       propertyPath: interiorRadius
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: maxAcceleration
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 8957869804740303796, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
@@ -1232,13 +1302,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
+      propertyPath: maxSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
       propertyPath: exteriorRadius
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
       propertyPath: interiorRadius
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: maxAcceleration
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 8957869804740303796, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
@@ -1338,13 +1418,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
+      propertyPath: maxSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
       propertyPath: exteriorRadius
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
       propertyPath: interiorRadius
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: maxAcceleration
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 8957869804740303796, guid: c275acd848d104541952ccbb69af467b,
         type: 3}

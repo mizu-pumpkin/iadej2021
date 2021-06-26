@@ -37,7 +37,7 @@ public class PathFinding : MonoBehaviour
                 // Convierte a nodo el punto real destino
                 Node targetNode = grid.NodeFromWorldPoint(TargetPoint.transform.position);
                 // Llama a LRTA*
-                lrtaStar.FindPath(npc, startNode, targetNode, npc.heuristic, grid);
+                lrtaStar.FindPath(npc, startNode, targetNode, grid);
             }
         }
     }

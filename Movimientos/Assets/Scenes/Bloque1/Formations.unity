@@ -245,7 +245,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &160217829
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -380,6 +380,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
+      propertyPath: maxSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
       propertyPath: exteriorRadius
       value: 2
       objectReference: {fileID: 0}
@@ -387,6 +392,11 @@ PrefabInstance:
         type: 3}
       propertyPath: interiorRadius
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: maxAcceleration
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 8628483116401928244, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
@@ -548,6 +558,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
+      propertyPath: maxSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
       propertyPath: orientation
       value: 90
       objectReference: {fileID: 0}
@@ -560,6 +575,11 @@ PrefabInstance:
         type: 3}
       propertyPath: interiorRadius
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: maxAcceleration
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 8628483116401928244, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
@@ -709,6 +729,26 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 6e0a7228e49763b4d8f0a1d0892de24e, type: 2}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: maxSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: exteriorRadius
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: interiorRadius
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: maxAcceleration
+      value: 48
+      objectReference: {fileID: 0}
     - target: {fileID: 8628483116401928244, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -793,6 +833,26 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 55402a2114b1c724597adb56566c364d, type: 2}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: maxSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: exteriorRadius
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: interiorRadius
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: maxAcceleration
+      value: 48
+      objectReference: {fileID: 0}
     - target: {fileID: 8628483116401928244, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -887,7 +947,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1203295424
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1087,6 +1147,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
+      propertyPath: maxSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
       propertyPath: exteriorRadius
       value: 2
       objectReference: {fileID: 0}
@@ -1094,6 +1159,11 @@ PrefabInstance:
         type: 3}
       propertyPath: interiorRadius
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: maxAcceleration
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 8628483116401928244, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
@@ -1181,6 +1251,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
+      propertyPath: maxSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
       propertyPath: exteriorRadius
       value: 2
       objectReference: {fileID: 0}
@@ -1188,6 +1263,11 @@ PrefabInstance:
         type: 3}
       propertyPath: interiorRadius
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
+        type: 3}
+      propertyPath: maxAcceleration
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 8628483116401928244, guid: c275acd848d104541952ccbb69af467b,
         type: 3}

@@ -75,8 +75,8 @@ public class MyGrid : MonoBehaviour
         float x = npcPos.x / cubeSize;
         float y = npcPos.z / cubeSize;
 
-        if (x > 63) x = 63;
-        if (y > 63) y = 63;
+        if (x > colMap-1) x = colMap-1;
+        if (y > rowMap-1) y = rowMap-1;
         if (x < 0) x = 0;
         if (y < 0) y = 0;
 

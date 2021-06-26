@@ -55,13 +55,13 @@ public class LRTAStar : MonoBehaviour
         return nextNode;
     }
 
-    public void FindPath(AgentNPC npc, Node startNode, Node targetNode, int heuristic, MyGrid grid)
+    public void FindPath(AgentNPC npc, Node startNode, Node targetNode, MyGrid grid)
     {
         this.npc = npc;
         this.actualNode = startNode;
         this.targetNode = targetNode;
         this.grid = grid;
-        this.heuristic = heuristic;
+        this.heuristic = npc.heuristic;
         actualNode.hCost = actualNode.gCost + GetHeuristicDistance(actualNode, targetNode, heuristic);
     }
 

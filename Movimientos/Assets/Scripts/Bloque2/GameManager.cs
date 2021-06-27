@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,10 +9,18 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject teamA, teamB;
     public static List<AgentUnit> teamAUnits, teamBUnits;
 
-    public int hpBaseA = 20000;
-    public int hpBaseB = 20000;
-    public int killCountA = 0;
-    public int killCountB = 0;
+    public static StrategyMode modeA, modeB;
+
+    public static int hpBaseA = 10000;
+    public static int hpBaseB = 10000;
+    public static int killCountA = 0;
+    public static int killCountB = 0;
+
+    [SerializeField] private Text hpAText;
+    [SerializeField] private Text hpBText;
+    [SerializeField] private Text modeAText;
+    [SerializeField] private Text modeBText;
+    [SerializeField] private Text victoryText;
 
     void Awake()
     {
@@ -29,66 +38,76 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // FIXME: de momento todo esto es tmp
     void Update()
     {
-        
-        if (Input.GetKeyDown(KeyCode.F1)) Attack(0);
-        if (Input.GetKeyDown(KeyCode.F2)) Defend(0);
-        if (Input.GetKeyDown(KeyCode.F3)) Neutral(0);
-        
-        if (Input.GetKeyDown(KeyCode.F5)) Attack(1);
-        if (Input.GetKeyDown(KeyCode.F6)) Defend(1);
-        if (Input.GetKeyDown(KeyCode.F7)) Neutral(1);
-
-        if (Input.GetKeyDown(KeyCode.F12))
-            TotalWar();
-
+        if (!CheckVictory()) {
+            BaseAttacks();
+            modeAText.text = modeA.ToString();
+            modeBText.text = modeB.ToString();
+        }
+        else
+            EndGame();
     }
 
-    public void TotalWar()
+    public void Restart() {
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public static void TotalWar()
     {
-        Debug.Log("Total War mode: activate!");
         ChangeMode(0, StrategyMode.TOTALWAR);
         ChangeMode(1, StrategyMode.TOTALWAR);
     }
 
-    public void Attack(int team)
+    public static void Attack(int team)
     {
         ChangeMode(team, StrategyMode.ATTACK);
     }
 
-    public void Defend(int team)
+    public static void Defend(int team)
     {
         ChangeMode(team, StrategyMode.DEFEND);
     }
 
-    public void Neutral(int team)
+    public static void Neutral(int team)
     {
         ChangeMode(team, StrategyMode.NEUTRAL);
     }
 
-    public void ChangeMode(int team, StrategyMode mode)
+    public static void ChangeMode(int team, StrategyMode mode)
     {
         switch (team)
         {
             case 0:
-                Debug.Log("TEAM GRADO mode: "+mode.ToString());
+                modeA = mode;
                 foreach (AgentUnit npc in teamAUnits)
                     npc.ChangeMode(mode);
                 break;
             case 1:
-                Debug.Log("TEAM PCEO mode: "+mode.ToString());
+                modeB = mode;
                 foreach (AgentUnit npc in teamBUnits)
                     npc.ChangeMode(mode);
                 break;
         }
     }
 
+    public void EndGame()
+    {
+        if (hpBaseA <= 0) {
+            hpBaseA = 0;
+            victoryText.text = "BLACK WINS";
+            victoryText.enabled = true;
+        }
+        if (hpBaseB <= 0) {
+            hpBaseB = 0;
+            victoryText.text = "WHITE WINS";
+            victoryText.enabled = true;
+        }
+    }
+
     public static bool CheckVictory()
     {
-        // TODO
-        return false;
+        return hpBaseA <= 0 || hpBaseB <= 0;
     }
 
     public static List<AgentUnit> GetTeamA()
@@ -151,8 +170,20 @@ public class GameManager : MonoBehaviour
             if (npc != null && npc.inEnemyBase)
                 b++;
         
-        hpBaseA -= b;
-        hpBaseB -= a;
+        hpBaseA -= b * 200;
+        hpBaseB -= a * 200;
+        hpAText.text = hpBaseA.ToString();
+        hpBText.text = hpBaseB.ToString();
+    }
+
+    public static void CountKilled(AgentUnit attacker, AgentUnit killed)
+    {
+        Debug.Log(attacker.gameObject.name+" killed "+killed.gameObject.name);
+        switch(attacker.team)
+        {
+            case 0: killCountA++; break;
+            case 1: killCountB++; break;
+        }
     }
 
 }

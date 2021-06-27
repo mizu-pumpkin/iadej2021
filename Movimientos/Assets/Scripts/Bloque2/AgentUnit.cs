@@ -23,6 +23,7 @@ public class AgentUnit : AgentNPC
 
     // Posiciones de interés para PathFollowing
     public PathFollowing pathFollowing;
+    public GameObject patrolPathObject;
     [SerializeField] private List<Vector3> patrolPath;
     public Vector3 teamBasePosition;
     [SerializeField] private Vector3 enemyBasePosition;
@@ -109,12 +110,9 @@ public class AgentUnit : AgentNPC
     {
         patrolPath = new List<Vector3>();
 
-        int steps = 40;
-
-        if (Random.Range(0, 2) == 0) steps *= -1;
-
-        LeftRightPoint(10, steps);
-        LeftRightPoint(10, -steps);
+        if (patrolPathObject != null)
+            for (int i = 0; i < patrolPathObject.transform.childCount; i++)
+                patrolPath.Add(patrolPathObject.transform.GetChild(i).position);
     }
 
     private void LeftRightPoint(int n, int steps)
@@ -301,9 +299,9 @@ public class AgentUnit : AgentNPC
         {
             if (state != State.routed) {
                 float distance = (this.position - initialPosition).magnitude;
-                if (distance > this.exteriorRadius * 2)
+                if (distance > this.exteriorRadius)
                     Move(initialPosition);
-                else
+                else if (patrolPath.Count > 0)
                     Patrol();
             }
         }
@@ -350,18 +348,20 @@ public class AgentUnit : AgentNPC
             color = colorDamage;
             // If health is 0, die
             if (hp <= 0) {
-                Debug.Log(attacker.gameObject.name+" killed "+this.gameObject.name);
+                GameManager.CountKilled(attacker, this);
                 Die();
                 return true;
             }
-            // If health is low and speed is high, run away
-            else if (hp < (maxHP / 2) && hp < attacker.hp && maxSpeed >= attacker.maxSpeed && state != State.healing) {
-                Heal();
+            // If health is low and speed is high, find healer
+            else if (hp < (maxHP / 2) && hp < attacker.hp && maxSpeed >= attacker.maxSpeed) {
+                if (state != State.healing)
+                    Heal();
                 return true;
             }
             // If attacked, respond to attack
             else {
-                Attack(attacker);
+                if (state != State.attacking)
+                    Attack(attacker);
             }
         }
         return false;

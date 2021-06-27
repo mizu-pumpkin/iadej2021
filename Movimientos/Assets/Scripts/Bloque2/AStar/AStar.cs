@@ -111,6 +111,8 @@ public class AStar : MonoBehaviour
         float aci = grid.ControlOverLocation(actualNode);
         float ci = grid.ControlOverLocation(connection);
 
+        // Dependiendo del equipo, si lo que devuelve es un número negativo, corresponde al equipo contrario, 
+        // y se pondrá una influencia correspondiente al valor absoluto. En caso contrario, el valor será 0.
         switch (npc.team)
         {
             case 0:
@@ -145,8 +147,9 @@ public class AStar : MonoBehaviour
 
         float terrainCost = (actualCost + connectionCost) / 2;
         float influenceCost = (actualNodeInfluence + connectionInfluence) / 2;
+        float visibilityCost = grid.GetVisibility(actualNode);
         
-        return terrainCost + influenceCost;
+        return terrainCost + influenceCost + visibilityCost;
     }
 
 }

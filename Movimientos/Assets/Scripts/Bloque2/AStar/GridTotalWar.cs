@@ -24,16 +24,24 @@ public class GridTotalWar : MonoBehaviour
     public Transform[,] influenceMap;
     public float[,] CostInfluenceMap;
 
+    public List<Node> listForest = new List<Node>();
+    public List<Node> listStreet = new List<Node>();
+    public List<Node> listPlains = new List<Node>();
+
+    static float veryGood = 0;
+    static float veryBad = 100;
+    static float meh = 1;
+
     public static float[,] CosteUnidad = {
-        // Tanker, Healer, Ranged
-        { 1.00f, 1.00f, 2.00f }, // Street
-        { 3.00f, 2.00f, 0.75f }, // Forest
-        { 1.00f, 1.00f, 1.00f }, // Plains
-        { 1, 1, 1 },             // Heal
-        { 1, 1, 1 },             // BaseA
-        { 1, 1, 1 },             // BaseB
-        { 100, 100, 100 },       // Water
-        { 100, 100, 100 },       // Unknown
+        // Tanker, Infantry, Ranged
+        { veryBad, veryBad, veryGood }, // Street
+        { veryBad, veryGood, veryBad }, // Forest
+        { veryGood, veryBad, veryBad }, // Plains
+        { meh, meh, meh },              // Heal
+        { meh, meh, meh },              // BaseA
+        { meh, meh, meh },              // BaseB
+        { veryBad, veryBad, veryBad },  // Water
+        { veryBad, veryBad, veryBad },  // Unknown
     };
 
 
@@ -107,11 +115,62 @@ public class GridTotalWar : MonoBehaviour
                 if (tag == "Water" || tag == "Wall") isWall = true;
 
                 NodeArray[x, y] = new Node(x, y, cubeSize, isWall);
+
+                if (tag == "Forest") {
+                    listForest.Add(NodeArray[x, y]);
+                }
+                if (tag == "Grass") {
+                    listPlains.Add(NodeArray[x, y]);
+                }
+                if (tag == "Street" || tag == "Bridge") {
+                    listStreet.Add(NodeArray[x, y]);
+                }
             }
         }
     }
 
-    
+    public bool isForest(Node nodo)
+    {
+        return listForest.Contains(nodo);
+    }
+
+    public bool isStreet(Node nodo)
+    {
+        return listStreet.Contains(nodo);
+    }
+
+    public bool isPlains(Node nodo)
+    {
+        return listPlains.Contains(nodo);
+    }
+
+    //devuelvel la visibilidad que tenemos en un nodo específico
+    public float GetVisibility(Node node)
+    {
+        if (isForest(node))
+            return 0.5f;
+        else
+            return 1;
+    }
+
+    public Vector3 GetClosestForest(AgentUnit agentUnit)
+    {
+        Node agentNode = NodeFromWorldPoint(agentUnit.position);
+        if (isForest(agentNode))
+            return agentUnit.position;
+        float bestDistance = Mathf.Infinity;
+        Node bestNode = listForest[0];
+        foreach (Node forestNode in listForest)
+        {
+            float distance = (agentNode.position - forestNode.position).magnitude;
+            if (distance < bestDistance) {
+                bestDistance = distance;
+                bestNode = forestNode;
+            }
+        }
+        return bestNode.position;
+    }
+
     // Función para obtener la lista de nodos adyacentes dado un nodo
     public List<Node> GetConnectionNodes(Node node)
     {

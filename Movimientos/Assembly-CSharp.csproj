@@ -49,7 +49,6 @@
      <Compile Include="Assets\Scripts\Bloque1\Agents\AgentNPC.cs" />
      <Compile Include="Assets\Scripts\UnitsController.cs" />
      <Compile Include="Assets\Scripts\Bloque1\Formations\Patterns\SlotAssignment.cs" />
-     <Compile Include="Assets\Scripts\Bloque2\Actions\ActionManager.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Actions\Patrol.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Actions\TakeCover.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Base\Seek.cs" />
@@ -75,7 +74,6 @@
      <Compile Include="Assets\Scripts\Bloque2\TacticalPathFinding\GridTotalWar.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Actions\Attack.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Steering.cs" />
-     <Compile Include="Assets\Scripts\Bloque2\Actions\ActionCombination.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Base\SeekVelocity.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Grupo\BlendedSteering.cs" />
      <Compile Include="Assets\Scripts\Bloque2\AgentUnit.cs" />
@@ -86,7 +84,6 @@
      <Compile Include="Assets\Scripts\Bloque1\Formations\Patterns\LinePattern.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Delegados\Face.cs" />
      <Compile Include="Assets\Scripts\Bloque1\Agents\JumpAgentNPC.cs" />
-     <Compile Include="Assets\Scripts\Bloque2\Actions\ActionSequence.cs" />
      <Compile Include="Assets\Scripts\Bloque1\Formations\DriftOffset.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Delegados\WallAvoid.cs" />
      <Compile Include="Assets\Scripts\Bloque1\Formations\Fixed\LineFixed.cs" />

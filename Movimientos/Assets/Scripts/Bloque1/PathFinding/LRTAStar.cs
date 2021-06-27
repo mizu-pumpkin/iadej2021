@@ -103,7 +103,7 @@ public class LRTAStar : MonoBehaviour
     //        actualNode = actualNode.parent;
     //    }
     //    path.Reverse();
-    //    //TODO: Creo que no es necesario: grid.FinalPath = path;
+    //    //TODO: grid.FinalPath = path;
     //    return path;
     //}
 

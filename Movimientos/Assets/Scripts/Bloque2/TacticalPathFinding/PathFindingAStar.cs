@@ -25,8 +25,6 @@ public class PathFindingAStar : MonoBehaviour
 
     public AStar aStar;
     private GridTotalWar grid;
-    GameObject TargetPoint;
-    //float[,] costMap;
 
 
     public List<Vector3> FindPathA_star(AgentUnit npc, Vector3 position)

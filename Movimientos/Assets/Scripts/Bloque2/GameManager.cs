@@ -49,10 +49,6 @@ public class GameManager : MonoBehaviour
             EndGame();
     }
 
-    public void Restart() {
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
     public static void TotalWar()
     {
         ChangeMode(0, StrategyMode.TOTALWAR);

@@ -20,6 +20,6 @@ public abstract class FormationPattern : MonoBehaviour
 
     // Returns true if the pattern can support the given
     // number of slots
-    public abstract bool supportsSlots(int slotCount);
+    public virtual bool supportsSlots(int slotCount) => true;
 
 }

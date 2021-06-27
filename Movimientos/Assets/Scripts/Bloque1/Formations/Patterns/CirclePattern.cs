@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DefensiveCirclePattern : FormationPattern
+public class CirclePattern : FormationPattern
 {
     // The radius of one character, this is needed to determine how
     // close we can pack a given number of characters around a cirle
-    public float characterRadius = 1;
+    public float separation = 1;
 
     // Calculates the number of slots in the pattern from the
     // assignment data. This is not part of the formation
@@ -64,8 +64,8 @@ public class DefensiveCirclePattern : FormationPattern
         // The radius depends on the radius of the character,
         // and the number of characters in the circle:
         // we want there to be no gap between character's shoulders.
-        float radius = (2*numberOfSlots-1) * characterRadius / (Mathf.PI * 2); // r = (2n-1)d / 2PI
-        //float radius = characterRadius / Mathf.Sin(Mathf.PI / (float)numberOfSlots);
+        float radius = (2*numberOfSlots-1) * separation / (Mathf.PI * 2); // r = (2n-1)d / 2PI
+        //float radius = separation / Mathf.Sin(Mathf.PI / (float)numberOfSlots);
     
         // Create a location, and fill its components based
         // on the angle around circle.
@@ -78,13 +78,6 @@ public class DefensiveCirclePattern : FormationPattern
 
         // Return the slot location
         return location;
-    }
-
-    // Makes sure we can support the given number of slots
-    // In this case we support any number of slots.
-    public override bool supportsSlots(int slotCount)
-    {
-        return true;
     }
 
 }

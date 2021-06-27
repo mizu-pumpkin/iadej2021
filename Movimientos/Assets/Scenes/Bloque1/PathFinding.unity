@@ -5542,7 +5542,7 @@ MonoBehaviour:
   exteriorRadius: 3
   interiorAngle: 45
   exteriorAngle: 90
-  debug: 0
+  debug: 1
   steeringBehaviours: []
   pathFinding: {fileID: 932317027}
   heuristic: 1

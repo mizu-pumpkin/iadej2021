@@ -144,6 +144,7 @@ MonoBehaviour:
   target: {fileID: 0}
   priority: 0
   weight: 1
+  debug: 0
   targetRadius: 0
   slowRadius: 0
   timeToTarget: 0.1
@@ -425,7 +426,7 @@ PrefabInstance:
     - target: {fileID: 3600689048217042308, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 8.91
+      value: 3.46
       objectReference: {fileID: 0}
     - target: {fileID: 3600689048217042308, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
@@ -435,7 +436,7 @@ PrefabInstance:
     - target: {fileID: 3600689048217042308, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 10.06
+      value: 3.09
       objectReference: {fileID: 0}
     - target: {fileID: 3600689048217042308, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
@@ -623,6 +624,8 @@ MonoBehaviour:
   target: {fileID: 0}
   priority: 0
   weight: 1
+  debug: 0
+  pathObject: {fileID: 0}
   path:
   - {x: 0, y: 0, z: 0}
   - {x: 10, y: 0, z: 0}

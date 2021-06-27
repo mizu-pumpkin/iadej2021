@@ -28,8 +28,6 @@ public class MyGrid : MonoBehaviour
             // Loop through the array of Node
             for (int x = 0; x < colMap; x++)
             {
-                Vector3 position = new Vector3( (x + 0.5f) * cubeSize, 0, (y + 0.5f) * cubeSize );
-
                 // Check if the node is obstructed
                 string tag = cubeRow.transform.GetChild(x).transform.tag;
                 bool isWall = tag == "Water" || tag == "Wall";

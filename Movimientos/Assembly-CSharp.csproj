@@ -43,7 +43,6 @@
      <Compile Include="Assets\Scripts\Bloque1\PathFinding\LRTAStar.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Grupo\Separation.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Opcionales\CollisionAvoidance.cs" />
-     <Compile Include="Assets\Scripts\Bloque2\Map\InfluenceMap.cs" />
      <Compile Include="Assets\Scripts\SimpleCameraController.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Grupo\Cohesion.cs" />
      <Compile Include="Assets\Scripts\Utils.cs" />
@@ -61,7 +60,7 @@
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Base\Align.cs" />
      <Compile Include="Assets\Scripts\Bloque1\PathFinding\MyGrid.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Actions\Heal.cs" />
-     <Compile Include="Assets\Scripts\Bloque2\AStar\AStar.cs" />
+     <Compile Include="Assets\Scripts\Bloque2\TacticalPathFinding\AStar.cs" />
      <Compile Include="Assets\Scripts\Bloque1\Agents\SlowAgentNPC.cs" />
      <Compile Include="Assets\Scripts\Bloque1\PathFinding\Node.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Base\AntiAlign.cs" />
@@ -73,8 +72,7 @@
      <Compile Include="Assets\Scripts\Bloque1\Agents\FastAgentNPC.cs" />
      <Compile Include="Assets\Scripts\Bloque1\Agents\Bodi.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Actions\Action.cs" />
-     <Compile Include="Assets\Scripts\Bloque2\AStar\GridTotalWar.cs" />
-     <Compile Include="Assets\Scripts\Bloque2\Map\StrategyManager.cs" />
+     <Compile Include="Assets\Scripts\Bloque2\TacticalPathFinding\GridTotalWar.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Actions\Attack.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Steering.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Actions\ActionCombination.cs" />
@@ -84,16 +82,14 @@
      <Compile Include="Assets\Scripts\Bloque2\Actions\Die.cs" />
      <Compile Include="Assets\Scripts\Bloque1\Formations\Fixed\Fixed.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Grupo\Alignment.cs" />
-     <Compile Include="Assets\Scripts\Bloque2\AStar\PathFindingAStar.cs" />
+     <Compile Include="Assets\Scripts\Bloque2\TacticalPathFinding\PathFindingAStar.cs" />
      <Compile Include="Assets\Scripts\Bloque1\Formations\Patterns\LinePattern.cs" />
-     <Compile Include="Assets\Scripts\Bloque2\Map\Waypoint.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Delegados\Face.cs" />
      <Compile Include="Assets\Scripts\Bloque1\Agents\JumpAgentNPC.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Actions\ActionSequence.cs" />
      <Compile Include="Assets\Scripts\Bloque1\Formations\DriftOffset.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Delegados\WallAvoid.cs" />
      <Compile Include="Assets\Scripts\Bloque1\Formations\Fixed\LineFixed.cs" />
-     <Compile Include="Assets\Scripts\Bloque2\Map\WaypointList.cs" />
      <Compile Include="Assets\Scripts\Bloque1\Agents\Agent.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Opcionales\PathFollowingPredict.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\SteeringBehaviour.cs" />

@@ -506,7 +506,7 @@ PrefabInstance:
     - target: {fileID: 8957869804740303796, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
       propertyPath: m_Name
-      value: Orange (Flee)
+      value: Flee (Orange)
       objectReference: {fileID: 0}
     - target: {fileID: 8957869804740303796, guid: c275acd848d104541952ccbb69af467b,
         type: 3}

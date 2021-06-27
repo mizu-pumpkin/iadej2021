@@ -23,8 +23,6 @@ public class FormationManager : MonoBehaviour
     // P.e. una malla estática rectangular, una escalable cirular, ...
     public FormationPattern pattern;
 
-    public List<AgentNPC> npcs; // HACK: tmp
-
     /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
@@ -33,12 +31,11 @@ public class FormationManager : MonoBehaviour
     public void Awake()
     {
         slotAssignments = new List<SlotAssignment>();
+    }
 
-        foreach (AgentNPC npc in npcs) addCharacter(npc); // HACK: tmp
-        //foreach (GameObject go in UnitsController.selectedUnits) {
-        //    AgentNPC npc = go.GetComponent<AgentNPC>();
-        //    addCharacter(npc);
-        //}
+    public void SelectedAgents(List<AgentNPC> npcs)
+    {
+        foreach (AgentNPC npc in npcs) addCharacter(npc);
     }
 
     public void Update()

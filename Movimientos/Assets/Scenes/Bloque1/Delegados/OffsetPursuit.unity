@@ -249,6 +249,7 @@ MonoBehaviour:
   target: {fileID: 392469867}
   priority: 0
   weight: 1
+  debug: 0
   targetRadius: 0
   slowRadius: 0
   timeToTarget: 0.1
@@ -274,6 +275,7 @@ MonoBehaviour:
   target: {fileID: 392469867}
   priority: 0
   weight: 1
+  debug: 0
   targetRadius: 0
   slowRadius: 0
   timeToTarget: 0.1
@@ -417,7 +419,7 @@ PrefabInstance:
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
       propertyPath: debug
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
@@ -551,6 +553,7 @@ MonoBehaviour:
   target: {fileID: 392469867}
   priority: 0
   weight: 1
+  debug: 0
   targetRadius: 0
   slowRadius: 0
   timeToTarget: 0.1
@@ -625,7 +628,7 @@ PrefabInstance:
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
       propertyPath: debug
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
@@ -739,7 +742,7 @@ PrefabInstance:
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
       propertyPath: debug
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
@@ -853,7 +856,7 @@ PrefabInstance:
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
       propertyPath: debug
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6467506151189424885, guid: c275acd848d104541952ccbb69af467b,
         type: 3}
@@ -1007,6 +1010,7 @@ MonoBehaviour:
   target: {fileID: 392469867}
   priority: 0
   weight: 1
+  debug: 0
   targetRadius: 0
   slowRadius: 0
   timeToTarget: 0.1

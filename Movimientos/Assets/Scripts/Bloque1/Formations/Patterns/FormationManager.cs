@@ -35,14 +35,10 @@ public class FormationManager : MonoBehaviour
 
     public void SelectedAgents(List<AgentNPC> npcs)
     {
+        slotAssignments.Clear();
         foreach (AgentNPC npc in npcs) addCharacter(npc);
     }
 
-    public void Update()
-    {
-        updateSlots();
-    }
-    
     // Updates the assignment of characters to slot
     public void updateSlotAssignments()
     {

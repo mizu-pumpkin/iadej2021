@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class Fixed : MonoBehaviour
 {
-    public AgentNPC[] agentes = new AgentNPC[4];
+    public List<AgentNPC> agentes;
     protected Vector3[] gridPositions = new Vector3[4];
     protected float[] gridOrientations = new float[4];
     public float separation = 4;
@@ -17,20 +17,27 @@ public abstract class Fixed : MonoBehaviour
         GridOrientations();
     }
 
-    public void AddAgents(List<AgentNPC> newAgents)
+    public void SetAgents(List<AgentNPC> newAgents)
     {
-        for (int i = 0; i < 4; i ++)
-            agentes[i] = newAgents[i];
+        agentes = new List<AgentNPC>();
+
+        int i = 0;
+        foreach (AgentNPC npc in newAgents)
+        {
+            if (i >= 4) break;
+            agentes.Add(npc);
+            i++;
+        }
     }
     
-    public void Update()
+    public void UpdateSlots()
     {
         //Find the anchor point
         AgentNPC leader = agentes[0];
         float radTheta = -leader.orientation * Mathf.Deg2Rad;
 
         // Go through each character in turn
-        for (int i = 1; i < agentes.Length; i++)
+        for (int i = 1; i < agentes.Count; i++)
         {
             // Ask for the location of the slot relative to the
             // anchor point. This should be a Static structure

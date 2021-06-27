@@ -105,6 +105,8 @@
      <Compile Include="Assets\Scripts\ButtonHandler.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Opcionales\Interpose.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Delegados\PathFollowing.cs" />
+     <Compile Include="Assets\Scripts\Bloque1\Formations\PatternController.cs" />
+     <Compile Include="Assets\Scripts\Bloque1\Formations\FixedController.cs" />
     <Reference Include="UnityEngine">
         <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

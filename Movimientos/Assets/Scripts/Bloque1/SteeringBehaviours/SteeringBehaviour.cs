@@ -19,7 +19,7 @@ public abstract class SteeringBehaviour : MonoBehaviour
 
     // Representa a cualquier target sobre el que se calculará el comportamiento
     public Agent target;
-    public int priority;
+    public int priority = 0;
     public float weight = 1.0f;
 
     public bool debug = false;
@@ -29,8 +29,8 @@ public abstract class SteeringBehaviour : MonoBehaviour
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
     
-    public virtual void Awake() {
-        priority = 3;
+    public virtual void Awake()
+    {
         if (target != null) target.debug = debug;
     }
 
@@ -42,19 +42,5 @@ public abstract class SteeringBehaviour : MonoBehaviour
     public virtual Steering GetSteering(AgentNPC agent) {
         return null;
     }
-
-    //public AgentNPC agent;
-    //
-    //private void OnDrawGizmos()
-    //{
-    //    // Gizmo: una línea en la dirección del objetivo
-    //    Vector3 from = agent.position; // Origen de la línea
-    //    Vector3 to = agent.transform.localPosition + // Destino de la línea
-    //    (target.position - agent.position) * 2;//velocity;
-    //    Vector3 elevation = new Vector3 (0, 1, 0); // No tocar el suelo
-    //    from = from + elevation;
-    //    to = to + elevation;
-    //    Gizmos.DrawLine(from, to); // Dibujar el gizmo
-    //}
     
 }

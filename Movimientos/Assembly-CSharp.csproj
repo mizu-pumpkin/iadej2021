@@ -55,7 +55,7 @@
      <Compile Include="Assets\Scripts\Bloque2\Actions\TakeCover.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Base\Seek.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Delegados\Wander.cs" />
-     <Compile Include="Assets\Scripts\PrioritySteering.cs" />
+     <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Opcionales\PrioritySteering.cs" />
      <Compile Include="Assets\Scripts\Bloque1\PathFinding\PathFinding.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Delegados\Pursue.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Base\Align.cs" />
@@ -65,6 +65,7 @@
      <Compile Include="Assets\Scripts\Bloque1\Agents\SlowAgentNPC.cs" />
      <Compile Include="Assets\Scripts\Bloque1\PathFinding\Node.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Base\AntiAlign.cs" />
+     <Compile Include="Assets\Scripts\Bloque1\Formations\Patterns\CirclePattern.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Grupo\Flocking.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Base\Arrive.cs" />
      <Compile Include="Assets\Scripts\Bloque2\GameManager.cs" />
@@ -97,6 +98,7 @@
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Opcionales\PathFollowingPredict.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\SteeringBehaviour.cs" />
      <Compile Include="Assets\Scripts\Bloque2\Actions\Defend.cs" />
+     <Compile Include="Assets\Scripts\Bloque1\Formations\Patterns\VPattern.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Base\Leave.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Delegados\OffsetPursuit.cs" />
      <Compile Include="Assets\Scripts\Bloque2\CombatSystem.cs" />
@@ -104,11 +106,9 @@
      <Compile Include="Assets\Scripts\Bloque1\Formations\Fixed\SquareFixed.cs" />
      <Compile Include="Assets\Scripts\Bloque1\Formations\Patterns\FormationPattern.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Base\Parabolico.cs" />
+     <Compile Include="Assets\Scripts\ButtonHandler.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Opcionales\Interpose.cs" />
      <Compile Include="Assets\Scripts\Bloque1\SteeringBehaviours\Delegados\PathFollowing.cs" />
-     <Compile Include="Assets\Scripts\Bloque1\Formations\Patterns\VPattern.cs" />
-     <Compile Include="Assets\Scripts\Bloque1\Formations\Patterns\CirclePattern.cs" />
-     <Compile Include="Assets\Scripts\ButtonHandler.cs" />
     <Reference Include="UnityEngine">
         <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

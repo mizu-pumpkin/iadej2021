@@ -11,9 +11,16 @@ public abstract class Fixed : MonoBehaviour
     protected abstract void GridPositions();
     protected abstract void GridOrientations();
 
-    void Awake() {
+    void Awake()
+    {
         GridPositions();
         GridOrientations();
+    }
+
+    public void AddAgents(List<AgentNPC> newAgents)
+    {
+        for (int i = 0; i < 4; i ++)
+            agentes[i] = newAgents[i];
     }
     
     public void Update()

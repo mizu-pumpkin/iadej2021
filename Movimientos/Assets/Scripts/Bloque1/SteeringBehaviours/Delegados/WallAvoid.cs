@@ -19,7 +19,6 @@ public class WallAvoid : Seek
 
     public override void Awake() {
         base.Awake();
-        priority = 1;
         target = new GameObject("WallAvoidTarget").AddComponent<Agent>();
     }
 

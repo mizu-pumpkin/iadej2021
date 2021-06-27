@@ -9,11 +9,6 @@ public class Flee : SteeringBehaviour
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
 
-    public override void Awake() {
-        base.Awake();
-        priority = 2;
-    }
-
     // Si el agente está cerca del objetivo no se moverá; pero si aún no
     // está cerca, entonces irá al objetivo a máxima velocidad
     override public Steering GetSteering(AgentNPC agent)

@@ -20,11 +20,6 @@ public class AntiAlign : SteeringBehaviour
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
         █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
      */
-    
-    public override void Awake() {
-        base.Awake();
-        priority = 2;
-    }
 
     override public Steering GetSteering(AgentNPC agent)
     {

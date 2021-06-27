@@ -25,13 +25,12 @@ public class AgentNPC : Agent
     
     public PathFinding pathFinding;
     public int heuristic = 1;
-    //public List<Vector3> path = new List<Vector3>();
-    
-    // ???: blendWeight/blendPriority
 
     Agent pointedTarget, target;
     Arrive arrive;
     Align align;
+
+    PrioritySteering prioritySteering;
 
     /*
         █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
@@ -118,6 +117,7 @@ public class AgentNPC : Agent
         InitializeSteerings();
         arrive = new GameObject("TargetArrive").AddComponent<Arrive>();
         align = new GameObject("TargetAlign").AddComponent<Align>();
+        prioritySteering = GetComponent<PrioritySteering>();
     }
 
     protected virtual void OnDestroy()
@@ -150,19 +150,31 @@ public class AgentNPC : Agent
             FindPath();
 
         steerings = new List<Steering>();
-        foreach (SteeringBehaviour sb in this.steeringBehaviours) {
-            Steering steer = sb.GetSteering(this);
-            if (steer == null) continue;
 
-            // HACK: para que no salga de las paredes
-            // Funciona el 90% del tiempo :D
-            if (sb is WallAvoid) {
-                steerings = new List<Steering>();
+        if (prioritySteering != null)
+        {
+            prioritySteering.InitializeGroups(this.steeringBehaviours);
+            Steering steer = prioritySteering.GetSteering(this);
+            if (steer != null)
                 steerings.Add(steer);
-                break;
-            }
+        }
+        else
+        {
+            foreach (SteeringBehaviour sb in this.steeringBehaviours)
+            {
+                Steering steer = sb.GetSteering(this);
+                if (steer == null) continue;
 
-            steerings.Add(steer);
+                // HACK: para que no salga de las paredes
+                // Funciona el 90% del tiempo :D
+                if (sb is WallAvoid) {
+                    steerings = new List<Steering>();
+                    steerings.Add(steer);
+                    break;
+                }
+
+                steerings.Add(steer);
+            }
         }
     }
 

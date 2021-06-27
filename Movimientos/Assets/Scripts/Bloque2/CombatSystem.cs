@@ -17,25 +17,11 @@ public class CombatSystem
     public enum UnitType { Tanker, Infantry, Ranged };
     public static float[] MaxHP = { 4000, 2000, 1500 };
     public static float[] MaxSpeed = { 30, 50, 40 };
-    public static float[] MaxAcceleration = { 60, 100, 80 };
     public static float[] Strength = { 200, 100, 50 };
     public static float[] AtkRange = { 15, 20, 40 };
     public static float[] AtkSpeed = { 2, 1, 0.5f };
     public static float[] Influence = { 4, 2, 1 };
     public static float[] Radius = { 4, 2, 1 };
-
-/*
-    Estas tablas se pueden usar para añadir elementos tácticos a las unidades.
-    Por ejemplo, si un ranged está siendo atacado, y recibe más daño del que produce, podría
-    buscar huir a un bosque. No obstante, en bosque apenas producen daño, con lo que si
-    tienen buena salud buscarían una llanura o una carretera que este en rango de combate
-    con el enemigo.
-    Es normal que, al introducir reglas de comportamiento, las unidades se puedan volver
-    "locas" de vez en cuando (no confundir con el modo “berserker”) y hagan cosas muy raras,
-    pasa hasta en juegos comerciales que se supone que emplean mucho tiempo depurando
-    sus sistemas tácticos y sus mecánicas de combate.
-    Introduce los comportamientos uno a uno y prueba a ver que tal funciona.
-*/
 
     // Factor de tipo de atacante/defensor
     public static float[,] FAD = {
@@ -48,27 +34,27 @@ public class CombatSystem
     // Factor por terreno del atacante
     public static float[,] FTA = {
         // Tanker, Infantry, Ranged
-        { 1.50f, 1.00f, 1.00f }, // Street
-        { 0.50f, 1.00f, 0.50f }, // Forest
-        { 1.00f, 1.00f, 1.50f }, // Plains
-        { 1, 1, 1 }, // Heal
-        { 1, 1, 1 }, // BaseA
-        { 1, 1, 1 }, // BaseB
-        { 1, 1, 1 }, // Water
-        { 1, 1, 1 }, // Unknown
+        { 1.0f, 1.0f, 1.5f },    // Street
+        { 0.5f, 1.5f, 0.5f },    // Forest
+        { 1.5f, 1.0f, 1.0f },    // Plains
+        { 1.0f, 1.0f, 1.0f },    // Heal
+        { 1.0f, 1.0f, 1.0f },    // BaseA
+        { 1.0f, 1.0f, 1.0f },    // BaseB
+        { 0.25f, 0.25f, 0.25f }, // Water
+        { 0.25f, 0.25f, 0.25f }, // Unknown
     };
 
     // Factor por terreno del defensor
     public static float[,] FTD = {
         // Tanker, Infantry, Ranged
-        { 1.50f, 1.00f, 1.00f }, // Street
-        { 0.50f, 1.00f, 1.50f }, // Forest
-        { 1.00f, 1.00f, 0.50f }, // Plains
-        { 1, 1, 1 }, // Heal
-        { 1, 1, 1 }, // BaseA
-        { 1, 1, 1 }, // BaseB
-        { 1, 1, 1 }, // Water
-        { 1, 1, 1 }, // Unknown
+        { 1.0f, 1.0f, 1.5f },    // Street
+        { 0.5f, 1.5f, 1.0f },    // Forest
+        { 1.5f, 1.0f, 0.5f },    // Plains
+        { 1.0f, 1.0f, 1.0f },    // Heal
+        { 1.0f, 1.0f, 1.0f },    // BaseA
+        { 1.0f, 1.0f, 1.0f },    // BaseB
+        { 0.25f, 0.25f, 0.25f }, // Water
+        { 0.25f, 0.25f, 0.25f }, // Unknown
     };
 
     // Determina la vida que se pierde en cada round
